@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -75,7 +74,7 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 	response.Diagnostics.Append(diags...)
 
 	var err error
-	var metadata *builder.ApplicationMetadata
+	var metadata *builder.MetadataApplication
 	var ecsClient *builder.EcsClient
 	var targetGroups []builder.ElbTargetGroup
 
@@ -96,9 +95,10 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 
 	db := builder.NewDashboardBuilder(state.AppId())
 	db.AddEcs()
-	db.AddPanel(builder.NewPanelRow("Errors & Warnings", false))
+	db.AddPanel(builder.NewPanelRow("Errors & Warnings"))
 	db.AddPanel(builder.NewPanelError)
 	db.AddPanel(builder.NewPanelWarn)
+	db.AddPanel(builder.NewPanelLogs)
 
 	for _, targetGroup := range targetGroups {
 		db.AddElbTargetGroup(targetGroup)
@@ -113,12 +113,10 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 	}
 
 	for _, queue := range metadata.Cloud.Aws.Sqs.Queues {
-		queue = strings.ReplaceAll(queue, "dev", "prod")
 		db.AddSqsQueue(queue)
 	}
 
 	for _, table := range metadata.Cloud.Aws.Dynamodb.Tables {
-		table = strings.ReplaceAll(table, "dev", "prod")
 		db.AddDynamoDbTable(table)
 	}
 

@@ -15,8 +15,8 @@ func NewPanelSqsMessagesVisible(queue string) PanelFactory {
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
 						"QueueName": queue,
@@ -34,8 +34,9 @@ func NewPanelSqsMessagesVisible(queue string) PanelFactory {
 					},
 				},
 			},
-			Title: "Messages In Queue",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Messages In Queue",
+			Type:    "timeseries",
 		}
 	}
 }
@@ -55,8 +56,8 @@ func NewPanelSqsTraffic(queue string) PanelFactory {
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
 						"QueueName": queue,
@@ -73,7 +74,7 @@ func NewPanelSqsTraffic(queue string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
 						"QueueName": queue,
@@ -90,7 +91,7 @@ func NewPanelSqsTraffic(queue string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
 						"QueueName": queue,
@@ -108,8 +109,9 @@ func NewPanelSqsTraffic(queue string) PanelFactory {
 					},
 				},
 			},
-			Title: "Traffic",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Traffic",
+			Type:    "timeseries",
 		}
 	}
 }

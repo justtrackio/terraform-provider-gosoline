@@ -28,7 +28,7 @@ func NewDashboardBuilder(appId AppId) *DashboardBuilder {
 }
 
 func (d *DashboardBuilder) AddEcs() {
-	d.AddPanel(NewPanelRow("Service Resource Usage", false))
+	d.AddPanel(NewPanelRow("Service Resource Usage"))
 	d.AddPanel(NewPanelEcsUtilization)
 	d.AddPanel(NewPanelEcsDeployment)
 	d.AddPanel(NewPanelEcsCpu)
@@ -36,7 +36,7 @@ func (d *DashboardBuilder) AddEcs() {
 }
 
 func (d *DashboardBuilder) AddElbTargetGroup(targetGroup ElbTargetGroup) {
-	d.AddPanel(NewPanelRow("Load Balancer", false))
+	d.AddPanel(NewPanelRow("Load Balancer"))
 	d.AddPanel(NewPanelElbRequestCount(targetGroup))
 	d.AddPanel(NewPanelElbResponseTime(targetGroup))
 	d.AddPanel(NewPanelElbHttpStatus(targetGroup))
@@ -47,7 +47,7 @@ func (d *DashboardBuilder) AddElbTargetGroup(targetGroup ElbTargetGroup) {
 func (d *DashboardBuilder) AddApiServerHandler(method string, path string) {
 	rowTitle := fmt.Sprintf("ApiServer: %s %s", method, path)
 
-	d.AddPanel(NewPanelRow(rowTitle, true))
+	d.AddPanel(NewPanelRow(rowTitle))
 	d.AddPanel(NewPanelApiServerRequestCount(path))
 	d.AddPanel(NewPanelApiServerResponseTime(path))
 	d.AddPanel(NewPanelApiServerHttpStatus(path))
@@ -56,7 +56,7 @@ func (d *DashboardBuilder) AddApiServerHandler(method string, path string) {
 func (d *DashboardBuilder) AddDynamoDbTable(table string) {
 	rowTitle := fmt.Sprintf("Dynamodb: %s", table)
 
-	d.AddPanel(NewPanelRow(rowTitle, false))
+	d.AddPanel(NewPanelRow(rowTitle))
 	d.AddPanel(NewPanelDdbReadUsage(table))
 	d.AddPanel(NewPanelDdbReadThrottles(table))
 	d.AddPanel(NewPanelDdbWriteUsage(table))
@@ -70,7 +70,7 @@ func (d *DashboardBuilder) AddPanel(panel PanelFactory) {
 func (d *DashboardBuilder) AddSqsQueue(queue string) {
 	rowTitle := fmt.Sprintf("SQS: %s", queue)
 
-	d.AddPanel(NewPanelRow(rowTitle, false))
+	d.AddPanel(NewPanelRow(rowTitle))
 	d.AddPanel(NewPanelSqsMessagesVisible(queue))
 	d.AddPanel(NewPanelSqsTraffic(queue))
 }
@@ -108,8 +108,10 @@ func (d *DashboardBuilder) buildPanel(factory PanelFactory, x int, y int) Panel 
 		panel.FieldConfig.Defaults.Custom.LineWidth = 2
 	}
 
-	if panel.Options.Tooltip.Mode == "" {
-		panel.Options.Tooltip.Mode = "multi"
+	if option, ok := panel.Options.(*PanelOptionsCloudWatch); ok {
+		if option.Tooltip.Mode == "" {
+			option.Tooltip.Mode = "multi"
+		}
 	}
 
 	return panel

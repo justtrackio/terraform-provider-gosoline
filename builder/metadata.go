@@ -1,66 +1,32 @@
 package builder
 
-import (
-	"fmt"
-	"net/http"
-
-	"github.com/go-resty/resty/v2"
-)
-
-type ApiServer struct {
-	Routes []struct {
-		Method string `json:"method"`
-		Path   string `json:"path"`
-	} `json:"routes"`
+type MetadataApplication struct {
+	ApiServer MetadataApiServer `json:"apiserver"`
+	Cloud     MetadataCloud     `json:"cloud"`
 }
 
-type ApplicationMetadata struct {
-	ApiServer struct {
-		Routes []struct {
-			Method string `json:"method"`
-			Path   string `json:"path"`
-		} `json:"routes"`
-	} `json:"apiserver"`
-	Cloud struct {
-		Aws struct {
-			Dynamodb struct {
-				Tables []string `json:"tables"`
-			} `json:"dynamodb"`
-			Sqs struct {
-				Queues []string `json:"queues"`
-			} `json:"sqs"`
-		} `json:"aws"`
-	} `json:"cloud"`
+type MetadataApiServer struct {
+	Routes []MetadataApiServerRoute `json:"routes"`
 }
 
-type MetadataReader struct {
-	client         *resty.Client
-	metadataDomain string
+type MetadataApiServerRoute struct {
+	Method string `json:"method"`
+	Path   string `json:"path"`
 }
 
-func NewMetadataReader(metadataDomain string) *MetadataReader {
-	return &MetadataReader{
-		client:         resty.New(),
-		metadataDomain: metadataDomain,
-	}
+type MetadataCloud struct {
+	Aws MetadataCloudAws `json:"aws"`
 }
 
-func (r *MetadataReader) ReadMetadata(appId AppId) (*ApplicationMetadata, error) {
-	metadata := &ApplicationMetadata{}
-	path := fmt.Sprintf("http://%s.%s.%s.%s:8070", appId.Application, appId.Family, appId.Environment, r.metadataDomain)
+type MetadataCloudAws struct {
+	Dynamodb MetadataCloudAwsDynamodb `json:"dynamodb"`
+	Sqs      MetadataCloudAwsSqs      `json:"sqs"`
+}
 
-	resp, err := r.client.R().
-		SetResult(metadata).
-		ForceContentType("application/json").
-		Get(path)
+type MetadataCloudAwsDynamodb struct {
+	Tables []string `json:"tables"`
+}
 
-	if err != nil {
-		return nil, fmt.Errorf("can not read application metadata: %w", err)
-	}
-
-	if resp.StatusCode() != http.StatusOK {
-		return nil, fmt.Errorf("can not read application metadata: unexpected response code %d", resp.StatusCode())
-	}
-
-	return metadata, nil
+type MetadataCloudAwsSqs struct {
+	Queues []string `json:"queues"`
 }

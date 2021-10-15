@@ -13,8 +13,8 @@ func NewPanelElbRequestCount(targetGroup ElbTargetGroup) PanelFactory {
 				},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "Requests",
 					Dimensions: map[string]string{
 						"TargetGroup":  targetGroup.TargetGroup,
@@ -30,8 +30,9 @@ func NewPanelElbRequestCount(targetGroup ElbTargetGroup) PanelFactory {
 					},
 				},
 			},
-			Title: "Request Count",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Request Count",
+			Type:    "timeseries",
 		}
 	}
 }
@@ -50,8 +51,8 @@ func NewPanelElbResponseTime(targetGroup ElbTargetGroup) PanelFactory {
 				},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "Response Time",
 					Dimensions: map[string]string{
 						"TargetGroup":  targetGroup.TargetGroup,
@@ -67,8 +68,9 @@ func NewPanelElbResponseTime(targetGroup ElbTargetGroup) PanelFactory {
 					},
 				},
 			},
-			Title: "Response Time",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Response Time",
+			Type:    "timeseries",
 		}
 	}
 }
@@ -89,8 +91,8 @@ func NewPanelElbHttpStatus(targetGroup ElbTargetGroup) PanelFactory {
 				},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "HTTP 2XX",
 					Dimensions: map[string]string{
 						"TargetGroup":  targetGroup.TargetGroup,
@@ -105,7 +107,7 @@ func NewPanelElbHttpStatus(targetGroup ElbTargetGroup) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "HTTP 3XX",
 					Dimensions: map[string]string{
 						"TargetGroup":  targetGroup.TargetGroup,
@@ -120,7 +122,7 @@ func NewPanelElbHttpStatus(targetGroup ElbTargetGroup) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "HTTP 4XX",
 					Dimensions: map[string]string{
 						"TargetGroup":  targetGroup.TargetGroup,
@@ -135,7 +137,7 @@ func NewPanelElbHttpStatus(targetGroup ElbTargetGroup) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "HTTP 5XX",
 					Dimensions: map[string]string{
 						"TargetGroup":  targetGroup.TargetGroup,
@@ -151,8 +153,9 @@ func NewPanelElbHttpStatus(targetGroup ElbTargetGroup) PanelFactory {
 					},
 				},
 			},
-			Title: "HTTP Status Overview",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "HTTP Status Overview",
+			Type:    "timeseries",
 		}
 	}
 }
@@ -168,8 +171,8 @@ func NewPanelElbHealthyHosts(targetGroup ElbTargetGroup) PanelFactory {
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "Hosts",
 					Dimensions: map[string]string{
 						"TargetGroup":  targetGroup.TargetGroup,
@@ -185,8 +188,9 @@ func NewPanelElbHealthyHosts(targetGroup ElbTargetGroup) PanelFactory {
 					},
 				},
 			},
-			Title: "Healthy Hosts",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Healthy Hosts",
+			Type:    "timeseries",
 		}
 	}
 }
@@ -202,8 +206,8 @@ func NewPanelElbRequestCountPerTarget(targetGroup ElbTargetGroup) PanelFactory {
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "Requests",
 					Dimensions: map[string]string{
 						"TargetGroup":  targetGroup.TargetGroup,
@@ -219,8 +223,9 @@ func NewPanelElbRequestCountPerTarget(targetGroup ElbTargetGroup) PanelFactory {
 					},
 				},
 			},
-			Title: "Request Counts Per Target",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Request Counts Per Target",
+			Type:    "timeseries",
 		}
 	}
 }

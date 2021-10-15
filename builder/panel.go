@@ -3,14 +3,15 @@ package builder
 type PanelFactory func(appId AppId, gridPos PanelGridPos) Panel
 
 type Panel struct {
-	collapsed   bool             `json:"collapsed,omitempty"`
+	Collapsed   bool             `json:"collapsed,omitempty"`
 	Datasource  string           `json:"datasource"`
 	FieldConfig PanelFieldConfig `json:"fieldConfig"`
 	GridPos     PanelGridPos     `json:"gridPos"`
-	Options     PanelOptions     `json:"options"`
-	Targets     []PanelTarget    `json:"targets"`
+	Options     interface{}      `json:"options"`
+	Targets     []interface{}    `json:"targets"`
 	Title       string           `json:"title"`
 	Type        string           `json:"type"`
+	Panels      []Panel          `json:"panels"`
 }
 
 type PanelFieldConfig struct {
@@ -101,7 +102,7 @@ func NewPanelGridPos(h int, w int, x int, y int) PanelGridPos {
 	}
 }
 
-type PanelOptions struct {
+type PanelOptionsCloudWatch struct {
 	Tooltip PanelOptionsTooltip `json:"tooltip"`
 }
 
@@ -109,7 +110,7 @@ type PanelOptionsTooltip struct {
 	Mode string `json:"mode"`
 }
 
-type PanelTarget struct {
+type PanelTargetCloudWatch struct {
 	Alias      string            `json:"alias"`
 	Dimensions map[string]string `json:"dimensions"`
 	Expression string            `json:"expression"`
@@ -122,4 +123,32 @@ type PanelTarget struct {
 	RefId      string            `json:"refId"`
 	Region     string            `json:"region"`
 	Statistics []string          `json:"statistics"`
+}
+
+type PanelTargetElasticsearch struct {
+	RefId     string                           `json:"refId"`
+	Query     string                           `json:"query"`
+	Metrics   []PanelTargetElasticsearchMetric `json:"metrics"`
+	TimeField string                           `json:"timeField"`
+}
+
+type PanelTargetElasticsearchMetric struct {
+	Id       string                                 `json:"id"`
+	Type     string                                 `json:"type"`
+	Settings PanelTargetElasticsearchMetricSettings `json:"settings"`
+}
+
+type PanelTargetElasticsearchMetricSettings struct {
+	Limit string `json:"limit"`
+}
+
+type PanelOptionsElasticsearch struct {
+	ShowTime           bool   `json:"showTime"`
+	ShowLabels         bool   `json:"showLabels"`
+	ShowCommonLabels   bool   `json:"showCommonLabels"`
+	WrapLogMessage     bool   `json:"wrapLogMessage"`
+	PrettifyLogMessage bool   `json:"prettifyLogMessage"`
+	EnableLogDetails   bool   `json:"enableLogDetails"`
+	DedupStrategy      string `json:"dedupStrategy"`
+	SortOrder          string `json:"sortOrder"`
 }

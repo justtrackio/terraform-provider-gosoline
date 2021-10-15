@@ -17,8 +17,8 @@ func NewPanelDdbReadUsage(table string) PanelFactory {
 				},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "Provisioned",
 					Dimensions: map[string]string{
 						"TableName": table,
@@ -35,7 +35,7 @@ func NewPanelDdbReadUsage(table string) PanelFactory {
 						"Average",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
 						"TableName": table,
@@ -53,7 +53,7 @@ func NewPanelDdbReadUsage(table string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias:      "Consumed",
 					Dimensions: map[string]string{},
 					Expression: "m1/PERIOD(m1)",
@@ -69,8 +69,9 @@ func NewPanelDdbReadUsage(table string) PanelFactory {
 					},
 				},
 			},
-			Title: "Read Usage (average units/second)",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Read Usage (average units/second)",
+			Type:    "timeseries",
 		}
 	}
 }
@@ -91,8 +92,8 @@ func NewPanelDdbReadThrottles(table string) PanelFactory {
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "GetItem",
 					Dimensions: map[string]string{
 						"TableName": table,
@@ -107,7 +108,7 @@ func NewPanelDdbReadThrottles(table string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "Scan",
 					Dimensions: map[string]string{
 						"TableName": table,
@@ -122,7 +123,7 @@ func NewPanelDdbReadThrottles(table string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "Query",
 					Dimensions: map[string]string{
 						"TableName": table,
@@ -137,7 +138,7 @@ func NewPanelDdbReadThrottles(table string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "BatchGetItem",
 					Dimensions: map[string]string{
 						"TableName": table,
@@ -153,8 +154,9 @@ func NewPanelDdbReadThrottles(table string) PanelFactory {
 					},
 				},
 			},
-			Title: "Read throttled requests (count)",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Read throttled requests (count)",
+			Type:    "timeseries",
 		}
 	}
 }
@@ -178,8 +180,8 @@ func NewPanelDdbWriteUsage(table string) PanelFactory {
 				},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "Provisioned",
 					Dimensions: map[string]string{
 						"TableName": table,
@@ -196,7 +198,7 @@ func NewPanelDdbWriteUsage(table string) PanelFactory {
 						"Average",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
 						"TableName": table,
@@ -214,7 +216,7 @@ func NewPanelDdbWriteUsage(table string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias:      "Consumed",
 					Dimensions: map[string]string{},
 					Expression: "m1/PERIOD(m1)",
@@ -230,8 +232,9 @@ func NewPanelDdbWriteUsage(table string) PanelFactory {
 					},
 				},
 			},
-			Title: "Write Usage (average units/second)",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Write Usage (average units/second)",
+			Type:    "timeseries",
 		}
 	}
 }
@@ -252,8 +255,8 @@ func NewPanelDdbWriteThrottles(table string) PanelFactory {
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "PutItem",
 					Dimensions: map[string]string{
 						"TableName": table,
@@ -268,7 +271,7 @@ func NewPanelDdbWriteThrottles(table string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "UpdateItem",
 					Dimensions: map[string]string{
 						"TableName": table,
@@ -283,7 +286,7 @@ func NewPanelDdbWriteThrottles(table string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "DeleteItem",
 					Dimensions: map[string]string{
 						"TableName": table,
@@ -298,7 +301,7 @@ func NewPanelDdbWriteThrottles(table string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "BatchWriteItem",
 					Dimensions: map[string]string{
 						"TableName": table,
@@ -314,8 +317,9 @@ func NewPanelDdbWriteThrottles(table string) PanelFactory {
 					},
 				},
 			},
-			Title: "Write throttled requests (count)",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Write throttled requests (count)",
+			Type:    "timeseries",
 		}
 	}
 }

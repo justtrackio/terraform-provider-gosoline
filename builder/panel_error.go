@@ -15,8 +15,8 @@ func NewPanelError(appId AppId, gridPos PanelGridPos) Panel {
 			},
 		},
 		GridPos: gridPos,
-		Targets: []PanelTarget{
-			{
+		Targets: []interface{}{
+			PanelTargetCloudWatch{
 				Alias:      "Errors",
 				Dimensions: map[string]string{},
 				MatchExact: false,
@@ -28,8 +28,9 @@ func NewPanelError(appId AppId, gridPos PanelGridPos) Panel {
 				},
 			},
 		},
-		Title: "Errors",
-		Type:  "timeseries",
+		Options: &PanelOptionsCloudWatch{},
+		Title:   "Errors",
+		Type:    "timeseries",
 	}
 }
 
@@ -48,8 +49,8 @@ func NewPanelWarn(appId AppId, gridPos PanelGridPos) Panel {
 			},
 		},
 		GridPos: gridPos,
-		Targets: []PanelTarget{
-			{
+		Targets: []interface{}{
+			PanelTargetCloudWatch{
 				Alias:      "Warnings",
 				Dimensions: map[string]string{},
 				MetricName: "warn",
@@ -60,7 +61,8 @@ func NewPanelWarn(appId AppId, gridPos PanelGridPos) Panel {
 				},
 			},
 		},
-		Title: "Warnings",
-		Type:  "timeseries",
+		Options: &PanelOptionsCloudWatch{},
+		Title:   "Warnings",
+		Type:    "timeseries",
 	}
 }

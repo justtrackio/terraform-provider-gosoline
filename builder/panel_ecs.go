@@ -13,8 +13,8 @@ func NewPanelEcsCpu(appId AppId, gridPos PanelGridPos) Panel {
 			},
 		},
 		GridPos: gridPos,
-		Targets: []PanelTarget{
-			{
+		Targets: []interface{}{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -27,7 +27,7 @@ func NewPanelEcsCpu(appId AppId, gridPos PanelGridPos) Panel {
 					"Sum",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -41,8 +41,9 @@ func NewPanelEcsCpu(appId AppId, gridPos PanelGridPos) Panel {
 				},
 			},
 		},
-		Title: "CPU Utilization",
-		Type:  "timeseries",
+		Options: &PanelOptionsCloudWatch{},
+		Title:   "CPU Utilization",
+		Type:    "timeseries",
 	}
 }
 
@@ -60,8 +61,8 @@ func NewPanelEcsMemory(appId AppId, gridPos PanelGridPos) Panel {
 			},
 		},
 		GridPos: gridPos,
-		Targets: []PanelTarget{
-			{
+		Targets: []interface{}{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -75,7 +76,7 @@ func NewPanelEcsMemory(appId AppId, gridPos PanelGridPos) Panel {
 					"Sum",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -90,8 +91,9 @@ func NewPanelEcsMemory(appId AppId, gridPos PanelGridPos) Panel {
 				},
 			},
 		},
-		Title: "Memory Utilization",
-		Type:  "timeseries",
+		Options: &PanelOptionsCloudWatch{},
+		Title:   "Memory Utilization",
+		Type:    "timeseries",
 	}
 }
 
@@ -126,8 +128,8 @@ func NewPanelEcsUtilization(appId AppId, gridPos PanelGridPos) Panel {
 			},
 		},
 		GridPos: gridPos,
-		Targets: []PanelTarget{
-			{
+		Targets: []interface{}{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -143,7 +145,7 @@ func NewPanelEcsUtilization(appId AppId, gridPos PanelGridPos) Panel {
 					"Maximum",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -159,7 +161,7 @@ func NewPanelEcsUtilization(appId AppId, gridPos PanelGridPos) Panel {
 					"Average",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -175,7 +177,7 @@ func NewPanelEcsUtilization(appId AppId, gridPos PanelGridPos) Panel {
 					"Maximum",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Alias:      "CPU Average",
 				Expression: "100 / cpu_reserved * cpu_average",
 				Dimensions: map[string]string{},
@@ -186,7 +188,7 @@ func NewPanelEcsUtilization(appId AppId, gridPos PanelGridPos) Panel {
 					"Average",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Alias:      "CPU Maximum",
 				Expression: "100 / cpu_reserved * cpu_maximum",
 				Dimensions: map[string]string{},
@@ -197,7 +199,7 @@ func NewPanelEcsUtilization(appId AppId, gridPos PanelGridPos) Panel {
 					"Maximum",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -213,7 +215,7 @@ func NewPanelEcsUtilization(appId AppId, gridPos PanelGridPos) Panel {
 					"Maximum",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -229,7 +231,7 @@ func NewPanelEcsUtilization(appId AppId, gridPos PanelGridPos) Panel {
 					"Average",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -245,7 +247,7 @@ func NewPanelEcsUtilization(appId AppId, gridPos PanelGridPos) Panel {
 					"Maximum",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Alias:      "Memory Average",
 				Expression: "100 / memory_reserved * memory_average",
 				Dimensions: map[string]string{},
@@ -256,7 +258,7 @@ func NewPanelEcsUtilization(appId AppId, gridPos PanelGridPos) Panel {
 					"Average",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Alias:      "Memory Maximum",
 				Expression: "100 / memory_reserved * memory_maximum",
 				Dimensions: map[string]string{},
@@ -268,8 +270,9 @@ func NewPanelEcsUtilization(appId AppId, gridPos PanelGridPos) Panel {
 				},
 			},
 		},
-		Title: "Service Utilization",
-		Type:  "timeseries",
+		Options: &PanelOptionsCloudWatch{},
+		Title:   "Service Utilization",
+		Type:    "timeseries",
 	}
 }
 
@@ -282,8 +285,8 @@ func NewPanelEcsDeployment(appId AppId, gridPos PanelGridPos) Panel {
 			},
 		},
 		GridPos: gridPos,
-		Targets: []PanelTarget{
-			{
+		Targets: []interface{}{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -296,7 +299,7 @@ func NewPanelEcsDeployment(appId AppId, gridPos PanelGridPos) Panel {
 					"Maximum",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -309,7 +312,7 @@ func NewPanelEcsDeployment(appId AppId, gridPos PanelGridPos) Panel {
 					"Maximum",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -322,7 +325,7 @@ func NewPanelEcsDeployment(appId AppId, gridPos PanelGridPos) Panel {
 					"Maximum",
 				},
 			},
-			{
+			PanelTargetCloudWatch{
 				Dimensions: map[string]string{
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
@@ -336,7 +339,8 @@ func NewPanelEcsDeployment(appId AppId, gridPos PanelGridPos) Panel {
 				},
 			},
 		},
-		Title: "Deployment and Task Count",
-		Type:  "timeseries",
+		Options: &PanelOptionsCloudWatch{},
+		Title:   "Deployment and Task Count",
+		Type:    "timeseries",
 	}
 }

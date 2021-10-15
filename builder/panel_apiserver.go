@@ -13,8 +13,8 @@ func NewPanelApiServerRequestCount(path string) PanelFactory {
 				},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "Requests",
 					Dimensions: map[string]string{
 						"path": path,
@@ -29,8 +29,9 @@ func NewPanelApiServerRequestCount(path string) PanelFactory {
 					},
 				},
 			},
-			Title: "Request Count",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Request Count",
+			Type:    "timeseries",
 		}
 	}
 }
@@ -49,8 +50,8 @@ func NewPanelApiServerResponseTime(path string) PanelFactory {
 				},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "Response Time",
 					Dimensions: map[string]string{
 						"path": path,
@@ -65,8 +66,9 @@ func NewPanelApiServerResponseTime(path string) PanelFactory {
 					},
 				},
 			},
-			Title: "Response Time",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Response Time",
+			Type:    "timeseries",
 		}
 	}
 }
@@ -87,8 +89,8 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 				},
 			},
 			GridPos: gridPos,
-			Targets: []PanelTarget{
-				{
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
 					Alias: "HTTP 2XX",
 					Dimensions: map[string]string{
 						"path": path,
@@ -102,7 +104,7 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "HTTP 3XX",
 					Dimensions: map[string]string{
 						"path": path,
@@ -116,7 +118,7 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "HTTP 4XX",
 					Dimensions: map[string]string{
 						"path": path,
@@ -130,7 +132,7 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 						"Sum",
 					},
 				},
-				{
+				PanelTargetCloudWatch{
 					Alias: "HTTP 5XX",
 					Dimensions: map[string]string{
 						"path": path,
@@ -145,8 +147,9 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 					},
 				},
 			},
-			Title: "HTTP Status Overview",
-			Type:  "timeseries",
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "HTTP Status Overview",
+			Type:    "timeseries",
 		}
 	}
 }
