@@ -19,8 +19,10 @@ func NewPanelEcsCpu(appId AppId, gridPos PanelGridPos) Panel {
 					"ClusterName": appId.EcsClusterName(),
 					"ServiceName": appId.Application,
 				},
+				Id:         "m1",
 				MetricName: "CpuReserved",
 				Namespace:  "ECS/ContainerInsights",
+				Period:     "60",
 				RefId:      "A",
 				Region:     "default",
 				Statistics: []string{
@@ -34,6 +36,7 @@ func NewPanelEcsCpu(appId AppId, gridPos PanelGridPos) Panel {
 				},
 				MetricName: "CpuUtilized",
 				Namespace:  "ECS/ContainerInsights",
+				Period:     "60",
 				RefId:      "B",
 				Region:     "default",
 				Statistics: []string{
@@ -70,6 +73,7 @@ func NewPanelEcsMemory(appId AppId, gridPos PanelGridPos) Panel {
 				MatchExact: false,
 				MetricName: "MemoryReserved",
 				Namespace:  "ECS/ContainerInsights",
+				Period:     "60",
 				RefId:      "A",
 				Region:     "default",
 				Statistics: []string{
@@ -84,6 +88,7 @@ func NewPanelEcsMemory(appId AppId, gridPos PanelGridPos) Panel {
 				MatchExact: false,
 				MetricName: "MemoryUtilized",
 				Namespace:  "ECS/ContainerInsights",
+				Period:     "60",
 				RefId:      "B",
 				Region:     "default",
 				Statistics: []string{

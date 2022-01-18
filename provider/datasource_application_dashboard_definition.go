@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -57,9 +58,9 @@ func (a *ApplicationDashboardDefinitionDatasourceType) GetSchema(ctx context.Con
 	}, nil
 }
 
-func (a *ApplicationDashboardDefinitionDatasourceType) NewDataSource(ctx context.Context, prov tfsdk.Provider) (tfsdk.DataSource, diag.Diagnostics) {
+func (a *ApplicationDashboardDefinitionDatasourceType) NewDataSource(ctx context.Context, provider tfsdk.Provider) (tfsdk.DataSource, diag.Diagnostics) {
 	return &ApplicationDashboardDefinitionDataSource{
-		metadataReader: prov.(*GosolineProvider).metadataReader,
+		metadataReader: provider.(*GosolineProvider).metadataReader,
 	}, nil
 }
 
@@ -77,6 +78,8 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 	var metadata *builder.MetadataApplication
 	var ecsClient *builder.EcsClient
 	var targetGroups []builder.ElbTargetGroup
+	var kinesisClient *builder.KinesisClient
+	var kinesisShardCount int
 
 	if metadata, err = a.metadataReader.ReadMetadata(state.AppId()); err != nil {
 		response.Diagnostics.AddError("can not get metadata", err.Error())
@@ -90,6 +93,11 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 
 	if targetGroups, err = ecsClient.GetElbTargetGroups(ctx); err != nil {
 		response.Diagnostics.AddError("can not get target groups", err.Error())
+		return
+	}
+
+	if kinesisClient, err = builder.NewKinesisClient(ctx); err != nil {
+		response.Diagnostics.AddError("can not get kinesis client", err.Error())
 		return
 	}
 
@@ -112,8 +120,34 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 		db.AddApiServerHandler(route.Method, route.Path)
 	}
 
+	for _, producer := range metadata.Stream.Producers {
+		if !producer.DaemonEnabled {
+			continue
+		}
+
+		db.AddStreamProducerDaemon(producer.Name)
+	}
+
+	for _, kinsumer := range metadata.Cloud.Aws.Kinesis.Kinsumers {
+		if kinesisShardCount, err = kinesisClient.GetShardCount(ctx, kinsumer.StreamNameFull); err != nil {
+			response.Diagnostics.AddError(fmt.Sprintf("can not get kinesis shard count for stream: %s", kinsumer.StreamNameFull), err.Error())
+			return
+		}
+
+		db.AddCloudAwsKinesisKinsumer(kinsumer.StreamNameFull, kinesisShardCount)
+	}
+
+	for _, writer := range metadata.Cloud.Aws.Kinesis.RecordWriters {
+		if kinesisShardCount, err = kinesisClient.GetShardCount(ctx, writer.StreamName); err != nil {
+			response.Diagnostics.AddError(fmt.Sprintf("can not get kinesis shard count for stream: %s", writer.StreamName), err.Error())
+			return
+		}
+
+		db.AddCloudAwsKinesisRecordWriter(writer.StreamName, kinesisShardCount)
+	}
+
 	for _, queue := range metadata.Cloud.Aws.Sqs.Queues {
-		db.AddSqsQueue(queue)
+		db.AddCloudAwsSqsQueue(queue)
 	}
 
 	for _, table := range metadata.Cloud.Aws.Dynamodb.Tables {

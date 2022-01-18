@@ -63,16 +63,49 @@ func (d *DashboardBuilder) AddDynamoDbTable(table string) {
 	d.AddPanel(NewPanelDdbWriteThrottles(table))
 }
 
-func (d *DashboardBuilder) AddPanel(panel PanelFactory) {
-	d.panelFactories = append(d.panelFactories, panel)
+func (d *DashboardBuilder) AddCloudAwsKinesisKinsumer(stream string, shardCount int) {
+	rowTitle := fmt.Sprintf("Kinesis Stream: %s (%d Shards)", stream, shardCount)
+
+	d.AddPanel(NewPanelRow(rowTitle))
+	d.AddPanel(NewPanelKinesisMillisecondsBehind(stream))
+	d.AddPanel(NewPanelKinesisKinsumerMessageCounts(stream))
+	d.AddPanel(NewPanelKinesisReadOperations(stream, shardCount))
+	d.AddPanel(NewPanelKinesisSuccessRate(stream))
+	d.AddPanel(NewPanelKinesisStreamGetRecordsBytes(stream, shardCount))
+	d.AddPanel(NewPanelKinesisStreamIncomingDataBytes(stream, shardCount))
+	d.AddPanel(NewPanelKinesisStreamIncomingDataCount(stream, shardCount))
 }
 
-func (d *DashboardBuilder) AddSqsQueue(queue string) {
+func (d *DashboardBuilder) AddCloudAwsKinesisRecordWriter(stream string, shardCount int) {
+	rowTitle := fmt.Sprintf("Kinesis Stream: %s (%d Shards)", stream, shardCount)
+
+	d.AddPanel(NewPanelRow(rowTitle))
+	d.AddPanel(NewPanelKinesisRecordWriterPutRecordsCount(stream))
+	d.AddPanel(NewPanelKinesisRecordWriterPutRecordsBatchSize(stream, shardCount))
+	d.AddPanel(NewPanelKinesisStreamRecordSize(stream))
+	d.AddPanel(NewPanelKinesisStreamGetRecordsBytes(stream, shardCount))
+	d.AddPanel(NewPanelKinesisStreamIncomingDataBytes(stream, shardCount))
+	d.AddPanel(NewPanelKinesisStreamIncomingDataCount(stream, shardCount))
+}
+
+func (d *DashboardBuilder) AddCloudAwsSqsQueue(queue string) {
 	rowTitle := fmt.Sprintf("SQS: %s", queue)
 
 	d.AddPanel(NewPanelRow(rowTitle))
 	d.AddPanel(NewPanelSqsMessagesVisible(queue))
 	d.AddPanel(NewPanelSqsTraffic(queue))
+}
+
+func (d *DashboardBuilder) AddStreamProducerDaemon(producer string) {
+	rowTitle := fmt.Sprintf("Stream Producer Daemon: %s", producer)
+
+	d.AddPanel(NewPanelRow(rowTitle))
+	d.AddPanel(NewPanelStreamProducerDaemonSizes(producer))
+	d.AddPanel(NewPanelStreamProducerMessageCount(producer))
+}
+
+func (d *DashboardBuilder) AddPanel(panel PanelFactory) {
+	d.panelFactories = append(d.panelFactories, panel)
 }
 
 func (d *DashboardBuilder) Build() Dashboard {

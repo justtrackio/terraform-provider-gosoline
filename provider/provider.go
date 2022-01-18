@@ -53,5 +53,6 @@ func (p *GosolineProvider) GetResources(ctx context.Context) (map[string]tfsdk.R
 func (p *GosolineProvider) GetDataSources(ctx context.Context) (map[string]tfsdk.DataSourceType, diag.Diagnostics) {
 	return map[string]tfsdk.DataSourceType{
 		"gosoline_application_dashboard_definition": &ApplicationDashboardDefinitionDatasourceType{},
+		"gosoline_application_metadata_definition":  &ApplicationMetadataDefinitionDatasourceType{},
 	}, nil
 }

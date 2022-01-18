@@ -13,7 +13,7 @@ func TestDashboardWithError(t *testing.T) {
 		Project:     "mcoins",
 		Environment: "prod",
 		Family:      "marketing",
-		Application: "terminal-revenue-consumer",
+		Application: "monetized-user-decider-revenue",
 	})
 	db.AddPanel(builder.NewPanelEcsCpu)
 	db.AddPanel(builder.NewPanelEcsMemory)
