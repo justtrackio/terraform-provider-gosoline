@@ -83,6 +83,7 @@ func (d *DashboardBuilder) AddCloudAwsKinesisRecordWriter(stream string, shardCo
 	d.AddPanel(NewPanelKinesisRecordWriterPutRecordsCount(stream))
 	d.AddPanel(NewPanelKinesisRecordWriterPutRecordsBatchSize(stream, shardCount))
 	d.AddPanel(NewPanelKinesisStreamRecordSize(stream))
+	d.AddPanel(NewPanelKinesisSuccessRate(stream))
 	d.AddPanel(NewPanelKinesisStreamGetRecordsBytes(stream, shardCount))
 	d.AddPanel(NewPanelKinesisStreamIncomingDataBytes(stream, shardCount))
 	d.AddPanel(NewPanelKinesisStreamIncomingDataCount(stream, shardCount))

@@ -255,7 +255,9 @@ func (s MetadataStream) ToValue() types.Object {
 func MetadataStreamAttrTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"consumers": types.ListType{
-			ElemType: types.StringType,
+			ElemType: types.ObjectType{
+				AttrTypes: MetadataStreamConsumerAttrTypes(),
+			},
 		},
 		"producers": types.ListType{
 			ElemType: types.ObjectType{
@@ -265,19 +267,46 @@ func MetadataStreamAttrTypes() map[string]attr.Type {
 	}
 }
 
-type MetadataStreamConsumers []string
+type MetadataStreamConsumers []MetadataStreamConsumer
 
 func (c MetadataStreamConsumers) ToValue() attr.Value {
 	list := types.List{
-		Elems:    make([]attr.Value, len(c)),
-		ElemType: types.StringType,
+		Elems: make([]attr.Value, len(c)),
+		ElemType: types.ObjectType{
+			AttrTypes: MetadataStreamConsumerAttrTypes(),
+		},
 	}
 
 	for i, consumer := range c {
-		list.Elems[i] = types.String{Value: consumer}
+		list.Elems[i] = consumer.ToValue()
 	}
 
 	return list
+}
+
+type MetadataStreamConsumer struct {
+	Name         string `json:"name"`
+	RetryEnabled bool   `json:"retry_enabled"`
+	RetryType    string `json:"retry_type"`
+}
+
+func (p MetadataStreamConsumer) ToValue() attr.Value {
+	return types.Object{
+		Attrs: map[string]attr.Value{
+			"name":          types.String{Value: p.Name},
+			"retry_enabled": types.Bool{Value: p.RetryEnabled},
+			"retry_type":    types.String{Value: p.RetryType},
+		},
+		AttrTypes: MetadataStreamConsumerAttrTypes(),
+	}
+}
+
+func MetadataStreamConsumerAttrTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"name":          types.StringType,
+		"retry_enabled": types.BoolType,
+		"retry_type":    types.StringType,
+	}
 }
 
 type MetadataStreamProducers []MetadataStreamProducer
