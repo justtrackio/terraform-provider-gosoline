@@ -2,7 +2,7 @@ package builder
 
 import "fmt"
 
-func NewPanelKinesisMillisecondsBehind(stream string) PanelFactory {
+func NewPanelKinesisKinsumerMillisecondsBehind(stream string) PanelFactory {
 	return func(appId AppId, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
@@ -101,7 +101,7 @@ func NewPanelKinesisKinsumerMessageCounts(stream string) PanelFactory {
 	}
 }
 
-func NewPanelKinesisReadOperations(stream string, shardCount int) PanelFactory {
+func NewPanelKinesisKinsumerReadOperations(stream string, shardCount int) PanelFactory {
 	return func(appId AppId, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
@@ -178,7 +178,60 @@ func NewPanelKinesisReadOperations(stream string, shardCount int) PanelFactory {
 	}
 }
 
-func NewPanelKinesisSuccessRate(stream string) PanelFactory {
+func NewPanelKinesisKinsumerProcessDuration(stream string) PanelFactory {
+	return func(appId AppId, gridPos PanelGridPos) Panel {
+		return Panel{
+			Datasource: "CloudWatch",
+			FieldConfig: PanelFieldConfig{
+				Defaults: PanelFieldConfigDefaults{
+					Custom: PanelFieldConfigDefaultsCustom{
+						SpanNulls: true,
+					},
+					Min:  "0",
+					Unit: "ms",
+				},
+			},
+			GridPos: gridPos,
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
+					Alias: "Maximum",
+					Dimensions: map[string]string{
+						"StreamName": stream,
+					},
+					Id:         "m0",
+					MatchExact: true,
+					MetricName: "ProcessDuration",
+					Namespace:  appId.CloudWatchNamespace(),
+					RefId:      "A",
+					Region:     "default",
+					Statistics: []string{
+						"Maximum",
+					},
+				},
+				PanelTargetCloudWatch{
+					Alias: "Average",
+					Dimensions: map[string]string{
+						"StreamName": stream,
+					},
+					Id:         "m1",
+					MatchExact: true,
+					MetricName: "ProcessDuration",
+					Namespace:  appId.CloudWatchNamespace(),
+					RefId:      "B",
+					Region:     "default",
+					Statistics: []string{
+						"Average",
+					},
+				},
+			},
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Process Duration",
+			Type:    "timeseries",
+		}
+	}
+}
+
+func NewPanelKinesisStreamSuccessRate(stream string) PanelFactory {
 	return func(appId AppId, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",

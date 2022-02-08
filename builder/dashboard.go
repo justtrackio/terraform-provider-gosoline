@@ -64,26 +64,27 @@ func (d *DashboardBuilder) AddDynamoDbTable(table string) {
 }
 
 func (d *DashboardBuilder) AddCloudAwsKinesisKinsumer(stream string, shardCount int) {
-	rowTitle := fmt.Sprintf("Kinesis Stream: %s (%d Shards)", stream, shardCount)
+	rowTitle := fmt.Sprintf("Kinsumer on Stream: %s (%d Shards)", stream, shardCount)
 
 	d.AddPanel(NewPanelRow(rowTitle))
-	d.AddPanel(NewPanelKinesisMillisecondsBehind(stream))
+	d.AddPanel(NewPanelKinesisKinsumerMillisecondsBehind(stream))
 	d.AddPanel(NewPanelKinesisKinsumerMessageCounts(stream))
-	d.AddPanel(NewPanelKinesisReadOperations(stream, shardCount))
-	d.AddPanel(NewPanelKinesisSuccessRate(stream))
+	d.AddPanel(NewPanelKinesisKinsumerReadOperations(stream, shardCount))
+	d.AddPanel(NewPanelKinesisKinsumerProcessDuration(stream))
+	d.AddPanel(NewPanelKinesisStreamSuccessRate(stream))
 	d.AddPanel(NewPanelKinesisStreamGetRecordsBytes(stream, shardCount))
 	d.AddPanel(NewPanelKinesisStreamIncomingDataBytes(stream, shardCount))
 	d.AddPanel(NewPanelKinesisStreamIncomingDataCount(stream, shardCount))
 }
 
 func (d *DashboardBuilder) AddCloudAwsKinesisRecordWriter(stream string, shardCount int) {
-	rowTitle := fmt.Sprintf("Kinesis Stream: %s (%d Shards)", stream, shardCount)
+	rowTitle := fmt.Sprintf("Kinesis RecordWriter on Stream: %s (%d Shards)", stream, shardCount)
 
 	d.AddPanel(NewPanelRow(rowTitle))
 	d.AddPanel(NewPanelKinesisRecordWriterPutRecordsCount(stream))
 	d.AddPanel(NewPanelKinesisRecordWriterPutRecordsBatchSize(stream, shardCount))
 	d.AddPanel(NewPanelKinesisStreamRecordSize(stream))
-	d.AddPanel(NewPanelKinesisSuccessRate(stream))
+	d.AddPanel(NewPanelKinesisStreamSuccessRate(stream))
 	d.AddPanel(NewPanelKinesisStreamGetRecordsBytes(stream, shardCount))
 	d.AddPanel(NewPanelKinesisStreamIncomingDataBytes(stream, shardCount))
 	d.AddPanel(NewPanelKinesisStreamIncomingDataCount(stream, shardCount))
@@ -95,6 +96,19 @@ func (d *DashboardBuilder) AddCloudAwsSqsQueue(queue string) {
 	d.AddPanel(NewPanelRow(rowTitle))
 	d.AddPanel(NewPanelSqsMessagesVisible(queue))
 	d.AddPanel(NewPanelSqsTraffic(queue))
+	d.AddPanel(NewPanelSqsMessageSize(queue))
+}
+
+func (d *DashboardBuilder) AddStreamConsumer(consumer MetadataStreamConsumer) {
+	rowTitle := fmt.Sprintf("Stream Consumer: %s", consumer.Name)
+
+	d.AddPanel(NewPanelRow(rowTitle))
+	d.AddPanel(NewPanelStreamConsumerProcessedCount(consumer.Name))
+	d.AddPanel(NewPanelStreamConsumerProcessDuration(consumer.Name))
+
+	if consumer.RetryEnabled {
+		d.AddPanel(NewPanelStreamConsumerRetryActions(consumer.Name, consumer.RetryType))
+	}
 }
 
 func (d *DashboardBuilder) AddStreamProducerDaemon(producer string) {

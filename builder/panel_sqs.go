@@ -7,6 +7,7 @@ func NewPanelSqsMessagesVisible(queue string) PanelFactory {
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
+						SpanNulls:     true,
 						LineWidth:     2,
 						AxisPlacement: "right",
 					},
@@ -48,6 +49,7 @@ func NewPanelSqsTraffic(queue string) PanelFactory {
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
+						SpanNulls:     true,
 						LineWidth:     2,
 						AxisPlacement: "right",
 					},
@@ -111,6 +113,60 @@ func NewPanelSqsTraffic(queue string) PanelFactory {
 			},
 			Options: &PanelOptionsCloudWatch{},
 			Title:   "Traffic",
+			Type:    "timeseries",
+		}
+	}
+}
+
+func NewPanelSqsMessageSize(queue string) PanelFactory {
+	return func(appId AppId, gridPos PanelGridPos) Panel {
+		return Panel{
+			Datasource: "CloudWatch",
+			FieldConfig: PanelFieldConfig{
+				Defaults: PanelFieldConfigDefaults{
+					Custom: PanelFieldConfigDefaultsCustom{
+						SpanNulls:     true,
+						LineWidth:     2,
+						AxisPlacement: "right",
+					},
+					Min:  "0",
+					Unit: "bytes",
+				},
+				Overrides: []PanelFieldConfigOverwrite{},
+			},
+			GridPos: gridPos,
+			Targets: []interface{}{
+				PanelTargetCloudWatch{
+					Alias: "Average",
+					Dimensions: map[string]string{
+						"QueueName": queue,
+					},
+					MatchExact: false,
+					MetricName: "SentMessageSize",
+					Namespace:  "AWS/SQS",
+					RefId:      "A",
+					Region:     "default",
+					Statistics: []string{
+						"Average",
+					},
+				},
+				PanelTargetCloudWatch{
+					Alias: "Maximum",
+					Dimensions: map[string]string{
+						"QueueName": queue,
+					},
+					MatchExact: false,
+					MetricName: "SentMessageSize",
+					Namespace:  "AWS/SQS",
+					RefId:      "B",
+					Region:     "default",
+					Statistics: []string{
+						"Maximum",
+					},
+				},
+			},
+			Options: &PanelOptionsCloudWatch{},
+			Title:   "Message Size",
 			Type:    "timeseries",
 		}
 	}

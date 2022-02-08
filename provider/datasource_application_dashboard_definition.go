@@ -120,6 +120,10 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 		db.AddApiServerHandler(route.Method, route.Path)
 	}
 
+	for _, consumer := range metadata.Stream.Consumers {
+		db.AddStreamConsumer(consumer)
+	}
+
 	for _, producer := range metadata.Stream.Producers {
 		if !producer.DaemonEnabled {
 			continue
