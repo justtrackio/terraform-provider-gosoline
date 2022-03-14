@@ -71,10 +71,6 @@ func (d *DashboardBuilder) AddCloudAwsKinesisKinsumer(stream string, shardCount 
 	d.AddPanel(NewPanelKinesisKinsumerMessageCounts(stream))
 	d.AddPanel(NewPanelKinesisKinsumerReadOperations(stream, shardCount))
 	d.AddPanel(NewPanelKinesisKinsumerProcessDuration(stream))
-	d.AddPanel(NewPanelKinesisStreamSuccessRate(stream))
-	d.AddPanel(NewPanelKinesisStreamGetRecordsBytes(stream, shardCount))
-	d.AddPanel(NewPanelKinesisStreamIncomingDataBytes(stream, shardCount))
-	d.AddPanel(NewPanelKinesisStreamIncomingDataCount(stream, shardCount))
 }
 
 func (d *DashboardBuilder) AddCloudAwsKinesisRecordWriter(stream string, shardCount int) {
@@ -83,11 +79,18 @@ func (d *DashboardBuilder) AddCloudAwsKinesisRecordWriter(stream string, shardCo
 	d.AddPanel(NewPanelRow(rowTitle))
 	d.AddPanel(NewPanelKinesisRecordWriterPutRecordsCount(stream))
 	d.AddPanel(NewPanelKinesisRecordWriterPutRecordsBatchSize(stream, shardCount))
-	d.AddPanel(NewPanelKinesisStreamRecordSize(stream))
+}
+
+func (d *DashboardBuilder) AddCloudAwsKinesisStream(stream string, shardCount int) {
+	rowTitle := fmt.Sprintf("Kinesis Stream: %s (%d Shards)", stream, shardCount)
+
+	d.AddPanel(NewPanelRow(rowTitle))
+
 	d.AddPanel(NewPanelKinesisStreamSuccessRate(stream))
 	d.AddPanel(NewPanelKinesisStreamGetRecordsBytes(stream, shardCount))
 	d.AddPanel(NewPanelKinesisStreamIncomingDataBytes(stream, shardCount))
 	d.AddPanel(NewPanelKinesisStreamIncomingDataCount(stream, shardCount))
+	d.AddPanel(NewPanelKinesisStreamRecordSize(stream))
 }
 
 func (d *DashboardBuilder) AddCloudAwsSqsQueue(queue string) {

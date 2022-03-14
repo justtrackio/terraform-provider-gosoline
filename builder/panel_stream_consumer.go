@@ -78,7 +78,7 @@ func NewPanelStreamConsumerProcessDuration(consumer string) PanelFactory {
 			GridPos: gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
-					Alias: "Duration",
+					Alias: "Average",
 					Dimensions: map[string]string{
 						"Consumer": consumer,
 					},
@@ -91,7 +91,7 @@ func NewPanelStreamConsumerProcessDuration(consumer string) PanelFactory {
 					RefId:      "A",
 					Region:     "default",
 					Statistics: []string{
-						"Sum",
+						"Average",
 					},
 				},
 			},

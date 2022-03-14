@@ -296,7 +296,7 @@ func NewPanelKinesisStreamSuccessRate(stream string) PanelFactory {
 					Id:         "m3",
 					MatchExact: true,
 					Hide:       true,
-					MetricName: "PutRecords.SuccessfulRecords",
+					MetricName: "PutRecords.Success",
 					Namespace:  "AWS/Kinesis",
 					RefId:      "D",
 					Region:     "default",
@@ -305,25 +305,12 @@ func NewPanelKinesisStreamSuccessRate(stream string) PanelFactory {
 					},
 				},
 				PanelTargetCloudWatch{
-					Dimensions: map[string]string{
-						"StreamName": stream,
-					},
+					Alias:      "Put records success",
+					Dimensions: map[string]string{},
+					Expression: "m3 * 100",
 					Id:         "m4",
-					MatchExact: true,
-					Hide:       true,
-					MetricName: "PutRecords.TotalRecords",
-					Namespace:  "AWS/Kinesis",
 					RefId:      "E",
 					Region:     "default",
-					Statistics: []string{
-						"Average",
-					},
-				},
-				PanelTargetCloudWatch{
-					Alias:      "Put records successful records",
-					Dimensions: map[string]string{},
-					Expression: "(m3 / m4) * 100",
-					RefId:      "F",
 					Statistics: []string{
 						"Average",
 					},

@@ -78,8 +78,7 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 	var metadata *builder.MetadataApplication
 	var ecsClient *builder.EcsClient
 	var targetGroups []builder.ElbTargetGroup
-	var kinesisClient *builder.KinesisClient
-	var kinesisShardCount int
+	var kinesisData map[string]int
 
 	if metadata, err = a.metadataReader.ReadMetadata(state.AppId()); err != nil {
 		response.Diagnostics.AddError("can not get metadata", err.Error())
@@ -93,11 +92,6 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 
 	if targetGroups, err = ecsClient.GetElbTargetGroups(ctx); err != nil {
 		response.Diagnostics.AddError("can not get target groups", err.Error())
-		return
-	}
-
-	if kinesisClient, err = builder.NewKinesisClient(ctx); err != nil {
-		response.Diagnostics.AddError("can not get kinesis client", err.Error())
 		return
 	}
 
@@ -124,6 +118,15 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 		db.AddStreamConsumer(consumer)
 	}
 
+	if kinesisData, err = a.gatherKinesisData(ctx, metadata.Cloud.Aws.Kinesis); err != nil {
+		response.Diagnostics.AddError(fmt.Sprintf("can not get kinesis data"), err.Error())
+		return
+	}
+
+	for _, kinsumer := range metadata.Cloud.Aws.Kinesis.Kinsumers {
+		db.AddCloudAwsKinesisKinsumer(kinsumer.StreamNameFull, kinesisData[kinsumer.StreamNameFull])
+	}
+
 	for _, producer := range metadata.Stream.Producers {
 		if !producer.DaemonEnabled {
 			continue
@@ -132,22 +135,12 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 		db.AddStreamProducerDaemon(producer.Name)
 	}
 
-	for _, kinsumer := range metadata.Cloud.Aws.Kinesis.Kinsumers {
-		if kinesisShardCount, err = kinesisClient.GetShardCount(ctx, kinsumer.StreamNameFull); err != nil {
-			response.Diagnostics.AddError(fmt.Sprintf("can not get kinesis shard count for stream: %s", kinsumer.StreamNameFull), err.Error())
-			return
-		}
-
-		db.AddCloudAwsKinesisKinsumer(kinsumer.StreamNameFull, kinesisShardCount)
+	for _, writer := range metadata.Cloud.Aws.Kinesis.RecordWriters {
+		db.AddCloudAwsKinesisRecordWriter(writer.StreamName, kinesisData[writer.StreamName])
 	}
 
-	for _, writer := range metadata.Cloud.Aws.Kinesis.RecordWriters {
-		if kinesisShardCount, err = kinesisClient.GetShardCount(ctx, writer.StreamName); err != nil {
-			response.Diagnostics.AddError(fmt.Sprintf("can not get kinesis shard count for stream: %s", writer.StreamName), err.Error())
-			return
-		}
-
-		db.AddCloudAwsKinesisRecordWriter(writer.StreamName, kinesisShardCount)
+	for streamName, shardCount := range kinesisData {
+		db.AddCloudAwsKinesisStream(streamName, shardCount)
 	}
 
 	for _, queue := range metadata.Cloud.Aws.Sqs.Queues {
@@ -171,4 +164,34 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 
 	diags = response.State.Set(ctx, state)
 	response.Diagnostics.Append(diags...)
+}
+
+func (a *ApplicationDashboardDefinitionDataSource) gatherKinesisData(ctx context.Context, kinesis builder.MetadataCloudAwsKinesis) (map[string]int, error) {
+	var err error
+	var kinesisClient *builder.KinesisClient
+	var kinesisShardCount int
+
+	if kinesisClient, err = builder.NewKinesisClient(ctx); err != nil {
+		return nil, fmt.Errorf("can not get kinesis client: %w", err)
+	}
+
+	streams := make(map[string]int)
+
+	for _, kinsumer := range kinesis.Kinsumers {
+		if kinesisShardCount, err = kinesisClient.GetShardCount(ctx, kinsumer.StreamNameFull); err != nil {
+			return nil, fmt.Errorf("can not get kinesis shard count for stream: %w", kinsumer.StreamNameFull, err)
+		}
+
+		streams[kinsumer.StreamNameFull] = kinesisShardCount
+	}
+
+	for _, writer := range kinesis.RecordWriters {
+		if kinesisShardCount, err = kinesisClient.GetShardCount(ctx, writer.StreamName); err != nil {
+			return nil, fmt.Errorf("can not get kinesis shard count for stream: %w", writer.StreamName, err)
+		}
+
+		streams[writer.StreamName] = kinesisShardCount
+	}
+
+	return streams, nil
 }
