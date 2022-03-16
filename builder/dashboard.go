@@ -9,9 +9,7 @@ const (
 )
 
 type Dashboard struct {
-	//Uid    string   `json:"uid"`
-	Title string `json:"title"`
-	//Tags   []string `json:"tags"`
+	Title  string  `json:"title"`
 	Panels []Panel `json:"panels"`
 }
 

@@ -10,10 +10,10 @@ import (
 
 func TestDashboardWithError(t *testing.T) {
 	db := builder.NewDashboardBuilder(builder.AppId{
-		Project:     "mcoins",
-		Environment: "prod",
-		Family:      "marketing",
-		Application: "monetized-user-decider-revenue",
+		Project:     "gosoline",
+		Environment: "test",
+		Family:      "monitoring",
+		Application: "dashboard",
 	})
 	db.AddPanel(builder.NewPanelEcsCpu)
 	db.AddPanel(builder.NewPanelEcsMemory)
