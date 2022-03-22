@@ -22,7 +22,7 @@ func NewProvider() tfsdk.Provider {
 	return &GosolineProvider{}
 }
 
-func (p *GosolineProvider) GetSchema(ctx context.Context) (tfsdk.Schema, diag.Diagnostics) {
+func (p *GosolineProvider) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diagnostics) {
 	return tfsdk.Schema{
 		Attributes: map[string]tfsdk.Attribute{
 			"metadata_domain": {
@@ -46,11 +46,11 @@ func (p *GosolineProvider) Configure(ctx context.Context, request tfsdk.Configur
 	p.metadataReader = builder.NewMetadataReader(config.MetadataDomain.Value)
 }
 
-func (p *GosolineProvider) GetResources(ctx context.Context) (map[string]tfsdk.ResourceType, diag.Diagnostics) {
+func (p *GosolineProvider) GetResources(_ context.Context) (map[string]tfsdk.ResourceType, diag.Diagnostics) {
 	return map[string]tfsdk.ResourceType{}, nil
 }
 
-func (p *GosolineProvider) GetDataSources(ctx context.Context) (map[string]tfsdk.DataSourceType, diag.Diagnostics) {
+func (p *GosolineProvider) GetDataSources(_ context.Context) (map[string]tfsdk.DataSourceType, diag.Diagnostics) {
 	return map[string]tfsdk.DataSourceType{
 		"gosoline_application_dashboard_definition": &ApplicationDashboardDefinitionDatasourceType{},
 		"gosoline_application_metadata_definition":  &ApplicationMetadataDefinitionDatasourceType{},

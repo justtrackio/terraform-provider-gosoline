@@ -29,7 +29,7 @@ func (d ApplicationMetadataDefinitionData) AppId() builder.AppId {
 type ApplicationMetadataDefinitionDatasourceType struct {
 }
 
-func (a *ApplicationMetadataDefinitionDatasourceType) GetSchema(ctx context.Context) (tfsdk.Schema, diag.Diagnostics) {
+func (a *ApplicationMetadataDefinitionDatasourceType) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diagnostics) {
 	return tfsdk.Schema{
 		Attributes: map[string]tfsdk.Attribute{
 			"project": {
@@ -58,7 +58,7 @@ func (a *ApplicationMetadataDefinitionDatasourceType) GetSchema(ctx context.Cont
 	}, nil
 }
 
-func (a *ApplicationMetadataDefinitionDatasourceType) NewDataSource(ctx context.Context, provider tfsdk.Provider) (tfsdk.DataSource, diag.Diagnostics) {
+func (a *ApplicationMetadataDefinitionDatasourceType) NewDataSource(_ context.Context, provider tfsdk.Provider) (tfsdk.DataSource, diag.Diagnostics) {
 	return &ApplicationMetadataDefinitionDatasource{
 		metadataReader: provider.(*GosolineProvider).metadataReader,
 	}, nil

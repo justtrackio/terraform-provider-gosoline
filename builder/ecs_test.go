@@ -10,10 +10,10 @@ import (
 
 func TestEcsClient(t *testing.T) {
 	appId := AppId{
-		Project:     "mcoins",
-		Environment: "prod",
-		Family:      "marketing",
-		Application: "attribution-product-adoption",
+		Project:     "myPrj",
+		Environment: "production",
+		Family:      "biz",
+		Application: "fancyBackend",
 	}
 
 	client, err := NewEcsClient(context.Background(), appId)
@@ -23,6 +23,4 @@ func TestEcsClient(t *testing.T) {
 	assert.NoError(t, err)
 
 	fmt.Println(balancers)
-	// arn:aws:elasticloadbalancing:eu-central-1:164105964448:loadbalancer/app/mcoins-pr-marketing-playtime/9855ea596f342e28
-	// arn:aws:elasticloadbalancing:eu-central-1:164105964448:targetgroup/mcoins-pr-marketing-playtime/96b5a3def5ca7e89
 }

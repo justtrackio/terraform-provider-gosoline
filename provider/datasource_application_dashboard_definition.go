@@ -31,7 +31,7 @@ func (d ApplicationDashboardDefinitionData) AppId() builder.AppId {
 type ApplicationDashboardDefinitionDatasourceType struct {
 }
 
-func (a *ApplicationDashboardDefinitionDatasourceType) GetSchema(ctx context.Context) (tfsdk.Schema, diag.Diagnostics) {
+func (a *ApplicationDashboardDefinitionDatasourceType) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diagnostics) {
 	return tfsdk.Schema{
 		Attributes: map[string]tfsdk.Attribute{
 			"project": {
@@ -58,7 +58,7 @@ func (a *ApplicationDashboardDefinitionDatasourceType) GetSchema(ctx context.Con
 	}, nil
 }
 
-func (a *ApplicationDashboardDefinitionDatasourceType) NewDataSource(ctx context.Context, provider tfsdk.Provider) (tfsdk.DataSource, diag.Diagnostics) {
+func (a *ApplicationDashboardDefinitionDatasourceType) NewDataSource(_ context.Context, provider tfsdk.Provider) (tfsdk.DataSource, diag.Diagnostics) {
 	return &ApplicationDashboardDefinitionDataSource{
 		metadataReader: provider.(*GosolineProvider).metadataReader,
 	}, nil
@@ -179,7 +179,7 @@ func (a *ApplicationDashboardDefinitionDataSource) gatherKinesisData(ctx context
 
 	for _, kinsumer := range kinesis.Kinsumers {
 		if kinesisShardCount, err = kinesisClient.GetShardCount(ctx, kinsumer.StreamNameFull); err != nil {
-			return nil, fmt.Errorf("can not get kinesis shard count for stream: %w", kinsumer.StreamNameFull, err)
+			return nil, fmt.Errorf("can not get kinesis shard count for stream %s: %w", kinsumer.StreamNameFull, err)
 		}
 
 		streams[kinsumer.StreamNameFull] = kinesisShardCount
@@ -187,7 +187,7 @@ func (a *ApplicationDashboardDefinitionDataSource) gatherKinesisData(ctx context
 
 	for _, writer := range kinesis.RecordWriters {
 		if kinesisShardCount, err = kinesisClient.GetShardCount(ctx, writer.StreamName); err != nil {
-			return nil, fmt.Errorf("can not get kinesis shard count for stream: %w", writer.StreamName, err)
+			return nil, fmt.Errorf("can not get kinesis shard count for stream %s: %w", writer.StreamName, err)
 		}
 
 		streams[writer.StreamName] = kinesisShardCount
