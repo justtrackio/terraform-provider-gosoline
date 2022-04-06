@@ -28,8 +28,7 @@ func (d ApplicationDashboardDefinitionData) AppId() builder.AppId {
 	}
 }
 
-type ApplicationDashboardDefinitionDatasourceType struct {
-}
+type ApplicationDashboardDefinitionDatasourceType struct{}
 
 func (a *ApplicationDashboardDefinitionDatasourceType) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diagnostics) {
 	return tfsdk.Schema{
@@ -96,7 +95,7 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 	}
 
 	db := builder.NewDashboardBuilder(state.AppId())
-	db.AddEcs()
+	db.AddServiceAndTask()
 	db.AddPanel(builder.NewPanelRow("Errors & Warnings"))
 	db.AddPanel(builder.NewPanelError)
 	db.AddPanel(builder.NewPanelWarn)

@@ -15,8 +15,10 @@ func TestDashboardWithError(t *testing.T) {
 		Family:      "monitoring",
 		Application: "dashboard",
 	})
-	db.AddPanel(builder.NewPanelEcsCpu)
-	db.AddPanel(builder.NewPanelEcsMemory)
+	db.AddPanel(builder.NewPanelServiceUtilization)
+	db.AddPanel(builder.NewPanelTaskDeployment)
+	db.AddPanel(builder.NewPanelTaskCpu)
+	db.AddPanel(builder.NewPanelTaskMemory)
 	db.AddPanel(builder.NewPanelError)
 
 	dashboard := db.Build()
