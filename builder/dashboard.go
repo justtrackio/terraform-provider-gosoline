@@ -25,12 +25,12 @@ func NewDashboardBuilder(appId AppId) *DashboardBuilder {
 	}
 }
 
-func (d *DashboardBuilder) AddEcs() {
+func (d *DashboardBuilder) AddServiceAndTask() {
 	d.AddPanel(NewPanelRow("Service Resource Usage"))
-	d.AddPanel(NewPanelEcsUtilization)
-	d.AddPanel(NewPanelEcsDeployment)
-	d.AddPanel(NewPanelEcsCpu)
-	d.AddPanel(NewPanelEcsMemory)
+	d.AddPanel(NewPanelServiceUtilization)
+	d.AddPanel(NewPanelTaskDeployment)
+	d.AddPanel(NewPanelTaskCpu)
+	d.AddPanel(NewPanelTaskMemory)
 }
 
 func (d *DashboardBuilder) AddElbTargetGroup(targetGroup ElbTargetGroup) {

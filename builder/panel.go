@@ -125,6 +125,15 @@ type PanelTargetCloudWatch struct {
 	Statistics []string          `json:"statistics"`
 }
 
+type PanelTargetPrometheus struct {
+	Exemplar     bool   `json:"exemplar"`
+	Expression   string `json:"expr"`
+	Hide         bool   `json:"hide"`
+	Interval     string `json:"interval"`
+	LegendFormat string `json:"legendFormat"`
+	RefId        string `json:"refId"`
+}
+
 type PanelTargetElasticsearch struct {
 	RefId     string                           `json:"refId"`
 	Query     string                           `json:"query"`
