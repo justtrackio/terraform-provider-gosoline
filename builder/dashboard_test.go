@@ -18,7 +18,8 @@ func TestDashboardWithError(t *testing.T) {
 	db.AddPanel(builder.NewPanelServiceUtilization)
 	db.AddPanel(builder.NewPanelTaskDeployment)
 	db.AddPanel(builder.NewPanelTaskCpu)
-	db.AddPanel(builder.NewPanelTaskMemory)
+	db.AddPanel(builder.NewPanelTaskAppContainerMemory)
+	db.AddPanel(builder.NewPanelTaskLogRouterContainerMemory)
 	db.AddPanel(builder.NewPanelError)
 
 	dashboard := db.Build()
