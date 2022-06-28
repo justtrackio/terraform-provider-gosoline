@@ -30,7 +30,8 @@ func (d *DashboardBuilder) AddServiceAndTask() {
 	d.AddPanel(NewPanelServiceUtilization)
 	d.AddPanel(NewPanelTaskDeployment)
 	d.AddPanel(NewPanelTaskCpu)
-	d.AddPanel(NewPanelTaskMemory)
+	d.AddPanel(NewPanelTaskAppContainerMemory)
+	d.AddPanel(NewPanelTaskLogRouterContainerMemory)
 }
 
 func (d *DashboardBuilder) AddElbTargetGroup(targetGroup ElbTargetGroup) {
