@@ -2,12 +2,12 @@ package builder
 
 import "fmt"
 
-func getTaskDefinitionLabelFilter(appId AppId) string {
-	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster="%s",container_label_com_amazonaws_ecs_task_definition_family="%s-%s"`, appId.EcsClusterName(), appId.EcsClusterName(), appId.Application)
+func getContainerLabelFilter(appId AppId, containerName string) string {
+	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster="%s", container_label_com_amazonaws_ecs_task_definition_family="%s-%s", container_label_com_amazonaws_ecs_container_name="%s"`, appId.EcsClusterName(), appId.EcsClusterName(), appId.Application, containerName)
 }
 
-func getMainContainerLabelFilter(appId AppId) string {
-	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster="%s",container_label_com_amazonaws_ecs_container_name="%s"`, appId.EcsClusterName(), appId.Application)
+func getTaskDefinitionLabelFilter(appId AppId) string {
+	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster="%s", container_label_com_amazonaws_ecs_task_definition_family="%s-%s"`, appId.EcsClusterName(), appId.EcsClusterName(), appId.Application)
 }
 
 func NewPanelTaskCpu(appId AppId, gridPos PanelGridPos) Panel {
@@ -59,8 +59,16 @@ func NewPanelTaskCpu(appId AppId, gridPos PanelGridPos) Panel {
 	}
 }
 
-func NewPanelTaskMemory(appId AppId, gridPos PanelGridPos) Panel {
-	labelFilter := getTaskDefinitionLabelFilter(appId)
+func NewPanelTaskAppContainerMemory(appId AppId, gridPos PanelGridPos) Panel {
+	return newPanelTaskContainerMemory(appId, gridPos, appId.Application)
+}
+
+func NewPanelTaskLogRouterContainerMemory(appId AppId, gridPos PanelGridPos) Panel {
+	return newPanelTaskContainerMemory(appId, gridPos, "log_router")
+}
+
+func newPanelTaskContainerMemory(appId AppId, gridPos PanelGridPos, containerName string) Panel {
+	labelFilter := getContainerLabelFilter(appId, containerName)
 
 	return Panel{
 		Datasource: "prometheus",
@@ -80,31 +88,31 @@ func NewPanelTaskMemory(appId AppId, gridPos PanelGridPos) Panel {
 		Targets: []interface{}{
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`max(sum(container_spec_memory_reservation_limit_bytes{%s}) by (instance))`, labelFilter),
+				Expression:   fmt.Sprintf(`max(container_spec_memory_reservation_limit_bytes{%s})`, labelFilter),
 				LegendFormat: "Reserved",
 				RefId:        "A",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`min(sum(container_memory_rss{%s}) by (instance))`, labelFilter),
+				Expression:   fmt.Sprintf(`min by (container_label_com_amazonaws_ecs_container_name) (container_memory_rss{%s})`, labelFilter),
 				LegendFormat: "Minimum",
 				RefId:        "B",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`avg(sum(container_memory_rss{%s}) by (instance))`, labelFilter),
+				Expression:   fmt.Sprintf(`avg by (container_label_com_amazonaws_ecs_container_name) (container_memory_rss{%s})`, labelFilter),
 				LegendFormat: "Average",
 				RefId:        "C",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`max(sum(container_memory_rss{%s}) by (instance))`, labelFilter),
+				Expression:   fmt.Sprintf(`max by (container_label_com_amazonaws_ecs_container_name) (container_memory_rss{%s})`, labelFilter),
 				LegendFormat: "Maximum",
 				RefId:        "D",
 			},
 		},
 		Options: &PanelOptionsCloudWatch{},
-		Title:   "Memory Utilization",
+		Title:   fmt.Sprintf("Memory Utilization (%s)", containerName),
 		Type:    "timeseries",
 	}
 }
@@ -187,7 +195,7 @@ func NewPanelServiceUtilization(appId AppId, gridPos PanelGridPos) Panel {
 }
 
 func NewPanelTaskDeployment(appId AppId, gridPos PanelGridPos) Panel {
-	labelFilter := getMainContainerLabelFilter(appId)
+	labelFilter := getContainerLabelFilter(appId, appId.Application)
 
 	return Panel{
 		Datasource: "prometheus",
