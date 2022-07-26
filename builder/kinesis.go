@@ -30,15 +30,15 @@ func NewKinesisClient(ctx context.Context) (*KinesisClient, error) {
 
 func (c *KinesisClient) GetShardCount(ctx context.Context, streamName string) (int, error) {
 	var err error
-	var out *kinesis.DescribeStreamOutput
+	var out *kinesis.DescribeStreamSummaryOutput
 
-	input := &kinesis.DescribeStreamInput{
+	input := &kinesis.DescribeStreamSummaryInput{
 		StreamName: aws.String(streamName),
 	}
 
-	if out, err = c.kinesisSvc.DescribeStream(ctx, input); err != nil {
+	if out, err = c.kinesisSvc.DescribeStreamSummary(ctx, input); err != nil {
 		return 0, fmt.Errorf("can not describe kinesis stream %s: %w", streamName, err)
 	}
 
-	return len(out.StreamDescription.Shards), nil
+	return int(*out.StreamDescriptionSummary.OpenShardCount), nil
 }
