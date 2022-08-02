@@ -9,16 +9,23 @@ import (
 )
 
 func TestDashboardWithError(t *testing.T) {
-	db := builder.NewDashboardBuilder(builder.AppId{
+	appId := builder.AppId{
 		Project:     "gosoline",
 		Environment: "test",
 		Family:      "monitoring",
 		Application: "dashboard",
-	})
+	}
+	containers := []string{
+		appId.Application,
+		"log_router",
+	}
+	db := builder.NewDashboardBuilder(appId, containers)
 	db.AddPanel(builder.NewPanelServiceUtilization)
 	db.AddPanel(builder.NewPanelTaskDeployment)
-	db.AddPanel(builder.NewPanelTaskCpu)
-	db.AddPanel(builder.NewPanelTaskAppContainerMemory)
+	for _, containerName := range containers {
+		db.AddPanel(builder.NewPanelContainerCpuFactory(containerName))
+		db.AddPanel(builder.NewPanelContainerMemoryFactory(containerName))
+	}
 	db.AddPanel(builder.NewPanelTaskLogRouterContainerMemory)
 	db.AddPanel(builder.NewPanelError)
 

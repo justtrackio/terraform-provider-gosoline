@@ -10,8 +10,14 @@ func getTaskDefinitionLabelFilter(appId AppId) string {
 	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster="%s", container_label_com_amazonaws_ecs_task_definition_family="%s-%s"`, appId.EcsClusterName(), appId.EcsClusterName(), appId.Application)
 }
 
-func NewPanelTaskCpu(appId AppId, gridPos PanelGridPos) Panel {
-	labelFilter := getTaskDefinitionLabelFilter(appId)
+func NewPanelContainerCpuFactory(containerName string) PanelFactory {
+	return func(appId AppId, gridPos PanelGridPos) Panel {
+		return newPanelContainerCpu(appId, gridPos, containerName)
+	}
+}
+
+func newPanelContainerCpu(appId AppId, gridPos PanelGridPos, containerName string) Panel {
+	labelFilter := getContainerLabelFilter(appId, containerName)
 
 	return Panel{
 		Datasource: "prometheus",
@@ -30,44 +36,46 @@ func NewPanelTaskCpu(appId AppId, gridPos PanelGridPos) Panel {
 		Targets: []interface{}{
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`avg(sum(container_spec_cpu_shares{%s}) by (instance))`, labelFilter),
+				Expression:   fmt.Sprintf(`max(container_spec_cpu_shares{%s})`, labelFilter),
 				LegendFormat: "Reserved",
-				RefId:        "A",
+				RefId:        "reservation",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`min(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (instance))*1024`, labelFilter),
+				Expression:   fmt.Sprintf(`min(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (id))*1024`, labelFilter),
 				LegendFormat: "Minimum",
-				RefId:        "B",
+				RefId:        "minimum",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`avg(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (instance))*1024`, labelFilter),
+				Expression:   fmt.Sprintf(`avg(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (id))*1024`, labelFilter),
 				LegendFormat: "Average",
-				RefId:        "C",
+				RefId:        "average",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`max(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (instance))*1024`, labelFilter),
+				Expression:   fmt.Sprintf(`max(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (id))*1024`, labelFilter),
 				LegendFormat: "Maximum",
-				RefId:        "D",
+				RefId:        "maximum",
 			},
 		},
 		Options: &PanelOptionsCloudWatch{},
-		Title:   "CPU Utilization",
+		Title:   fmt.Sprintf("CPU Utilization (%s)", containerName),
 		Type:    "timeseries",
 	}
 }
 
-func NewPanelTaskAppContainerMemory(appId AppId, gridPos PanelGridPos) Panel {
-	return newPanelTaskContainerMemory(appId, gridPos, appId.Application)
+func NewPanelContainerMemoryFactory(containerName string) PanelFactory {
+	return func(appId AppId, gridPos PanelGridPos) Panel {
+		return newPanelContainerMemory(appId, gridPos, containerName)
+	}
 }
 
 func NewPanelTaskLogRouterContainerMemory(appId AppId, gridPos PanelGridPos) Panel {
-	return newPanelTaskContainerMemory(appId, gridPos, "log_router")
+	return newPanelContainerMemory(appId, gridPos, "log_router")
 }
 
-func newPanelTaskContainerMemory(appId AppId, gridPos PanelGridPos, containerName string) Panel {
+func newPanelContainerMemory(appId AppId, gridPos PanelGridPos, containerName string) Panel {
 	labelFilter := getContainerLabelFilter(appId, containerName)
 
 	return Panel{
@@ -153,39 +161,15 @@ func NewPanelServiceUtilization(appId AppId, gridPos PanelGridPos) Panel {
 		Targets: []interface{}{
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`min(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (instance)/(sum(container_spec_cpu_shares{%s}) by (instance)/1024))*100`, labelFilter, labelFilter),
-				LegendFormat: "CPU Minimum",
-				RefId:        "A",
+				Expression:   fmt.Sprintf(`sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (container_label_com_amazonaws_ecs_container_name)/(sum(container_spec_cpu_shares{%s}) by (container_label_com_amazonaws_ecs_container_name)/1024)*100`, labelFilter, labelFilter),
+				LegendFormat: "CPU Average {{container_label_com_amazonaws_ecs_container_name}}",
+				RefId:        "cpu_average",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`avg(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (instance)/(sum(container_spec_cpu_shares{%s}) by (instance)/1024))*100`, labelFilter, labelFilter),
-				LegendFormat: "CPU Average",
-				RefId:        "B",
-			},
-			PanelTargetPrometheus{
-				Exemplar:     true,
-				Expression:   fmt.Sprintf(`max(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (instance)/(sum(container_spec_cpu_shares{%s}) by (instance)/1024))*100`, labelFilter, labelFilter),
-				LegendFormat: "CPU Maximum",
-				RefId:        "C",
-			},
-			PanelTargetPrometheus{
-				Exemplar:     true,
-				Expression:   fmt.Sprintf(`avg(sum(container_memory_rss{%s}) by (instance)/sum(container_spec_memory_reservation_limit_bytes{%s}) by (instance))*100`, labelFilter, labelFilter),
-				LegendFormat: "Memory Average",
-				RefId:        "D",
-			},
-			PanelTargetPrometheus{
-				Exemplar:     true,
-				Expression:   fmt.Sprintf(`max(sum(container_memory_rss{%s}) by (instance)/sum(container_spec_memory_reservation_limit_bytes{%s}) by (instance))*100`, labelFilter, labelFilter),
-				LegendFormat: "Memory Maximum",
-				RefId:        "E",
-			},
-			PanelTargetPrometheus{
-				Exemplar:     true,
-				Expression:   fmt.Sprintf(`min(sum(container_memory_rss{%s}) by (instance)/sum(container_spec_memory_reservation_limit_bytes{%s}) by (instance))*100`, labelFilter, labelFilter),
-				LegendFormat: "Memory Minimum",
-				RefId:        "F",
+				Expression:   fmt.Sprintf(`sum(container_memory_rss{%s}) by (container_label_com_amazonaws_ecs_container_name)/sum(container_spec_memory_reservation_limit_bytes{%s}) by (container_label_com_amazonaws_ecs_container_name)*100`, labelFilter, labelFilter),
+				LegendFormat: "Memory Average {{container_label_com_amazonaws_ecs_container_name}}",
+				RefId:        "memory_average",
 			},
 		},
 		Options: &PanelOptionsCloudWatch{},
