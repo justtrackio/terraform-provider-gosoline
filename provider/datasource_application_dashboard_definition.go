@@ -16,6 +16,7 @@ type ApplicationDashboardDefinitionData struct {
 	Environment types.String `tfsdk:"environment"`
 	Family      types.String `tfsdk:"family"`
 	Application types.String `tfsdk:"application"`
+	Containers  types.List   `tfsdk:"containers"`
 	Body        types.String `tfsdk:"body"`
 }
 
@@ -47,6 +48,10 @@ func (a *ApplicationDashboardDefinitionDatasourceType) GetSchema(_ context.Conte
 			},
 			"application": {
 				Type:     types.StringType,
+				Required: true,
+			},
+			"containers": {
+				Type:     types.ListType{ElemType: types.StringType},
 				Required: true,
 			},
 			"body": {
@@ -94,7 +99,11 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 		return
 	}
 
-	db := builder.NewDashboardBuilder(state.AppId())
+	containers := make([]string, 0)
+	diags = state.Containers.ElementsAs(ctx, &containers, false)
+	response.Diagnostics.Append(diags...)
+
+	db := builder.NewDashboardBuilder(state.AppId(), containers)
 	db.AddServiceAndTask()
 	db.AddPanel(builder.NewPanelRow("Errors & Warnings"))
 	db.AddPanel(builder.NewPanelError)

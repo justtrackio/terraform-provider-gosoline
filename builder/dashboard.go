@@ -15,12 +15,14 @@ type Dashboard struct {
 
 type DashboardBuilder struct {
 	appId          AppId
+	containers     []string
 	panelFactories []PanelFactory
 }
 
-func NewDashboardBuilder(appId AppId) *DashboardBuilder {
+func NewDashboardBuilder(appId AppId, containers []string) *DashboardBuilder {
 	return &DashboardBuilder{
 		appId:          appId,
+		containers:     containers,
 		panelFactories: make([]PanelFactory, 0),
 	}
 }
@@ -29,9 +31,10 @@ func (d *DashboardBuilder) AddServiceAndTask() {
 	d.AddPanel(NewPanelRow("Service Resource Usage"))
 	d.AddPanel(NewPanelServiceUtilization)
 	d.AddPanel(NewPanelTaskDeployment)
-	d.AddPanel(NewPanelTaskCpu)
-	d.AddPanel(NewPanelTaskAppContainerMemory)
-	d.AddPanel(NewPanelTaskLogRouterContainerMemory)
+	for _, containerName := range d.containers {
+		d.AddPanel(NewPanelContainerCpuFactory(containerName))
+		d.AddPanel(NewPanelContainerMemoryFactory(containerName))
+	}
 }
 
 func (d *DashboardBuilder) AddElbTargetGroup(targetGroup ElbTargetGroup) {
