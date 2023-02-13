@@ -1,6 +1,16 @@
 package builder
 
-type PanelFactory func(appId AppId, gridPos PanelGridPos) Panel
+type ResourceNames struct {
+	CloudwatchNamespace                string
+	EcsCluster                         string
+	EcsService                         string
+	EcsTaskDefinition                  string
+	GrafanaElasticsearchDatasourceName string
+	TargetGroups                       []ElbTargetGroup
+	Containers                         []string
+}
+
+type PanelFactory func(resourceNames ResourceNames, gridPos PanelGridPos) Panel
 
 type Panel struct {
 	Collapsed   bool             `json:"collapsed,omitempty"`

@@ -3,7 +3,7 @@ package builder
 import "fmt"
 
 func NewPanelStreamConsumerProcessedCount(consumer string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -29,7 +29,7 @@ func NewPanelStreamConsumerProcessedCount(consumer string) PanelFactory {
 					Id:         "m0",
 					MatchExact: true,
 					MetricName: "ProcessedCount",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -46,7 +46,7 @@ func NewPanelStreamConsumerProcessedCount(consumer string) PanelFactory {
 					Id:         "m1",
 					MatchExact: true,
 					MetricName: "Error",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "B",
 					Region:     "default",
@@ -63,7 +63,7 @@ func NewPanelStreamConsumerProcessedCount(consumer string) PanelFactory {
 }
 
 func NewPanelStreamConsumerProcessDuration(consumer string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -86,7 +86,7 @@ func NewPanelStreamConsumerProcessDuration(consumer string) PanelFactory {
 					Id:         "m0",
 					MatchExact: true,
 					MetricName: "Duration",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -103,7 +103,7 @@ func NewPanelStreamConsumerProcessDuration(consumer string) PanelFactory {
 }
 
 func NewPanelStreamConsumerRetryActions(consumer string, retryType string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -125,7 +125,7 @@ func NewPanelStreamConsumerRetryActions(consumer string, retryType string) Panel
 					Id:         "m0",
 					MatchExact: true,
 					MetricName: "RetryGetCount",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -142,7 +142,7 @@ func NewPanelStreamConsumerRetryActions(consumer string, retryType string) Panel
 					Id:         "m1",
 					MatchExact: true,
 					MetricName: "RetryPutCount",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "B",
 					Region:     "default",

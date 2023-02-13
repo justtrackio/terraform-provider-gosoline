@@ -14,15 +14,13 @@ type Dashboard struct {
 }
 
 type DashboardBuilder struct {
-	appId          AppId
-	containers     []string
+	resourceNames  ResourceNames
 	panelFactories []PanelFactory
 }
 
-func NewDashboardBuilder(appId AppId, containers []string) *DashboardBuilder {
+func NewDashboardBuilder(resourceNames ResourceNames) *DashboardBuilder {
 	return &DashboardBuilder{
-		appId:          appId,
-		containers:     containers,
+		resourceNames:  resourceNames,
 		panelFactories: make([]PanelFactory, 0),
 	}
 }
@@ -31,19 +29,19 @@ func (d *DashboardBuilder) AddServiceAndTask() {
 	d.AddPanel(NewPanelRow("Service Resource Usage"))
 	d.AddPanel(NewPanelServiceUtilization)
 	d.AddPanel(NewPanelTaskDeployment)
-	for _, containerName := range d.containers {
-		d.AddPanel(NewPanelContainerCpuFactory(containerName))
-		d.AddPanel(NewPanelContainerMemoryFactory(containerName))
+	for i := range d.resourceNames.Containers {
+		d.AddPanel(NewPanelContainerCpuFactory(i))
+		d.AddPanel(NewPanelContainerMemoryFactory(i))
 	}
 }
 
-func (d *DashboardBuilder) AddElbTargetGroup(targetGroup ElbTargetGroup) {
+func (d *DashboardBuilder) AddElbTargetGroup(targetGroupIndex int) {
 	d.AddPanel(NewPanelRow("Load Balancer"))
-	d.AddPanel(NewPanelElbRequestCount(targetGroup))
-	d.AddPanel(NewPanelElbResponseTime(targetGroup))
-	d.AddPanel(NewPanelElbHttpStatus(targetGroup))
-	d.AddPanel(NewPanelElbHealthyHosts(targetGroup))
-	d.AddPanel(NewPanelElbRequestCountPerTarget(targetGroup))
+	d.AddPanel(NewPanelElbRequestCount(targetGroupIndex))
+	d.AddPanel(NewPanelElbResponseTime(targetGroupIndex))
+	d.AddPanel(NewPanelElbHttpStatus(targetGroupIndex))
+	d.AddPanel(NewPanelElbHealthyHosts(targetGroupIndex))
+	d.AddPanel(NewPanelElbRequestCountPerTarget(targetGroupIndex))
 }
 
 func (d *DashboardBuilder) AddApiServerHandler(method string, path string) {
@@ -145,13 +143,13 @@ func (d *DashboardBuilder) Build() Dashboard {
 	}
 
 	return Dashboard{
-		Title:  d.appId.Application,
+		Title:  d.resourceNames.EcsTaskDefinition,
 		Panels: panels,
 	}
 }
 
 func (d *DashboardBuilder) buildPanel(factory PanelFactory, x int, y int) Panel {
-	panel := factory(d.appId, NewPanelGridPos(PanelHeight, PanelWidth, x, y))
+	panel := factory(d.resourceNames, NewPanelGridPos(PanelHeight, PanelWidth, x, y))
 
 	if panel.FieldConfig.Defaults.Custom.AxisPlacement == "" {
 		panel.FieldConfig.Defaults.Custom.AxisPlacement = "right"

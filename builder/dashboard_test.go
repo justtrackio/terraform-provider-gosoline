@@ -13,20 +13,42 @@ func TestDashboardWithError(t *testing.T) {
 		Project:     "gosoline",
 		Environment: "test",
 		Family:      "monitoring",
+		Group:       "grp",
 		Application: "dashboard",
 	}
+	cloudwatchNamespace := "a/b/c/d/e"
+	ecsClusterName := "cluster"
+	ecsServiceName := "service"
+	ecsTaskDefinitionName := "task-def"
+	grafanaElasticsearchDatasourceName := "elastic"
 	containers := []string{
 		appId.Application,
 		"log_router",
 	}
-	db := builder.NewDashboardBuilder(appId, containers)
+	targetGroups := []builder.ElbTargetGroup{
+		{
+			LoadBalancer: "foo",
+			TargetGroup:  "bar",
+		},
+	}
+
+	resourceNames := builder.ResourceNames{
+		CloudwatchNamespace:                cloudwatchNamespace,
+		EcsCluster:                         ecsClusterName,
+		EcsService:                         ecsServiceName,
+		EcsTaskDefinition:                  ecsTaskDefinitionName,
+		GrafanaElasticsearchDatasourceName: grafanaElasticsearchDatasourceName,
+		TargetGroups:                       targetGroups,
+		Containers:                         containers,
+	}
+	db := builder.NewDashboardBuilder(resourceNames)
 	db.AddPanel(builder.NewPanelServiceUtilization)
 	db.AddPanel(builder.NewPanelTaskDeployment)
-	for _, containerName := range containers {
-		db.AddPanel(builder.NewPanelContainerCpuFactory(containerName))
-		db.AddPanel(builder.NewPanelContainerMemoryFactory(containerName))
+	for i := range containers {
+		db.AddPanel(builder.NewPanelContainerCpuFactory(i))
+		db.AddPanel(builder.NewPanelContainerMemoryFactory(i))
 	}
-	db.AddPanel(builder.NewPanelTaskLogRouterContainerMemory)
+	db.AddPanel(builder.NewPanelWarn)
 	db.AddPanel(builder.NewPanelError)
 
 	dashboard := db.Build()

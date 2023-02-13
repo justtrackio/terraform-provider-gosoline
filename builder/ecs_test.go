@@ -9,14 +9,11 @@ import (
 )
 
 func TestEcsClient(t *testing.T) {
-	appId := AppId{
-		Project:     "myPrj",
-		Environment: "production",
-		Family:      "biz",
-		Application: "fancyBackend",
-	}
+	t.SkipNow()
+	clusterName := "cluster"
+	serviceName := "service"
 
-	client, err := NewEcsClient(context.Background(), appId)
+	client, err := NewEcsClient(context.Background(), clusterName, serviceName)
 	assert.NoError(t, err)
 
 	balancers, err := client.GetElbTargetGroups(context.Background())

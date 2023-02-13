@@ -1,7 +1,7 @@
 package builder
 
 func NewPanelApiServerRequestCount(path string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -21,7 +21,7 @@ func NewPanelApiServerRequestCount(path string) PanelFactory {
 					},
 					MatchExact: true,
 					MetricName: "ApiRequestCount",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
 					Statistics: []string{
@@ -37,7 +37,7 @@ func NewPanelApiServerRequestCount(path string) PanelFactory {
 }
 
 func NewPanelApiServerResponseTime(path string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -58,7 +58,7 @@ func NewPanelApiServerResponseTime(path string) PanelFactory {
 					},
 					MatchExact: true,
 					MetricName: "ApiRequestResponseTime",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
 					Statistics: []string{
@@ -74,7 +74,7 @@ func NewPanelApiServerResponseTime(path string) PanelFactory {
 }
 
 func NewPanelApiServerHttpStatus(path string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -97,7 +97,7 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 					},
 					MatchExact: true,
 					MetricName: "ApiStatus2XX",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
 					Statistics: []string{
@@ -111,7 +111,7 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 					},
 					MatchExact: true,
 					MetricName: "ApiStatus3XX",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					RefId:      "B",
 					Region:     "default",
 					Statistics: []string{
@@ -125,7 +125,7 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 					},
 					MatchExact: true,
 					MetricName: "ApiStatus4XX",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					RefId:      "C",
 					Region:     "default",
 					Statistics: []string{
@@ -139,7 +139,7 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 					},
 					MatchExact: true,
 					MetricName: "ApiStatus5XX",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					RefId:      "D",
 					Region:     "default",
 					Statistics: []string{

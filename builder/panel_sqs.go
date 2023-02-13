@@ -1,7 +1,7 @@
 package builder
 
 func NewPanelSqsMessagesVisible(queue string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -43,7 +43,7 @@ func NewPanelSqsMessagesVisible(queue string) PanelFactory {
 }
 
 func NewPanelSqsTraffic(queue string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -119,7 +119,7 @@ func NewPanelSqsTraffic(queue string) PanelFactory {
 }
 
 func NewPanelSqsMessageSize(queue string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{

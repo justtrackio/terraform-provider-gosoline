@@ -13,6 +13,7 @@ type ApplicationMetadataDefinitionData struct {
 	Project     types.String `tfsdk:"project"`
 	Environment types.String `tfsdk:"environment"`
 	Family      types.String `tfsdk:"family"`
+	Group       types.String `tfsdk:"group"`
 	Application types.String `tfsdk:"application"`
 	Metadata    types.Object `tfsdk:"metadata"`
 }
@@ -22,12 +23,12 @@ func (d ApplicationMetadataDefinitionData) AppId() builder.AppId {
 		Project:     d.Project.Value,
 		Environment: d.Environment.Value,
 		Family:      d.Family.Value,
+		Group:       d.Group.Value,
 		Application: d.Application.Value,
 	}
 }
 
-type ApplicationMetadataDefinitionDatasourceType struct {
-}
+type ApplicationMetadataDefinitionDatasourceType struct{}
 
 func (a *ApplicationMetadataDefinitionDatasourceType) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diagnostics) {
 	return tfsdk.Schema{
@@ -41,6 +42,10 @@ func (a *ApplicationMetadataDefinitionDatasourceType) GetSchema(_ context.Contex
 				Required: true,
 			},
 			"family": {
+				Type:     types.StringType,
+				Required: true,
+			},
+			"group": {
 				Type:     types.StringType,
 				Required: true,
 			},

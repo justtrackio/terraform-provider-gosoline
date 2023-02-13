@@ -2,22 +2,22 @@ package builder
 
 import "fmt"
 
-func getContainerLabelFilter(appId AppId, containerName string) string {
-	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster="%s", container_label_com_amazonaws_ecs_task_definition_family="%s-%s", container_label_com_amazonaws_ecs_container_name="%s"`, appId.EcsClusterName(), appId.EcsClusterName(), appId.Application, containerName)
+func getContainerLabelFilter(ecsClusterName, ecsTaskDefinitionName, containerName string) string {
+	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster="%s", container_label_com_amazonaws_ecs_task_definition_family="%s", container_label_com_amazonaws_ecs_container_name=~"%s"`, ecsClusterName, ecsTaskDefinitionName, containerName)
 }
 
-func getTaskDefinitionLabelFilter(appId AppId) string {
-	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster="%s", container_label_com_amazonaws_ecs_task_definition_family="%s-%s"`, appId.EcsClusterName(), appId.EcsClusterName(), appId.Application)
+func getTaskDefinitionLabelFilter(ecsClusterName, ecsTaskDefinitionName string) string {
+	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster="%s", container_label_com_amazonaws_ecs_task_definition_family="%s"`, ecsClusterName, ecsTaskDefinitionName)
 }
 
-func NewPanelContainerCpuFactory(containerName string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
-		return newPanelContainerCpu(appId, gridPos, containerName)
+func NewPanelContainerCpuFactory(containerIndex int) PanelFactory {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+		return newPanelContainerCpu(resourceNames, gridPos, containerIndex)
 	}
 }
 
-func newPanelContainerCpu(appId AppId, gridPos PanelGridPos, containerName string) Panel {
-	labelFilter := getContainerLabelFilter(appId, containerName)
+func newPanelContainerCpu(resourceNames ResourceNames, gridPos PanelGridPos, containerIndex int) Panel {
+	labelFilter := getContainerLabelFilter(resourceNames.EcsCluster, resourceNames.EcsTaskDefinition, resourceNames.Containers[containerIndex])
 
 	return Panel{
 		Datasource: "prometheus",
@@ -60,23 +60,19 @@ func newPanelContainerCpu(appId AppId, gridPos PanelGridPos, containerName strin
 			},
 		},
 		Options: &PanelOptionsCloudWatch{},
-		Title:   fmt.Sprintf("CPU Utilization (%s)", containerName),
+		Title:   fmt.Sprintf("CPU Utilization (%s)", resourceNames.Containers[containerIndex]),
 		Type:    "timeseries",
 	}
 }
 
-func NewPanelContainerMemoryFactory(containerName string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
-		return newPanelContainerMemory(appId, gridPos, containerName)
+func NewPanelContainerMemoryFactory(containerIndex int) PanelFactory {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+		return newPanelContainerMemory(resourceNames, gridPos, containerIndex)
 	}
 }
 
-func NewPanelTaskLogRouterContainerMemory(appId AppId, gridPos PanelGridPos) Panel {
-	return newPanelContainerMemory(appId, gridPos, "log_router")
-}
-
-func newPanelContainerMemory(appId AppId, gridPos PanelGridPos, containerName string) Panel {
-	labelFilter := getContainerLabelFilter(appId, containerName)
+func newPanelContainerMemory(resourceNames ResourceNames, gridPos PanelGridPos, containerIndex int) Panel {
+	labelFilter := getContainerLabelFilter(resourceNames.EcsCluster, resourceNames.EcsTaskDefinition, resourceNames.Containers[containerIndex])
 
 	return Panel{
 		Datasource: "prometheus",
@@ -120,13 +116,13 @@ func newPanelContainerMemory(appId AppId, gridPos PanelGridPos, containerName st
 			},
 		},
 		Options: &PanelOptionsCloudWatch{},
-		Title:   fmt.Sprintf("Memory Utilization (%s)", containerName),
+		Title:   fmt.Sprintf("Memory Utilization (%s)", resourceNames.Containers[containerIndex]),
 		Type:    "timeseries",
 	}
 }
 
-func NewPanelServiceUtilization(appId AppId, gridPos PanelGridPos) Panel {
-	labelFilter := getTaskDefinitionLabelFilter(appId)
+func NewPanelServiceUtilization(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	labelFilter := getTaskDefinitionLabelFilter(resourceNames.EcsCluster, resourceNames.EcsTaskDefinition)
 
 	return Panel{
 		Datasource: "prometheus",
@@ -178,8 +174,8 @@ func NewPanelServiceUtilization(appId AppId, gridPos PanelGridPos) Panel {
 	}
 }
 
-func NewPanelTaskDeployment(appId AppId, gridPos PanelGridPos) Panel {
-	labelFilter := getContainerLabelFilter(appId, appId.Application)
+func NewPanelTaskDeployment(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	labelFilter := getContainerLabelFilter(resourceNames.EcsCluster, resourceNames.EcsTaskDefinition, resourceNames.Containers[0])
 
 	return Panel{
 		Datasource: "prometheus",

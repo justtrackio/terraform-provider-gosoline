@@ -1,7 +1,7 @@
 package builder
 
 func NewPanelStreamProducerDaemonSizes(producer string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -23,7 +23,7 @@ func NewPanelStreamProducerDaemonSizes(producer string) PanelFactory {
 					},
 					MatchExact: false,
 					MetricName: "BatchSize",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -37,7 +37,7 @@ func NewPanelStreamProducerDaemonSizes(producer string) PanelFactory {
 					},
 					MatchExact: false,
 					MetricName: "AggregateSize",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "B",
 					Region:     "default",
@@ -54,7 +54,7 @@ func NewPanelStreamProducerDaemonSizes(producer string) PanelFactory {
 }
 
 func NewPanelStreamProducerMessageCount(producer string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -76,7 +76,7 @@ func NewPanelStreamProducerMessageCount(producer string) PanelFactory {
 					},
 					MatchExact: false,
 					MetricName: "MessageCount",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
