@@ -9,9 +9,11 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-type MetadataHostBuilder func(appId AppId) string
-type MetadataReaderOpt func(bo *backoff.ExponentialBackOff)
-type BackoffFactory func() *backoff.ExponentialBackOff
+type (
+	MetadataHostBuilder func(appId AppId) string
+	MetadataReaderOpt   func(bo *backoff.ExponentialBackOff)
+	BackoffFactory      func() *backoff.ExponentialBackOff
+)
 
 type MetadataReader struct {
 	client         *resty.Client
@@ -19,9 +21,9 @@ type MetadataReader struct {
 	backoffFactory BackoffFactory
 }
 
-func NewMetadataReader(metadataDomain string, opts ...MetadataReaderOpt) *MetadataReader {
+func NewMetadataReader(metadataHostnameNamePattern string, additionalReplacements map[string]string, opts ...MetadataReaderOpt) *MetadataReader {
 	return NewMetadataReaderWithHostBuilder(func(appId AppId) string {
-		return fmt.Sprintf("http://%s.%s.%s.%s:8070", appId.Application, appId.Family, appId.Environment, metadataDomain)
+		return Augment(metadataHostnameNamePattern, appId, additionalReplacements)
 	}, opts...)
 }
 
@@ -56,7 +58,6 @@ func (r *MetadataReader) ReadMetadata(appId AppId) (*MetadataApplication, error)
 			SetResult(metadata).
 			ForceContentType("application/json").
 			Get(path)
-
 		if err != nil {
 			return backoff.Permanent(err)
 		}
@@ -71,7 +72,6 @@ func (r *MetadataReader) ReadMetadata(appId AppId) (*MetadataApplication, error)
 
 		return backoff.Permanent(fmt.Errorf("unexpected response code %d", resp.StatusCode()))
 	}, bo)
-
 	if err != nil {
 		return nil, fmt.Errorf("can not read application metadata from %s: %w", path, err)
 	}

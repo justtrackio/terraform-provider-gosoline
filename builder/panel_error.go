@@ -1,6 +1,6 @@
 package builder
 
-func NewPanelError(appId AppId, gridPos PanelGridPos) Panel {
+func NewPanelError(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 	return Panel{
 		Datasource: "CloudWatch",
 		FieldConfig: PanelFieldConfig{
@@ -21,7 +21,7 @@ func NewPanelError(appId AppId, gridPos PanelGridPos) Panel {
 				Dimensions: map[string]string{},
 				MatchExact: false,
 				MetricName: "error",
-				Namespace:  appId.CloudWatchNamespace(),
+				Namespace:  resourceNames.CloudwatchNamespace,
 				Region:     "default",
 				Statistics: []string{
 					"Sum",
@@ -34,7 +34,7 @@ func NewPanelError(appId AppId, gridPos PanelGridPos) Panel {
 	}
 }
 
-func NewPanelWarn(appId AppId, gridPos PanelGridPos) Panel {
+func NewPanelWarn(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 	return Panel{
 		Datasource: "CloudWatch",
 		FieldConfig: PanelFieldConfig{
@@ -54,7 +54,7 @@ func NewPanelWarn(appId AppId, gridPos PanelGridPos) Panel {
 				Alias:      "Warnings",
 				Dimensions: map[string]string{},
 				MetricName: "warn",
-				Namespace:  appId.CloudWatchNamespace(),
+				Namespace:  resourceNames.CloudwatchNamespace,
 				Region:     "default",
 				Statistics: []string{
 					"Sum",

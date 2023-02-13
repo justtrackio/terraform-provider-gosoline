@@ -1,7 +1,7 @@
 package builder
 
 func NewPanelDdbReadUsage(table string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -77,7 +77,7 @@ func NewPanelDdbReadUsage(table string) PanelFactory {
 }
 
 func NewPanelDdbReadThrottles(table string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -162,7 +162,7 @@ func NewPanelDdbReadThrottles(table string) PanelFactory {
 }
 
 func NewPanelDdbWriteUsage(table string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -240,7 +240,7 @@ func NewPanelDdbWriteUsage(table string) PanelFactory {
 }
 
 func NewPanelDdbWriteThrottles(table string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{

@@ -15,6 +15,7 @@ type ApplicationDashboardDefinitionData struct {
 	Project     types.String `tfsdk:"project"`
 	Environment types.String `tfsdk:"environment"`
 	Family      types.String `tfsdk:"family"`
+	Group       types.String `tfsdk:"group"`
 	Application types.String `tfsdk:"application"`
 	Containers  types.List   `tfsdk:"containers"`
 	Body        types.String `tfsdk:"body"`
@@ -25,6 +26,7 @@ func (d ApplicationDashboardDefinitionData) AppId() builder.AppId {
 		Project:     d.Project.Value,
 		Environment: d.Environment.Value,
 		Family:      d.Family.Value,
+		Group:       d.Group.Value,
 		Application: d.Application.Value,
 	}
 }
@@ -46,6 +48,10 @@ func (a *ApplicationDashboardDefinitionDatasourceType) GetSchema(_ context.Conte
 				Type:     types.StringType,
 				Required: true,
 			},
+			"group": {
+				Type:     types.StringType,
+				Required: true,
+			},
 			"application": {
 				Type:     types.StringType,
 				Required: true,
@@ -64,12 +70,16 @@ func (a *ApplicationDashboardDefinitionDatasourceType) GetSchema(_ context.Conte
 
 func (a *ApplicationDashboardDefinitionDatasourceType) NewDataSource(_ context.Context, provider tfsdk.Provider) (tfsdk.DataSource, diag.Diagnostics) {
 	return &ApplicationDashboardDefinitionDataSource{
-		metadataReader: provider.(*GosolineProvider).metadataReader,
+		metadataReader:                provider.(*GosolineProvider).metadataReader,
+		resourceNamePatterns:          provider.(*GosolineProvider).resourceNamePatterns,
+		additionalAugmentReplacements: provider.(*GosolineProvider).additionalAugmentReplacements,
 	}, nil
 }
 
 type ApplicationDashboardDefinitionDataSource struct {
-	metadataReader *builder.MetadataReader
+	metadataReader                *builder.MetadataReader
+	resourceNamePatterns          ResourceNamePatterns
+	additionalAugmentReplacements map[string]string
 }
 
 func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, request tfsdk.ReadDataSourceRequest, response *tfsdk.ReadDataSourceResponse) {
@@ -89,7 +99,12 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 		return
 	}
 
-	if ecsClient, err = builder.NewEcsClient(ctx, state.AppId()); err != nil {
+	cloudwatchNamespace := builder.Augment(a.resourceNamePatterns.CloudwatchNamespace, state.AppId())
+	ecsClusterName := builder.Augment(a.resourceNamePatterns.EcsCluster, state.AppId())
+	ecsServiceName := builder.Augment(a.resourceNamePatterns.EcsService, state.AppId())
+	grafanaElasticsearchDatasourceName := builder.Augment(a.resourceNamePatterns.GrafanaElasticsearchDatasource, state.AppId())
+
+	if ecsClient, err = builder.NewEcsClient(ctx, ecsClusterName, ecsServiceName); err != nil {
 		response.Diagnostics.AddError("can not get ecs client", err.Error())
 		return
 	}
@@ -103,15 +118,31 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 	diags = state.Containers.ElementsAs(ctx, &containers, false)
 	response.Diagnostics.Append(diags...)
 
-	db := builder.NewDashboardBuilder(state.AppId(), containers)
+	ecsTaskDefinitionName, err := ecsClient.GetTaskDefinitionName(ctx)
+	if err != nil {
+		response.Diagnostics.AddError("can not get ecs task definition name", err.Error())
+		return
+	}
+
+	resourceNames := builder.ResourceNames{
+		CloudwatchNamespace:                cloudwatchNamespace,
+		EcsCluster:                         ecsClusterName,
+		EcsService:                         ecsServiceName,
+		EcsTaskDefinition:                  *ecsTaskDefinitionName,
+		GrafanaElasticsearchDatasourceName: grafanaElasticsearchDatasourceName,
+		TargetGroups:                       targetGroups,
+		Containers:                         containers,
+	}
+
+	db := builder.NewDashboardBuilder(resourceNames)
 	db.AddServiceAndTask()
 	db.AddPanel(builder.NewPanelRow("Errors & Warnings"))
 	db.AddPanel(builder.NewPanelError)
 	db.AddPanel(builder.NewPanelWarn)
 	db.AddPanel(builder.NewPanelLogs)
 
-	for _, targetGroup := range targetGroups {
-		db.AddElbTargetGroup(targetGroup)
+	for i := range targetGroups {
+		db.AddElbTargetGroup(i)
 	}
 
 	for _, route := range metadata.ApiServer.Routes {

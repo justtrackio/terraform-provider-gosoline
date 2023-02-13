@@ -3,7 +3,7 @@ package builder
 import "fmt"
 
 func NewPanelKinesisKinsumerMillisecondsBehind(stream string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -28,7 +28,7 @@ func NewPanelKinesisKinsumerMillisecondsBehind(stream string) PanelFactory {
 					Id:         "",
 					MatchExact: false,
 					MetricName: "MillisecondsBehind",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -45,7 +45,7 @@ func NewPanelKinesisKinsumerMillisecondsBehind(stream string) PanelFactory {
 }
 
 func NewPanelKinesisKinsumerMessageCounts(stream string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -70,7 +70,7 @@ func NewPanelKinesisKinsumerMessageCounts(stream string) PanelFactory {
 					},
 					MatchExact: false,
 					MetricName: "ReadRecords",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -85,7 +85,7 @@ func NewPanelKinesisKinsumerMessageCounts(stream string) PanelFactory {
 					},
 					MatchExact: false,
 					MetricName: "FailedRecords",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "B",
 					Region:     "default",
@@ -102,7 +102,7 @@ func NewPanelKinesisKinsumerMessageCounts(stream string) PanelFactory {
 }
 
 func NewPanelKinesisKinsumerReadOperations(stream string, shardCount int) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -127,7 +127,7 @@ func NewPanelKinesisKinsumerReadOperations(stream string, shardCount int) PanelF
 					Hide:       true,
 					MatchExact: true,
 					MetricName: "ReadRecords",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
 					Statistics: []string{
@@ -142,7 +142,7 @@ func NewPanelKinesisKinsumerReadOperations(stream string, shardCount int) PanelF
 					Id:         "m1",
 					MatchExact: true,
 					MetricName: "ReadCount",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					RefId:      "B",
 					Region:     "default",
 					Statistics: []string{
@@ -179,7 +179,7 @@ func NewPanelKinesisKinsumerReadOperations(stream string, shardCount int) PanelF
 }
 
 func NewPanelKinesisKinsumerProcessDuration(stream string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -201,7 +201,7 @@ func NewPanelKinesisKinsumerProcessDuration(stream string) PanelFactory {
 					Id:         "m0",
 					MatchExact: true,
 					MetricName: "ProcessDuration",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
 					Statistics: []string{
@@ -216,7 +216,7 @@ func NewPanelKinesisKinsumerProcessDuration(stream string) PanelFactory {
 					Id:         "m1",
 					MatchExact: true,
 					MetricName: "ProcessDuration",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					RefId:      "B",
 					Region:     "default",
 					Statistics: []string{
@@ -232,7 +232,7 @@ func NewPanelKinesisKinsumerProcessDuration(stream string) PanelFactory {
 }
 
 func NewPanelKinesisStreamSuccessRate(stream string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -324,7 +324,7 @@ func NewPanelKinesisStreamSuccessRate(stream string) PanelFactory {
 }
 
 func NewPanelKinesisStreamGetRecordsBytes(stream string, shardCount int) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -379,7 +379,7 @@ func NewPanelKinesisStreamGetRecordsBytes(stream string, shardCount int) PanelFa
 }
 
 func NewPanelKinesisStreamIncomingDataBytes(stream string, shardCount int) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -432,7 +432,7 @@ func NewPanelKinesisStreamIncomingDataBytes(stream string, shardCount int) Panel
 }
 
 func NewPanelKinesisStreamIncomingDataCount(stream string, shardCount int) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -484,7 +484,7 @@ func NewPanelKinesisStreamIncomingDataCount(stream string, shardCount int) Panel
 }
 
 func NewPanelKinesisRecordWriterPutRecordsCount(stream string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -509,7 +509,7 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream string) PanelFactory {
 					},
 					MatchExact: false,
 					MetricName: "PutRecords",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -524,7 +524,7 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream string) PanelFactory {
 					},
 					MatchExact: false,
 					MetricName: "PutRecordsFailure",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "B",
 					Region:     "default",
@@ -541,7 +541,7 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream string) PanelFactory {
 }
 
 func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream string, shardCount int) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{
@@ -563,7 +563,7 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream string, shardCount in
 					},
 					MatchExact: false,
 					MetricName: "PutRecordsBatchSize",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -580,7 +580,7 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream string, shardCount in
 					Id:         "m0",
 					MatchExact: true,
 					MetricName: "PutRecords",
-					Namespace:  appId.CloudWatchNamespace(),
+					Namespace:  resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "B",
 					Region:     "default",
@@ -608,7 +608,7 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream string, shardCount in
 }
 
 func NewPanelKinesisStreamRecordSize(stream string) PanelFactory {
-	return func(appId AppId, gridPos PanelGridPos) Panel {
+	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
 			Datasource: "CloudWatch",
 			FieldConfig: PanelFieldConfig{

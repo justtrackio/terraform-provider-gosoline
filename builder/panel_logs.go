@@ -1,14 +1,11 @@
 package builder
 
-import "fmt"
-
-func NewPanelLogs(appId AppId, gridPos PanelGridPos) Panel {
-	datasource := fmt.Sprintf("elasticsearch-%s-logs-%s-%s-%s", appId.Environment, appId.Project, appId.Family, appId.Application)
+func NewPanelLogs(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 	gridPos.W = 24
 	gridPos.H = 16
 
 	return Panel{
-		Datasource: datasource,
+		Datasource: resourceNames.GrafanaElasticsearchDatasourceName,
 		FieldConfig: PanelFieldConfig{
 			Defaults: PanelFieldConfigDefaults{
 				Custom: PanelFieldConfigDefaultsCustom{
