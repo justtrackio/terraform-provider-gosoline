@@ -9,7 +9,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2 v1.8.0
 	github.com/aws/aws-sdk-go-v2/service/kinesis v1.12.0
 	github.com/cenkalti/backoff/v4 v4.1.1
-	github.com/go-resty/resty/v2 v2.6.0
+	github.com/go-resty/resty/v2 v2.7.0
 	github.com/hashicorp/terraform-plugin-framework v0.10.0
 	github.com/stretchr/testify v1.7.2
 )
