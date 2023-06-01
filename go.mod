@@ -11,7 +11,7 @@ require (
 	github.com/cenkalti/backoff/v4 v4.1.1
 	github.com/go-resty/resty/v2 v2.6.0
 	github.com/hashicorp/terraform-plugin-framework v0.10.0
-	github.com/stretchr/testify v1.7.2
+	github.com/stretchr/testify v1.8.4
 )
 
 require (
