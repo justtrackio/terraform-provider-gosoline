@@ -2,10 +2,10 @@ package builder
 
 import "fmt"
 
-func NewPanelStreamConsumerProcessedCount(consumer string) PanelFactory {
+func NewPanelStreamConsumerProcessedCount(consumer MetadataStreamConsumer) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -23,7 +23,7 @@ func NewPanelStreamConsumerProcessedCount(consumer string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Processed",
 					Dimensions: map[string]string{
-						"Consumer": consumer,
+						"Consumer": consumer.Name,
 					},
 					Expression: "",
 					Id:         "m0",
@@ -40,7 +40,7 @@ func NewPanelStreamConsumerProcessedCount(consumer string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Error",
 					Dimensions: map[string]string{
-						"Consumer": consumer,
+						"Consumer": consumer.Name,
 					},
 					Expression: "",
 					Id:         "m1",
@@ -62,10 +62,10 @@ func NewPanelStreamConsumerProcessedCount(consumer string) PanelFactory {
 	}
 }
 
-func NewPanelStreamConsumerProcessDuration(consumer string) PanelFactory {
+func NewPanelStreamConsumerProcessDuration(consumer MetadataStreamConsumer) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -80,7 +80,7 @@ func NewPanelStreamConsumerProcessDuration(consumer string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Average",
 					Dimensions: map[string]string{
-						"Consumer": consumer,
+						"Consumer": consumer.Name,
 					},
 					Expression: "",
 					Id:         "m0",
@@ -102,10 +102,10 @@ func NewPanelStreamConsumerProcessDuration(consumer string) PanelFactory {
 	}
 }
 
-func NewPanelStreamConsumerRetryActions(consumer string, retryType string) PanelFactory {
+func NewPanelStreamConsumerRetryActions(consumer MetadataStreamConsumer) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -119,7 +119,7 @@ func NewPanelStreamConsumerRetryActions(consumer string, retryType string) Panel
 				PanelTargetCloudWatch{
 					Alias: "Processed",
 					Dimensions: map[string]string{
-						"Consumer": consumer,
+						"Consumer": consumer.Name,
 					},
 					Expression: "",
 					Id:         "m0",
@@ -136,7 +136,7 @@ func NewPanelStreamConsumerRetryActions(consumer string, retryType string) Panel
 				PanelTargetCloudWatch{
 					Alias: "Error",
 					Dimensions: map[string]string{
-						"Consumer": consumer,
+						"Consumer": consumer.Name,
 					},
 					Expression: "",
 					Id:         "m1",
@@ -152,7 +152,7 @@ func NewPanelStreamConsumerRetryActions(consumer string, retryType string) Panel
 				},
 			},
 			Options: &PanelOptionsCloudWatch{},
-			Title:   fmt.Sprintf("Retry Actions with type: %s", retryType),
+			Title:   fmt.Sprintf("Retry Actions with type: %s", consumer.RetryType),
 			Type:    "timeseries",
 		}
 	}

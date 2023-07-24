@@ -2,7 +2,7 @@ package builder
 
 func NewPanelError(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 	return Panel{
-		Datasource: "CloudWatch",
+		Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 		FieldConfig: PanelFieldConfig{
 			Defaults: PanelFieldConfigDefaults{
 				Custom: PanelFieldConfigDefaultsCustom{
@@ -36,7 +36,7 @@ func NewPanelError(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 
 func NewPanelWarn(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 	return Panel{
-		Datasource: "CloudWatch",
+		Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 		FieldConfig: PanelFieldConfig{
 			Defaults: PanelFieldConfigDefaults{
 				Custom: PanelFieldConfigDefaultsCustom{

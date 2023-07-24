@@ -1,15 +1,5 @@
 package builder
 
-type ResourceNames struct {
-	CloudwatchNamespace                string
-	EcsCluster                         string
-	EcsService                         string
-	EcsTaskDefinition                  string
-	GrafanaElasticsearchDatasourceName string
-	TargetGroups                       []ElbTargetGroup
-	Containers                         []string
-}
-
 type PanelFactory func(resourceNames ResourceNames, gridPos PanelGridPos) Panel
 
 type Panel struct {

@@ -53,8 +53,8 @@ func (d *DashboardBuilder) AddApiServerHandler(method string, path string) {
 	d.AddPanel(NewPanelApiServerHttpStatus(path))
 }
 
-func (d *DashboardBuilder) AddDynamoDbTable(table string) {
-	rowTitle := fmt.Sprintf("Dynamodb: %s", table)
+func (d *DashboardBuilder) AddDynamoDbTable(table MetadataCloudAwsDynamodbTable) {
+	rowTitle := fmt.Sprintf("Dynamodb: %s", table.TableName)
 
 	d.AddPanel(NewPanelRow(rowTitle))
 	d.AddPanel(NewPanelDdbReadUsage(table))
@@ -63,38 +63,38 @@ func (d *DashboardBuilder) AddDynamoDbTable(table string) {
 	d.AddPanel(NewPanelDdbWriteThrottles(table))
 }
 
-func (d *DashboardBuilder) AddCloudAwsKinesisKinsumer(stream string, shardCount int) {
-	rowTitle := fmt.Sprintf("Kinsumer on Stream: %s (%d Shards)", stream, shardCount)
+func (d *DashboardBuilder) AddCloudAwsKinesisKinsumer(stream MetadataCloudAwsKinesisKinsumer) {
+	rowTitle := fmt.Sprintf("Kinsumer on Stream: %s (%d Shards)", stream.StreamNameFull, stream.OpenShardCount)
 
 	d.AddPanel(NewPanelRow(rowTitle))
 	d.AddPanel(NewPanelKinesisKinsumerMillisecondsBehind(stream))
 	d.AddPanel(NewPanelKinesisKinsumerMessageCounts(stream))
-	d.AddPanel(NewPanelKinesisKinsumerReadOperations(stream, shardCount))
+	d.AddPanel(NewPanelKinesisKinsumerReadOperations(stream))
 	d.AddPanel(NewPanelKinesisKinsumerProcessDuration(stream))
 }
 
-func (d *DashboardBuilder) AddCloudAwsKinesisRecordWriter(stream string, shardCount int) {
-	rowTitle := fmt.Sprintf("Kinesis RecordWriter on Stream: %s (%d Shards)", stream, shardCount)
+func (d *DashboardBuilder) AddCloudAwsKinesisRecordWriter(stream MetadataCloudAwsKinesisRecordWriter) {
+	rowTitle := fmt.Sprintf("Kinesis RecordWriter on Stream: %s (%d Shards)", stream.StreamName, stream.OpenShardCount)
 
 	d.AddPanel(NewPanelRow(rowTitle))
 	d.AddPanel(NewPanelKinesisRecordWriterPutRecordsCount(stream))
-	d.AddPanel(NewPanelKinesisRecordWriterPutRecordsBatchSize(stream, shardCount))
+	d.AddPanel(NewPanelKinesisRecordWriterPutRecordsBatchSize(stream))
 }
 
-func (d *DashboardBuilder) AddCloudAwsKinesisStream(stream string, shardCount int) {
-	rowTitle := fmt.Sprintf("Kinesis Stream: %s (%d Shards)", stream, shardCount)
+func (d *DashboardBuilder) AddCloudAwsKinesisStream(stream KinesisStreamAware) {
+	rowTitle := fmt.Sprintf("Kinesis Stream: %s (%d Shards)", stream.GetStreamNameFull(), stream.GetOpenShardCount())
 
 	d.AddPanel(NewPanelRow(rowTitle))
 
 	d.AddPanel(NewPanelKinesisStreamSuccessRate(stream))
-	d.AddPanel(NewPanelKinesisStreamGetRecordsBytes(stream, shardCount))
-	d.AddPanel(NewPanelKinesisStreamIncomingDataBytes(stream, shardCount))
-	d.AddPanel(NewPanelKinesisStreamIncomingDataCount(stream, shardCount))
+	d.AddPanel(NewPanelKinesisStreamGetRecordsBytes(stream))
+	d.AddPanel(NewPanelKinesisStreamIncomingDataBytes(stream))
+	d.AddPanel(NewPanelKinesisStreamIncomingDataCount(stream))
 	d.AddPanel(NewPanelKinesisStreamRecordSize(stream))
 }
 
-func (d *DashboardBuilder) AddCloudAwsSqsQueue(queue string) {
-	rowTitle := fmt.Sprintf("SQS: %s", queue)
+func (d *DashboardBuilder) AddCloudAwsSqsQueue(queue MetadataCloudAwsSqsQueue) {
+	rowTitle := fmt.Sprintf("SQS: %s", queue.QueueNameFull)
 
 	d.AddPanel(NewPanelRow(rowTitle))
 	d.AddPanel(NewPanelSqsMessagesVisible(queue))
@@ -106,16 +106,16 @@ func (d *DashboardBuilder) AddStreamConsumer(consumer MetadataStreamConsumer) {
 	rowTitle := fmt.Sprintf("Stream Consumer: %s", consumer.Name)
 
 	d.AddPanel(NewPanelRow(rowTitle))
-	d.AddPanel(NewPanelStreamConsumerProcessedCount(consumer.Name))
-	d.AddPanel(NewPanelStreamConsumerProcessDuration(consumer.Name))
+	d.AddPanel(NewPanelStreamConsumerProcessedCount(consumer))
+	d.AddPanel(NewPanelStreamConsumerProcessDuration(consumer))
 
 	if consumer.RetryEnabled {
-		d.AddPanel(NewPanelStreamConsumerRetryActions(consumer.Name, consumer.RetryType))
+		d.AddPanel(NewPanelStreamConsumerRetryActions(consumer))
 	}
 }
 
-func (d *DashboardBuilder) AddStreamProducerDaemon(producer string) {
-	rowTitle := fmt.Sprintf("Stream Producer Daemon: %s", producer)
+func (d *DashboardBuilder) AddStreamProducerDaemon(producer MetadataStreamProducer) {
+	rowTitle := fmt.Sprintf("Stream Producer Daemon: %s", producer.Name)
 
 	d.AddPanel(NewPanelRow(rowTitle))
 	d.AddPanel(NewPanelStreamProducerDaemonSizes(producer))

@@ -21,6 +21,7 @@ func TestDashboardWithError(t *testing.T) {
 	ecsServiceName := "service"
 	ecsTaskDefinitionName := "task-def"
 	grafanaElasticsearchDatasourceName := "elastic"
+	grafanaCloudWatchDatasourceName := "cw"
 	containers := []string{
 		appId.Application,
 		"log_router",
@@ -38,6 +39,7 @@ func TestDashboardWithError(t *testing.T) {
 		EcsService:                         ecsServiceName,
 		EcsTaskDefinition:                  ecsTaskDefinitionName,
 		GrafanaElasticsearchDatasourceName: grafanaElasticsearchDatasourceName,
+		GrafanaCloudWatchDatasourceName:    grafanaCloudWatchDatasourceName,
 		TargetGroups:                       targetGroups,
 		Containers:                         containers,
 	}

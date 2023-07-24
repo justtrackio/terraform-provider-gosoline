@@ -19,6 +19,7 @@ const (
 	defaultEcsClusterNamePattern                     = "{env}"
 	defaultEcsServiceNamePattern                     = "{group}-{app}"
 	defaultCloudwatchNamespaceNamePattern            = "{project}/{env}/{family}/{group}-{app}"
+	defaultGrafanaCloudWatchDatasourceNamePattern    = "cloudwatch-{family}"
 	defaultGrafanaElasticsearchDatasourceNamePattern = "elasticsearch-{env}-logs-{project}-{family}-{group}-{app}"
 )
 
@@ -32,6 +33,7 @@ type ResourceNamePatterns struct {
 	CloudwatchNamespace            string
 	EcsCluster                     string
 	EcsService                     string
+	GrafanaCloudWatchDatasource    string
 	GrafanaElasticsearchDatasource string
 }
 
@@ -74,6 +76,7 @@ func (p *GosolineProvider) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diag
 						"cloudwatch_namespace":             types.StringType,
 						"ecs_cluster":                      types.StringType,
 						"ecs_service":                      types.StringType,
+						"grafana_cloudwatch_datasource":    types.StringType,
 						"grafana_elasticsearch_datasource": types.StringType,
 					},
 				},
@@ -109,7 +112,14 @@ func (p *GosolineProvider) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diag
 										  * {family}
 										  * {group}
 										  * {app}
-									  grafana_elasticsearch_datasource: Allows to change the default grafana elasticsearch datasource namespace name pattern (default: ` + defaultGrafanaElasticsearchDatasourceNamePattern + `)
+									  grafana_cloudwatch_datasource: Allows to change the default grafana cloudwatch datasource name pattern (default: ` + defaultGrafanaCloudWatchDatasourceNamePattern + `)
+										  Available placeholders are:
+										  * {project}
+										  * {env}
+										  * {family}
+										  * {group}
+										  * {app}
+									  grafana_elasticsearch_datasource: Allows to change the default grafana elasticsearch datasource name pattern (default: ` + defaultGrafanaElasticsearchDatasourceNamePattern + `)
 										  Available placeholders are:
 										  * {project}
 										  * {env}
@@ -257,6 +267,7 @@ func (p *GosolineProvider) getNamepatternProperties(ctx context.Context, config 
 		"cloudwatch_namespace":             defaultCloudwatchNamespaceNamePattern,
 		"ecs_cluster":                      defaultEcsClusterNamePattern,
 		"ecs_service":                      defaultEcsServiceNamePattern,
+		"grafana_cloudwatch_datasource":    defaultGrafanaCloudWatchDatasourceNamePattern,
 		"grafana_elasticsearch_datasource": defaultGrafanaElasticsearchDatasourceNamePattern,
 	}
 
@@ -278,6 +289,7 @@ func (p *GosolineProvider) getNamepatternProperties(ctx context.Context, config 
 		CloudwatchNamespace:            patterns["cloudwatch_namespace"],
 		EcsCluster:                     patterns["ecs_cluster"],
 		EcsService:                     patterns["ecs_service"],
+		GrafanaCloudWatchDatasource:    patterns["grafana_cloudwatch_datasource"],
 		GrafanaElasticsearchDatasource: patterns["grafana_elasticsearch_datasource"],
 	}
 

@@ -2,10 +2,10 @@ package builder
 
 import "fmt"
 
-func NewPanelKinesisKinsumerMillisecondsBehind(stream string) PanelFactory {
+func NewPanelKinesisKinsumerMillisecondsBehind(stream MetadataCloudAwsKinesisKinsumer) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -22,7 +22,7 @@ func NewPanelKinesisKinsumerMillisecondsBehind(stream string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.StreamNameFull,
 					},
 					Expression: "",
 					Id:         "",
@@ -44,10 +44,10 @@ func NewPanelKinesisKinsumerMillisecondsBehind(stream string) PanelFactory {
 	}
 }
 
-func NewPanelKinesisKinsumerMessageCounts(stream string) PanelFactory {
+func NewPanelKinesisKinsumerMessageCounts(stream MetadataCloudAwsKinesisKinsumer) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -66,7 +66,7 @@ func NewPanelKinesisKinsumerMessageCounts(stream string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "ReadRecords",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.StreamNameFull,
 					},
 					MatchExact: false,
 					MetricName: "ReadRecords",
@@ -81,7 +81,7 @@ func NewPanelKinesisKinsumerMessageCounts(stream string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "FailedRecords",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.StreamNameFull,
 					},
 					MatchExact: false,
 					MetricName: "FailedRecords",
@@ -101,10 +101,10 @@ func NewPanelKinesisKinsumerMessageCounts(stream string) PanelFactory {
 	}
 }
 
-func NewPanelKinesisKinsumerReadOperations(stream string, shardCount int) PanelFactory {
+func NewPanelKinesisKinsumerReadOperations(stream MetadataCloudAwsKinesisKinsumer) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -121,7 +121,7 @@ func NewPanelKinesisKinsumerReadOperations(stream string, shardCount int) PanelF
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.StreamNameFull,
 					},
 					Id:         "m0",
 					Hide:       true,
@@ -137,7 +137,7 @@ func NewPanelKinesisKinsumerReadOperations(stream string, shardCount int) PanelF
 				PanelTargetCloudWatch{
 					Alias: "ReadCount",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.StreamNameFull,
 					},
 					Id:         "m1",
 					MatchExact: true,
@@ -152,7 +152,7 @@ func NewPanelKinesisKinsumerReadOperations(stream string, shardCount int) PanelF
 				PanelTargetCloudWatch{
 					Alias:      "ReadCount Limit",
 					Dimensions: map[string]string{},
-					Expression: fmt.Sprintf("%d * 5 * PERIOD(m1) * IF(m1, 1, 1)", shardCount),
+					Expression: fmt.Sprintf("%d * 5 * PERIOD(m1) * IF(m1, 1, 1)", stream.OpenShardCount),
 					MatchExact: true,
 					RefId:      "C",
 					Region:     "default",
@@ -178,10 +178,10 @@ func NewPanelKinesisKinsumerReadOperations(stream string, shardCount int) PanelF
 	}
 }
 
-func NewPanelKinesisKinsumerProcessDuration(stream string) PanelFactory {
+func NewPanelKinesisKinsumerProcessDuration(stream MetadataCloudAwsKinesisKinsumer) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -196,7 +196,7 @@ func NewPanelKinesisKinsumerProcessDuration(stream string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Maximum",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.StreamNameFull,
 					},
 					Id:         "m0",
 					MatchExact: true,
@@ -211,7 +211,7 @@ func NewPanelKinesisKinsumerProcessDuration(stream string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Average",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.StreamNameFull,
 					},
 					Id:         "m1",
 					MatchExact: true,
@@ -231,10 +231,10 @@ func NewPanelKinesisKinsumerProcessDuration(stream string) PanelFactory {
 	}
 }
 
-func NewPanelKinesisStreamSuccessRate(stream string) PanelFactory {
+func NewPanelKinesisStreamSuccessRate(stream KinesisStreamAware) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -249,7 +249,7 @@ func NewPanelKinesisStreamSuccessRate(stream string) PanelFactory {
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.GetStreamNameFull(),
 					},
 					Expression: "",
 					Id:         "m0",
@@ -277,7 +277,7 @@ func NewPanelKinesisStreamSuccessRate(stream string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Put record success",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.GetStreamNameFull(),
 					},
 					Id:         "m2",
 					MatchExact: true,
@@ -291,7 +291,7 @@ func NewPanelKinesisStreamSuccessRate(stream string) PanelFactory {
 				},
 				PanelTargetCloudWatch{
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.GetStreamNameFull(),
 					},
 					Id:         "m3",
 					MatchExact: true,
@@ -323,10 +323,10 @@ func NewPanelKinesisStreamSuccessRate(stream string) PanelFactory {
 	}
 }
 
-func NewPanelKinesisStreamGetRecordsBytes(stream string, shardCount int) PanelFactory {
+func NewPanelKinesisStreamGetRecordsBytes(stream KinesisStreamAware) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -345,7 +345,7 @@ func NewPanelKinesisStreamGetRecordsBytes(stream string, shardCount int) PanelFa
 				PanelTargetCloudWatch{
 					Alias: "GetRecordsBytes",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.GetStreamNameFull(),
 					},
 					Expression: "",
 					Id:         "m0",
@@ -362,7 +362,7 @@ func NewPanelKinesisStreamGetRecordsBytes(stream string, shardCount int) PanelFa
 				PanelTargetCloudWatch{
 					Alias:      "Limit",
 					Dimensions: map[string]string{},
-					Expression: fmt.Sprintf("%d * 2097152 * PERIOD(m0) * IF(m0, 1, 1)", shardCount),
+					Expression: fmt.Sprintf("%d * 2097152 * PERIOD(m0) * IF(m0, 1, 1)", stream.GetOpenShardCount()),
 					MatchExact: true,
 					RefId:      "B",
 					Region:     "default",
@@ -378,10 +378,10 @@ func NewPanelKinesisStreamGetRecordsBytes(stream string, shardCount int) PanelFa
 	}
 }
 
-func NewPanelKinesisStreamIncomingDataBytes(stream string, shardCount int) PanelFactory {
+func NewPanelKinesisStreamIncomingDataBytes(stream KinesisStreamAware) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -400,7 +400,7 @@ func NewPanelKinesisStreamIncomingDataBytes(stream string, shardCount int) Panel
 				PanelTargetCloudWatch{
 					Alias: "IncomingBytes",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.GetStreamNameFull(),
 					},
 					Id:         "m0",
 					MatchExact: true,
@@ -415,7 +415,7 @@ func NewPanelKinesisStreamIncomingDataBytes(stream string, shardCount int) Panel
 				PanelTargetCloudWatch{
 					Alias:      "Limit",
 					Dimensions: map[string]string{},
-					Expression: fmt.Sprintf("%d * 1048576 * PERIOD(m0) * IF(m0, 1, 1)", shardCount),
+					Expression: fmt.Sprintf("%d * 1048576 * PERIOD(m0) * IF(m0, 1, 1)", stream.GetOpenShardCount()),
 					MatchExact: true,
 					RefId:      "B",
 					Region:     "default",
@@ -431,10 +431,10 @@ func NewPanelKinesisStreamIncomingDataBytes(stream string, shardCount int) Panel
 	}
 }
 
-func NewPanelKinesisStreamIncomingDataCount(stream string, shardCount int) PanelFactory {
+func NewPanelKinesisStreamIncomingDataCount(stream KinesisStreamAware) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -452,7 +452,7 @@ func NewPanelKinesisStreamIncomingDataCount(stream string, shardCount int) Panel
 				PanelTargetCloudWatch{
 					Alias: "IncomingRecords",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.GetStreamNameFull(),
 					},
 					Id:         "m0",
 					MatchExact: true,
@@ -467,7 +467,7 @@ func NewPanelKinesisStreamIncomingDataCount(stream string, shardCount int) Panel
 				PanelTargetCloudWatch{
 					Alias:      "Limit",
 					Dimensions: map[string]string{},
-					Expression: fmt.Sprintf("%d * 1000 * PERIOD(m0) * IF(m0, 1, 1)", shardCount),
+					Expression: fmt.Sprintf("%d * 1000 * PERIOD(m0) * IF(m0, 1, 1)", stream.GetOpenShardCount()),
 					MatchExact: true,
 					RefId:      "B",
 					Region:     "default",
@@ -483,10 +483,10 @@ func NewPanelKinesisStreamIncomingDataCount(stream string, shardCount int) Panel
 	}
 }
 
-func NewPanelKinesisRecordWriterPutRecordsCount(stream string) PanelFactory {
+func NewPanelKinesisRecordWriterPutRecordsCount(stream MetadataCloudAwsKinesisRecordWriter) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -505,7 +505,7 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "PutRecords",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.StreamName,
 					},
 					MatchExact: false,
 					MetricName: "PutRecords",
@@ -520,7 +520,7 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "PutRecordsFailure",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.StreamName,
 					},
 					MatchExact: false,
 					MetricName: "PutRecordsFailure",
@@ -540,10 +540,10 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream string) PanelFactory {
 	}
 }
 
-func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream string, shardCount int) PanelFactory {
+func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream MetadataCloudAwsKinesisRecordWriter) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -559,7 +559,7 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream string, shardCount in
 				PanelTargetCloudWatch{
 					Alias: "Batch Size",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.StreamName,
 					},
 					MatchExact: false,
 					MetricName: "PutRecordsBatchSize",
@@ -574,7 +574,7 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream string, shardCount in
 				PanelTargetCloudWatch{
 					Alias: "PutRecords",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.StreamName,
 					},
 					Hide:       true,
 					Id:         "m0",
@@ -591,7 +591,7 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream string, shardCount in
 				PanelTargetCloudWatch{
 					Alias:      "Records Per Shard",
 					Dimensions: map[string]string{},
-					Expression: fmt.Sprintf("m0 / %d /PERIOD(m0) * IF(m0, 1, 1)", shardCount),
+					Expression: fmt.Sprintf("m0 / %d /PERIOD(m0) * IF(m0, 1, 1)", stream.OpenShardCount),
 					MatchExact: true,
 					RefId:      "C",
 					Region:     "default",
@@ -607,10 +607,10 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream string, shardCount in
 	}
 }
 
-func NewPanelKinesisStreamRecordSize(stream string) PanelFactory {
+func NewPanelKinesisStreamRecordSize(stream KinesisStreamAware) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -626,7 +626,7 @@ func NewPanelKinesisStreamRecordSize(stream string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "IncomingBytes",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.GetStreamNameFull(),
 					},
 					Id:         "m0",
 					Hide:       true,
@@ -642,7 +642,7 @@ func NewPanelKinesisStreamRecordSize(stream string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "IncomingRecords",
 					Dimensions: map[string]string{
-						"StreamName": stream,
+						"StreamName": stream.GetStreamNameFull(),
 					},
 					Id:         "m1",
 					Hide:       true,

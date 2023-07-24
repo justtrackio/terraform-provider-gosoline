@@ -49,8 +49,13 @@ func MetadataCloudAwsAttrTypes() map[string]attr.Type {
 	}
 }
 
+type MetadataCloudAwsDynamodbTable struct {
+	AwsClientName string `json:"aws_client_name"`
+	TableName     string `json:"table_name"`
+}
+
 type MetadataCloudAwsDynamodb struct {
-	Tables []string `json:"tables"`
+	Tables []MetadataCloudAwsDynamodbTable `json:"tables"`
 }
 
 type MetadataCloudAwsKinesis struct {
@@ -100,20 +105,44 @@ func (k MetadataCloudAwsKinesisKinsumers) ToValue() types.List {
 	return list
 }
 
+type KinesisStreamAware interface {
+	GetClientName() string
+	GetStreamNameFull() string
+	GetOpenShardCount() int
+}
+
 type MetadataCloudAwsKinesisKinsumer struct {
+	AwsClientName  string        `json:"aws_client_name"`
 	ClientId       string        `json:"client_id"`
 	Name           string        `json:"name"`
+	OpenShardCount int64         `json:"open_shard_count"`
 	StreamAppId    MetadataAppId `json:"stream_app_id"`
+	StreamArn      string        `json:"stream_arn"`
 	StreamName     string        `json:"stream_name"`
 	StreamNameFull string        `json:"stream_name_full"`
+}
+
+func (k MetadataCloudAwsKinesisKinsumer) GetClientName() string {
+	return k.AwsClientName
+}
+
+func (k MetadataCloudAwsKinesisKinsumer) GetStreamNameFull() string {
+	return k.StreamNameFull
+}
+
+func (k MetadataCloudAwsKinesisKinsumer) GetOpenShardCount() int {
+	return int(k.OpenShardCount)
 }
 
 func (k MetadataCloudAwsKinesisKinsumer) ToValue() types.Object {
 	return types.Object{
 		Attrs: map[string]attr.Value{
+			"aws_client_name":  types.String{Value: k.AwsClientName},
 			"client_id":        types.String{Value: k.ClientId},
 			"name":             types.String{Value: k.Name},
+			"open_shard_count": types.Int64{Value: k.OpenShardCount},
 			"stream_app_id":    k.StreamAppId.ToValue(),
+			"stream_arn":       types.String{Value: k.StreamArn},
 			"stream_name":      types.String{Value: k.StreamName},
 			"stream_name_full": types.String{Value: k.StreamNameFull},
 		},
@@ -123,8 +152,11 @@ func (k MetadataCloudAwsKinesisKinsumer) ToValue() types.Object {
 
 func MetadataCloudAwsKinesisKinsumerAttrTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"client_id": types.StringType,
-		"name":      types.StringType,
+		"aws_client_name":  types.StringType,
+		"client_id":        types.StringType,
+		"name":             types.StringType,
+		"open_shard_count": types.Int64Type,
+		"stream_arn":       types.StringType,
 		"stream_app_id": types.ObjectType{
 			AttrTypes: MetadataAppIdAttrTypes(),
 		},
@@ -151,13 +183,31 @@ func (k MetadataCloudAwsKinesisRecordWriters) ToValue() types.List {
 }
 
 type MetadataCloudAwsKinesisRecordWriter struct {
-	StreamName string `json:"stream_name"`
+	AwsClientName  string `json:"aws_client_name"`
+	OpenShardCount int64  `json:"open_shard_count"`
+	StreamArn      string `json:"stream_arn"`
+	StreamName     string `json:"stream_name"`
+}
+
+func (k MetadataCloudAwsKinesisRecordWriter) GetClientName() string {
+	return k.AwsClientName
+}
+
+func (k MetadataCloudAwsKinesisRecordWriter) GetStreamNameFull() string {
+	return k.StreamName
+}
+
+func (k MetadataCloudAwsKinesisRecordWriter) GetOpenShardCount() int {
+	return int(k.OpenShardCount)
 }
 
 func (k MetadataCloudAwsKinesisRecordWriter) ToValue() types.Object {
 	return types.Object{
 		Attrs: map[string]attr.Value{
-			"stream_name": types.String{Value: k.StreamName},
+			"aws_client_name":  types.String{Value: k.AwsClientName},
+			"open_shard_count": types.Int64{Value: k.OpenShardCount},
+			"stream_arn":       types.String{Value: k.StreamArn},
+			"stream_name":      types.String{Value: k.StreamName},
 		},
 		AttrTypes: MetadataCloudAwsKinesisRecordWriterAttrTypes(),
 	}
@@ -165,10 +215,21 @@ func (k MetadataCloudAwsKinesisRecordWriter) ToValue() types.Object {
 
 func MetadataCloudAwsKinesisRecordWriterAttrTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"stream_name": types.StringType,
+		"aws_client_name":  types.StringType,
+		"stream_arn":       types.StringType,
+		"stream_name":      types.StringType,
+		"open_shard_count": types.Int64Type,
 	}
 }
 
+type MetadataCloudAwsSqsQueue struct {
+	AwsClientName string `json:"aws_client_name"`
+	QueueArn      string `json:"queue_arn"`
+	QueueName     string `json:"queue_name"`
+	QueueNameFull string `json:"queue_name_full"`
+	QueueUrl      string `json:"queue_url"`
+}
+
 type MetadataCloudAwsSqs struct {
-	Queues []string `json:"queues"`
+	Queues []MetadataCloudAwsSqsQueue `json:"queues"`
 }
