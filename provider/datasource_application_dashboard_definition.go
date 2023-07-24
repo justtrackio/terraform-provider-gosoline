@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -92,7 +91,6 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 	var metadata *builder.MetadataApplication
 	var ecsClient *builder.EcsClient
 	var targetGroups []builder.ElbTargetGroup
-	var kinesisData map[string]int
 
 	if metadata, err = a.metadataReader.ReadMetadata(state.AppId()); err != nil {
 		response.Diagnostics.AddError("can not get metadata", err.Error())
@@ -102,6 +100,7 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 	cloudwatchNamespace := builder.Augment(a.resourceNamePatterns.CloudwatchNamespace, state.AppId())
 	ecsClusterName := builder.Augment(a.resourceNamePatterns.EcsCluster, state.AppId())
 	ecsServiceName := builder.Augment(a.resourceNamePatterns.EcsService, state.AppId())
+	grafanaCloudWatchDatasourceName := builder.Augment(a.resourceNamePatterns.GrafanaCloudWatchDatasource, state.AppId())
 	grafanaElasticsearchDatasourceName := builder.Augment(a.resourceNamePatterns.GrafanaElasticsearchDatasource, state.AppId())
 
 	if ecsClient, err = builder.NewEcsClient(ctx, ecsClusterName, ecsServiceName); err != nil {
@@ -129,6 +128,7 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 		EcsCluster:                         ecsClusterName,
 		EcsService:                         ecsServiceName,
 		EcsTaskDefinition:                  *ecsTaskDefinitionName,
+		GrafanaCloudWatchDatasourceName:    grafanaCloudWatchDatasourceName,
 		GrafanaElasticsearchDatasourceName: grafanaElasticsearchDatasourceName,
 		TargetGroups:                       targetGroups,
 		Containers:                         containers,
@@ -157,13 +157,8 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 		db.AddStreamConsumer(consumer)
 	}
 
-	if kinesisData, err = a.gatherKinesisData(ctx, metadata.Cloud.Aws.Kinesis); err != nil {
-		response.Diagnostics.AddError(fmt.Sprintf("can not get kinesis data"), err.Error())
-		return
-	}
-
 	for _, kinsumer := range metadata.Cloud.Aws.Kinesis.Kinsumers {
-		db.AddCloudAwsKinesisKinsumer(kinsumer.StreamNameFull, kinesisData[kinsumer.StreamNameFull])
+		db.AddCloudAwsKinesisKinsumer(kinsumer)
 	}
 
 	for _, producer := range metadata.Stream.Producers {
@@ -171,15 +166,18 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 			continue
 		}
 
-		db.AddStreamProducerDaemon(producer.Name)
+		db.AddStreamProducerDaemon(producer)
 	}
 
 	for _, writer := range metadata.Cloud.Aws.Kinesis.RecordWriters {
-		db.AddCloudAwsKinesisRecordWriter(writer.StreamName, kinesisData[writer.StreamName])
+		db.AddCloudAwsKinesisRecordWriter(writer)
 	}
 
-	for streamName, shardCount := range kinesisData {
-		db.AddCloudAwsKinesisStream(streamName, shardCount)
+	for _, stream := range metadata.Cloud.Aws.Kinesis.Kinsumers {
+		db.AddCloudAwsKinesisStream(stream)
+	}
+	for _, stream := range metadata.Cloud.Aws.Kinesis.RecordWriters {
+		db.AddCloudAwsKinesisStream(stream)
 	}
 
 	for _, queue := range metadata.Cloud.Aws.Sqs.Queues {
@@ -203,34 +201,4 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 
 	diags = response.State.Set(ctx, state)
 	response.Diagnostics.Append(diags...)
-}
-
-func (a *ApplicationDashboardDefinitionDataSource) gatherKinesisData(ctx context.Context, kinesis builder.MetadataCloudAwsKinesis) (map[string]int, error) {
-	var err error
-	var kinesisClient *builder.KinesisClient
-	var kinesisShardCount int
-
-	if kinesisClient, err = builder.NewKinesisClient(ctx); err != nil {
-		return nil, fmt.Errorf("can not get kinesis client: %w", err)
-	}
-
-	streams := make(map[string]int)
-
-	for _, kinsumer := range kinesis.Kinsumers {
-		if kinesisShardCount, err = kinesisClient.GetShardCount(ctx, kinsumer.StreamNameFull); err != nil {
-			return nil, fmt.Errorf("can not get kinesis shard count for stream %s: %w", kinsumer.StreamNameFull, err)
-		}
-
-		streams[kinsumer.StreamNameFull] = kinesisShardCount
-	}
-
-	for _, writer := range kinesis.RecordWriters {
-		if kinesisShardCount, err = kinesisClient.GetShardCount(ctx, writer.StreamName); err != nil {
-			return nil, fmt.Errorf("can not get kinesis shard count for stream %s: %w", writer.StreamName, err)
-		}
-
-		streams[writer.StreamName] = kinesisShardCount
-	}
-
-	return streams, nil
 }

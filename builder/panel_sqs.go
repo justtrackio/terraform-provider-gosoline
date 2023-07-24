@@ -1,9 +1,9 @@
 package builder
 
-func NewPanelSqsMessagesVisible(queue string) PanelFactory {
+func NewPanelSqsMessagesVisible(queue MetadataCloudAwsSqsQueue) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(queue.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -20,7 +20,7 @@ func NewPanelSqsMessagesVisible(queue string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
-						"QueueName": queue,
+						"QueueName": queue.QueueNameFull,
 					},
 					Expression: "",
 					Id:         "",
@@ -42,10 +42,10 @@ func NewPanelSqsMessagesVisible(queue string) PanelFactory {
 	}
 }
 
-func NewPanelSqsTraffic(queue string) PanelFactory {
+func NewPanelSqsTraffic(queue MetadataCloudAwsSqsQueue) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(queue.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -62,7 +62,7 @@ func NewPanelSqsTraffic(queue string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
-						"QueueName": queue,
+						"QueueName": queue.QueueNameFull,
 					},
 					Expression: "",
 					Id:         "",
@@ -79,7 +79,7 @@ func NewPanelSqsTraffic(queue string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
-						"QueueName": queue,
+						"QueueName": queue.QueueNameFull,
 					},
 					Expression: "",
 					Id:         "",
@@ -96,7 +96,7 @@ func NewPanelSqsTraffic(queue string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
-						"QueueName": queue,
+						"QueueName": queue.QueueNameFull,
 					},
 					Expression: "",
 					Id:         "",
@@ -118,10 +118,10 @@ func NewPanelSqsTraffic(queue string) PanelFactory {
 	}
 }
 
-func NewPanelSqsMessageSize(queue string) PanelFactory {
+func NewPanelSqsMessageSize(queue MetadataCloudAwsSqsQueue) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(queue.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -139,7 +139,7 @@ func NewPanelSqsMessageSize(queue string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Average",
 					Dimensions: map[string]string{
-						"QueueName": queue,
+						"QueueName": queue.QueueNameFull,
 					},
 					MatchExact: false,
 					MetricName: "SentMessageSize",
@@ -153,7 +153,7 @@ func NewPanelSqsMessageSize(queue string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Maximum",
 					Dimensions: map[string]string{
-						"QueueName": queue,
+						"QueueName": queue.QueueNameFull,
 					},
 					MatchExact: false,
 					MetricName: "SentMessageSize",

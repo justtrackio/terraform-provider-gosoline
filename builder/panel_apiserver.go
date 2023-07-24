@@ -3,7 +3,7 @@ package builder
 func NewPanelApiServerRequestCount(path string) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
@@ -39,7 +39,7 @@ func NewPanelApiServerRequestCount(path string) PanelFactory {
 func NewPanelApiServerResponseTime(path string) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min:  "0",
@@ -76,7 +76,7 @@ func NewPanelApiServerResponseTime(path string) PanelFactory {
 func NewPanelApiServerHttpStatus(path string) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",

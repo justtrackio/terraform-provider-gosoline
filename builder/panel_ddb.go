@@ -1,9 +1,9 @@
 package builder
 
-func NewPanelDdbReadUsage(table string) PanelFactory {
+func NewPanelDdbReadUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -21,7 +21,7 @@ func NewPanelDdbReadUsage(table string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Provisioned",
 					Dimensions: map[string]string{
-						"TableName": table,
+						"TableName": table.TableName,
 					},
 					Expression: "",
 					Id:         "m2",
@@ -38,7 +38,7 @@ func NewPanelDdbReadUsage(table string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
-						"TableName": table,
+						"TableName": table.TableName,
 					},
 					Expression: "",
 					Id:         "m1",
@@ -76,10 +76,10 @@ func NewPanelDdbReadUsage(table string) PanelFactory {
 	}
 }
 
-func NewPanelDdbReadThrottles(table string) PanelFactory {
+func NewPanelDdbReadThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -96,7 +96,7 @@ func NewPanelDdbReadThrottles(table string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "GetItem",
 					Dimensions: map[string]string{
-						"TableName": table,
+						"TableName": table.TableName,
 						"Operation": "GetItem",
 					},
 					MatchExact: true,
@@ -111,7 +111,7 @@ func NewPanelDdbReadThrottles(table string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Scan",
 					Dimensions: map[string]string{
-						"TableName": table,
+						"TableName": table.TableName,
 						"Operation": "Scan",
 					},
 					MatchExact: true,
@@ -126,7 +126,7 @@ func NewPanelDdbReadThrottles(table string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Query",
 					Dimensions: map[string]string{
-						"TableName": table,
+						"TableName": table.TableName,
 						"Operation": "Query",
 					},
 					MatchExact: true,
@@ -141,7 +141,7 @@ func NewPanelDdbReadThrottles(table string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "BatchGetItem",
 					Dimensions: map[string]string{
-						"TableName": table,
+						"TableName": table.TableName,
 						"Operation": "BatchGetItem",
 					},
 					MatchExact: true,
@@ -161,10 +161,10 @@ func NewPanelDdbReadThrottles(table string) PanelFactory {
 	}
 }
 
-func NewPanelDdbWriteUsage(table string) PanelFactory {
+func NewPanelDdbWriteUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -184,7 +184,7 @@ func NewPanelDdbWriteUsage(table string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Provisioned",
 					Dimensions: map[string]string{
-						"TableName": table,
+						"TableName": table.TableName,
 					},
 					Expression: "",
 					Id:         "m2",
@@ -201,7 +201,7 @@ func NewPanelDdbWriteUsage(table string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
-						"TableName": table,
+						"TableName": table.TableName,
 					},
 					Expression: "",
 					Id:         "m1",
@@ -239,10 +239,10 @@ func NewPanelDdbWriteUsage(table string) PanelFactory {
 	}
 }
 
-func NewPanelDdbWriteThrottles(table string) PanelFactory {
+func NewPanelDdbWriteThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -259,7 +259,7 @@ func NewPanelDdbWriteThrottles(table string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "PutItem",
 					Dimensions: map[string]string{
-						"TableName": table,
+						"TableName": table.TableName,
 						"Operation": "PutItem",
 					},
 					MatchExact: true,
@@ -274,7 +274,7 @@ func NewPanelDdbWriteThrottles(table string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "UpdateItem",
 					Dimensions: map[string]string{
-						"TableName": table,
+						"TableName": table.TableName,
 						"Operation": "UpdateItem",
 					},
 					MatchExact: true,
@@ -289,7 +289,7 @@ func NewPanelDdbWriteThrottles(table string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "DeleteItem",
 					Dimensions: map[string]string{
-						"TableName": table,
+						"TableName": table.TableName,
 						"Operation": "DeleteItem",
 					},
 					MatchExact: true,
@@ -304,7 +304,7 @@ func NewPanelDdbWriteThrottles(table string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "BatchWriteItem",
 					Dimensions: map[string]string{
-						"TableName": table,
+						"TableName": table.TableName,
 						"Operation": "BatchWriteItem",
 					},
 					MatchExact: true,

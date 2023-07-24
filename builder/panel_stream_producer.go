@@ -1,9 +1,9 @@
 package builder
 
-func NewPanelStreamProducerDaemonSizes(producer string) PanelFactory {
+func NewPanelStreamProducerDaemonSizes(producer MetadataStreamProducer) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -19,7 +19,7 @@ func NewPanelStreamProducerDaemonSizes(producer string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Batch Size",
 					Dimensions: map[string]string{
-						"ProducerDaemon": producer,
+						"ProducerDaemon": producer.Name,
 					},
 					MatchExact: false,
 					MetricName: "BatchSize",
@@ -33,7 +33,7 @@ func NewPanelStreamProducerDaemonSizes(producer string) PanelFactory {
 				}, PanelTargetCloudWatch{
 					Alias: "Aggregate Size",
 					Dimensions: map[string]string{
-						"ProducerDaemon": producer,
+						"ProducerDaemon": producer.Name,
 					},
 					MatchExact: false,
 					MetricName: "AggregateSize",
@@ -53,10 +53,10 @@ func NewPanelStreamProducerDaemonSizes(producer string) PanelFactory {
 	}
 }
 
-func NewPanelStreamProducerMessageCount(producer string) PanelFactory {
+func NewPanelStreamProducerMessageCount(producer MetadataStreamProducer) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -72,7 +72,7 @@ func NewPanelStreamProducerMessageCount(producer string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Message Count",
 					Dimensions: map[string]string{
-						"ProducerDaemon": producer,
+						"ProducerDaemon": producer.Name,
 					},
 					MatchExact: false,
 					MetricName: "MessageCount",

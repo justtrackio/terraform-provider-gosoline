@@ -3,7 +3,7 @@ package builder
 func NewPanelElbRequestCount(targetGroupIndex int) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
@@ -40,7 +40,7 @@ func NewPanelElbRequestCount(targetGroupIndex int) PanelFactory {
 func NewPanelElbResponseTime(targetGroupIndex int) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min:  "0",
@@ -81,7 +81,7 @@ func NewPanelElbHttpStatus(targetGroupIndex int) PanelFactory {
 		loadBalancer := resourceNames.TargetGroups[targetGroupIndex].LoadBalancer
 
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
@@ -166,7 +166,7 @@ func NewPanelElbHttpStatus(targetGroupIndex int) PanelFactory {
 func NewPanelElbHealthyHosts(targetGroupIndex int) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
@@ -201,7 +201,7 @@ func NewPanelElbHealthyHosts(targetGroupIndex int) PanelFactory {
 func NewPanelElbRequestCountPerTarget(targetGroupIndex int) PanelFactory {
 	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 		return Panel{
-			Datasource: "CloudWatch",
+			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
