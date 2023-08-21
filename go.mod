@@ -3,7 +3,7 @@ module github.com/justtrackio/terraform-provider-gosoline
 go 1.18
 
 require (
-	github.com/aws/aws-sdk-go-v2 v1.15.0
+	github.com/aws/aws-sdk-go-v2 v1.21.0
 	github.com/aws/aws-sdk-go-v2/config v1.8.2
 	github.com/aws/aws-sdk-go-v2/service/ecs v1.9.1
 	github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2 v1.8.0
@@ -24,7 +24,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.3.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.4.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.7.1 // indirect
-	github.com/aws/smithy-go v1.11.1 // indirect
+	github.com/aws/smithy-go v1.14.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
