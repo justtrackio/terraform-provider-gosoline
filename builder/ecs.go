@@ -112,14 +112,11 @@ func (c *EcsClient) GetTaskDefinitionName(ctx context.Context) (*string, error) 
 	}
 
 	// extract task definition name from task definition revision arn
-	expression, err := regexp.Compile(`task-definition/(.*):\d+`)
-	if err != nil {
-		return nil, fmt.Errorf("failed to compile regex: %w", err)
-	}
+	expression := regexp.MustCompile(`task-definition/(.*):\d+`)
 
 	results := expression.FindStringSubmatch(*taskDefinitionRevisionArn)
 	if len(results) < 2 {
-		return nil, fmt.Errorf("failed to find task definiton name in arn %s", *taskDefinitionRevisionArn)
+		return nil, fmt.Errorf("failed to find task definition name in arn %s", *taskDefinitionRevisionArn)
 	}
 
 	return &results[1], nil

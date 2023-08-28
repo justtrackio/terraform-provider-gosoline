@@ -11,7 +11,10 @@ type ResourceNames struct {
 	EcsTaskDefinition                  string
 	GrafanaCloudWatchDatasourceName    string
 	GrafanaElasticsearchDatasourceName string
+	KubernetesNamespace                string
+	KubernetesPod                      string
 	TargetGroups                       []ElbTargetGroup
+	TraefikServiceName                 string
 	Containers                         []string
 }
 

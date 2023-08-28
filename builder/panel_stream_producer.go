@@ -1,9 +1,9 @@
 package builder
 
 func NewPanelStreamProducerDaemonSizes(producer MetadataStreamProducer) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -14,7 +14,7 @@ func NewPanelStreamProducerDaemonSizes(producer MetadataStreamProducer) PanelFac
 				},
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Batch Size",
@@ -23,7 +23,7 @@ func NewPanelStreamProducerDaemonSizes(producer MetadataStreamProducer) PanelFac
 					},
 					MatchExact: false,
 					MetricName: "BatchSize",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -37,7 +37,7 @@ func NewPanelStreamProducerDaemonSizes(producer MetadataStreamProducer) PanelFac
 					},
 					MatchExact: false,
 					MetricName: "AggregateSize",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "B",
 					Region:     "default",
@@ -54,9 +54,9 @@ func NewPanelStreamProducerDaemonSizes(producer MetadataStreamProducer) PanelFac
 }
 
 func NewPanelStreamProducerMessageCount(producer MetadataStreamProducer) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -67,7 +67,7 @@ func NewPanelStreamProducerMessageCount(producer MetadataStreamProducer) PanelFa
 				},
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Message Count",
@@ -76,7 +76,7 @@ func NewPanelStreamProducerMessageCount(producer MetadataStreamProducer) PanelFa
 					},
 					MatchExact: false,
 					MetricName: "MessageCount",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",

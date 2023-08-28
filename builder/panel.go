@@ -1,6 +1,20 @@
 package builder
 
-type PanelFactory func(resourceNames ResourceNames, gridPos PanelGridPos) Panel
+func newPaneSettings(resourceNames ResourceNames, gridPos PanelGridPos, orchestrator string) PanelSettings {
+	return PanelSettings{
+		resourceNames: resourceNames,
+		gridPos:       gridPos,
+		orchestrator:  orchestrator,
+	}
+}
+
+type PanelSettings struct {
+	resourceNames ResourceNames
+	gridPos       PanelGridPos
+	orchestrator  string
+}
+
+type PanelFactory func(settings PanelSettings) Panel
 
 type Panel struct {
 	Collapsed   bool             `json:"collapsed,omitempty"`

@@ -1,9 +1,9 @@
 package builder
 
 func NewPanelApiServerRequestCount(path string) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
@@ -12,7 +12,7 @@ func NewPanelApiServerRequestCount(path string) PanelFactory {
 					NewColorPropertyOverwrite("Requests", "semi-dark-blue"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Requests",
@@ -21,7 +21,7 @@ func NewPanelApiServerRequestCount(path string) PanelFactory {
 					},
 					MatchExact: true,
 					MetricName: "ApiRequestCount",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
 					Statistics: []string{
@@ -37,9 +37,9 @@ func NewPanelApiServerRequestCount(path string) PanelFactory {
 }
 
 func NewPanelApiServerResponseTime(path string) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min:  "0",
@@ -49,7 +49,7 @@ func NewPanelApiServerResponseTime(path string) PanelFactory {
 					NewColorPropertyOverwrite("Requests", "semi-dark-blue"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Response Time",
@@ -58,7 +58,7 @@ func NewPanelApiServerResponseTime(path string) PanelFactory {
 					},
 					MatchExact: true,
 					MetricName: "ApiRequestResponseTime",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
 					Statistics: []string{
@@ -74,9 +74,9 @@ func NewPanelApiServerResponseTime(path string) PanelFactory {
 }
 
 func NewPanelApiServerHttpStatus(path string) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
@@ -88,7 +88,7 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 					NewColorPropertyOverwrite("HTTP 5XX", "dark-red"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "HTTP 2XX",
@@ -97,7 +97,7 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 					},
 					MatchExact: true,
 					MetricName: "ApiStatus2XX",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
 					Statistics: []string{
@@ -111,7 +111,7 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 					},
 					MatchExact: true,
 					MetricName: "ApiStatus3XX",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "B",
 					Region:     "default",
 					Statistics: []string{
@@ -125,7 +125,7 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 					},
 					MatchExact: true,
 					MetricName: "ApiStatus4XX",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "C",
 					Region:     "default",
 					Statistics: []string{
@@ -139,7 +139,7 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 					},
 					MatchExact: true,
 					MetricName: "ApiStatus5XX",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "D",
 					Region:     "default",
 					Statistics: []string{

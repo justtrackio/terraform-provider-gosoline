@@ -1,9 +1,9 @@
 package builder
 
 func NewPanelDdbReadUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -16,7 +16,7 @@ func NewPanelDdbReadUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 					NewColorPropertyOverwrite("Consumed", "super-light-blue"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Provisioned",
@@ -77,9 +77,9 @@ func NewPanelDdbReadUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 }
 
 func NewPanelDdbReadThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -91,7 +91,7 @@ func NewPanelDdbReadThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory 
 				},
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "GetItem",
@@ -162,9 +162,9 @@ func NewPanelDdbReadThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory 
 }
 
 func NewPanelDdbWriteUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -179,7 +179,7 @@ func NewPanelDdbWriteUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 					NewColorPropertyOverwrite("Consumed", "super-light-blue"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Provisioned",
@@ -240,9 +240,9 @@ func NewPanelDdbWriteUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 }
 
 func NewPanelDdbWriteThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -254,7 +254,7 @@ func NewPanelDdbWriteThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory
 				},
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "PutItem",

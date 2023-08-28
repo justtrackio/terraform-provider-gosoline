@@ -3,9 +3,11 @@ package builder
 import "fmt"
 
 const (
-	DashboadWidth = 24
-	PanelWidth    = 12
-	PanelHeight   = 8
+	DashboadWidth          = 24
+	PanelWidth             = 12
+	PanelHeight            = 8
+	orchestratorEcs        = "ecs"
+	orchestratorKubernetes = "kubernetes"
 )
 
 type Dashboard struct {
@@ -16,12 +18,14 @@ type Dashboard struct {
 type DashboardBuilder struct {
 	resourceNames  ResourceNames
 	panelFactories []PanelFactory
+	orchestrator   string
 }
 
-func NewDashboardBuilder(resourceNames ResourceNames) *DashboardBuilder {
+func NewDashboardBuilder(resourceNames ResourceNames, orchestrator string) *DashboardBuilder {
 	return &DashboardBuilder{
 		resourceNames:  resourceNames,
 		panelFactories: make([]PanelFactory, 0),
+		orchestrator:   orchestrator,
 	}
 }
 
@@ -42,6 +46,19 @@ func (d *DashboardBuilder) AddElbTargetGroup(targetGroupIndex int) {
 	d.AddPanel(NewPanelElbHttpStatus(targetGroupIndex))
 	d.AddPanel(NewPanelElbHealthyHosts(targetGroupIndex))
 	d.AddPanel(NewPanelElbRequestCountPerTarget(targetGroupIndex))
+}
+
+func (d *DashboardBuilder) AddTraefikService() {
+	if d.orchestrator != orchestratorKubernetes {
+		return
+	}
+
+	d.AddPanel(NewPanelRow("Traefik"))
+	d.AddPanel(NewPanelTraefikRequestCount)
+	d.AddPanel(NewPanelTraefikResponseTime)
+	d.AddPanel(NewPanelTraefikHttpStatus)
+	d.AddPanel(NewPanelKubernetesHealthyPods)
+	d.AddPanel(NewPanelTraefikRequestCountPerTarget)
 }
 
 func (d *DashboardBuilder) AddApiServerHandler(method string, path string) {
@@ -142,14 +159,24 @@ func (d *DashboardBuilder) Build() Dashboard {
 		}
 	}
 
+	var dashboardTitle string
+	switch d.orchestrator {
+	case orchestratorEcs:
+		dashboardTitle = d.resourceNames.EcsTaskDefinition
+	case orchestratorKubernetes:
+		dashboardTitle = d.resourceNames.KubernetesPod
+	}
+
 	return Dashboard{
-		Title:  d.resourceNames.EcsTaskDefinition,
+		Title:  dashboardTitle,
 		Panels: panels,
 	}
 }
 
 func (d *DashboardBuilder) buildPanel(factory PanelFactory, x int, y int) Panel {
-	panel := factory(d.resourceNames, NewPanelGridPos(PanelHeight, PanelWidth, x, y))
+	panelGridPos := NewPanelGridPos(PanelHeight, PanelWidth, x, y)
+	settings := newPaneSettings(d.resourceNames, panelGridPos, d.orchestrator)
+	panel := factory(settings)
 
 	if panel.FieldConfig.Defaults.Custom.AxisPlacement == "" {
 		panel.FieldConfig.Defaults.Custom.AxisPlacement = "right"

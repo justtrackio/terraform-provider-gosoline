@@ -69,16 +69,16 @@ func (a *ApplicationDashboardDefinitionDatasourceType) GetSchema(_ context.Conte
 
 func (a *ApplicationDashboardDefinitionDatasourceType) NewDataSource(_ context.Context, provider tfsdk.Provider) (tfsdk.DataSource, diag.Diagnostics) {
 	return &ApplicationDashboardDefinitionDataSource{
-		metadataReader:                provider.(*GosolineProvider).metadataReader,
-		resourceNamePatterns:          provider.(*GosolineProvider).resourceNamePatterns,
-		additionalAugmentReplacements: provider.(*GosolineProvider).additionalAugmentReplacements,
+		metadataReader:       provider.(*GosolineProvider).metadataReader,
+		resourceNamePatterns: provider.(*GosolineProvider).resourceNamePatterns,
+		orchestrator:         provider.(*GosolineProvider).orchestrator,
 	}, nil
 }
 
 type ApplicationDashboardDefinitionDataSource struct {
-	metadataReader                *builder.MetadataReader
-	resourceNamePatterns          ResourceNamePatterns
-	additionalAugmentReplacements map[string]string
+	metadataReader       *builder.MetadataReader
+	resourceNamePatterns ResourceNamePatterns
+	orchestrator         string
 }
 
 func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, request tfsdk.ReadDataSourceRequest, response *tfsdk.ReadDataSourceResponse) {
@@ -89,52 +89,60 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 
 	var err error
 	var metadata *builder.MetadataApplication
-	var ecsClient *builder.EcsClient
-	var targetGroups []builder.ElbTargetGroup
-
 	if metadata, err = a.metadataReader.ReadMetadata(state.AppId()); err != nil {
 		response.Diagnostics.AddError("can not get metadata", err.Error())
 		return
 	}
 
+	// Always available
 	cloudwatchNamespace := builder.Augment(a.resourceNamePatterns.CloudwatchNamespace, state.AppId())
-	ecsClusterName := builder.Augment(a.resourceNamePatterns.EcsCluster, state.AppId())
-	ecsServiceName := builder.Augment(a.resourceNamePatterns.EcsService, state.AppId())
 	grafanaCloudWatchDatasourceName := builder.Augment(a.resourceNamePatterns.GrafanaCloudWatchDatasource, state.AppId())
 	grafanaElasticsearchDatasourceName := builder.Augment(a.resourceNamePatterns.GrafanaElasticsearchDatasource, state.AppId())
 
-	if ecsClient, err = builder.NewEcsClient(ctx, ecsClusterName, ecsServiceName); err != nil {
-		response.Diagnostics.AddError("can not get ecs client", err.Error())
-		return
-	}
+	// only available when orchestrator is ecs => ECS/EC2-LB+TG related
+	var targetGroups []builder.ElbTargetGroup
+	var ecsTaskDefinitionName string
+	var ecsClusterName string
+	var ecsServiceName string
 
-	if targetGroups, err = ecsClient.GetElbTargetGroups(ctx); err != nil {
-		response.Diagnostics.AddError("can not get target groups", err.Error())
-		return
-	}
+	// only available when orchestrator is kubernetes => Kubernetes/Traefik related
+	var kubernetesNamespace string
+	var kubernetesPod string
+	var traefikServiceName string
 
 	containers := make([]string, 0)
 	diags = state.Containers.ElementsAs(ctx, &containers, false)
 	response.Diagnostics.Append(diags...)
 
-	ecsTaskDefinitionName, err := ecsClient.GetTaskDefinitionName(ctx)
-	if err != nil {
-		response.Diagnostics.AddError("can not get ecs task definition name", err.Error())
-		return
+	switch orchestrator := a.orchestrator; orchestrator {
+	case orchestratorEcs:
+		ecsClusterName = builder.Augment(a.resourceNamePatterns.EcsCluster, state.AppId())
+		ecsServiceName = builder.Augment(a.resourceNamePatterns.EcsService, state.AppId())
+		targetGroups, ecsTaskDefinitionName, err = getEc2AndEcsData(ctx, response, ecsClusterName, ecsServiceName)
+		if err != nil {
+			return
+		}
+	case orchestratorKubernetes:
+		kubernetesNamespace = builder.Augment(a.resourceNamePatterns.KubernetesNamespace, state.AppId())
+		kubernetesPod = builder.Augment(a.resourceNamePatterns.KubernetesPod, state.AppId())
+		traefikServiceName = builder.Augment(a.resourceNamePatterns.TraefikServiceName, state.AppId())
 	}
 
 	resourceNames := builder.ResourceNames{
 		CloudwatchNamespace:                cloudwatchNamespace,
 		EcsCluster:                         ecsClusterName,
 		EcsService:                         ecsServiceName,
-		EcsTaskDefinition:                  *ecsTaskDefinitionName,
+		EcsTaskDefinition:                  ecsTaskDefinitionName,
 		GrafanaCloudWatchDatasourceName:    grafanaCloudWatchDatasourceName,
 		GrafanaElasticsearchDatasourceName: grafanaElasticsearchDatasourceName,
+		KubernetesNamespace:                kubernetesNamespace,
+		KubernetesPod:                      kubernetesPod,
+		TraefikServiceName:                 traefikServiceName,
 		TargetGroups:                       targetGroups,
 		Containers:                         containers,
 	}
 
-	db := builder.NewDashboardBuilder(resourceNames)
+	db := builder.NewDashboardBuilder(resourceNames, a.orchestrator)
 	db.AddServiceAndTask()
 	db.AddPanel(builder.NewPanelRow("Errors & Warnings"))
 	db.AddPanel(builder.NewPanelError)
@@ -144,6 +152,8 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 	for i := range targetGroups {
 		db.AddElbTargetGroup(i)
 	}
+
+	db.AddTraefikService()
 
 	for _, route := range metadata.ApiServer.Routes {
 		if route.Path == "/health" {
@@ -201,4 +211,29 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 
 	diags = response.State.Set(ctx, state)
 	response.Diagnostics.Append(diags...)
+}
+
+func getEc2AndEcsData(ctx context.Context, response *tfsdk.ReadDataSourceResponse, ecsClusterName string, ecsServiceName string) ([]builder.ElbTargetGroup, string, error) {
+	var targetGroups []builder.ElbTargetGroup
+	var ecsTaskDefinitionName *string
+
+	ecsClient, err := builder.NewEcsClient(ctx, ecsClusterName, ecsServiceName)
+	if err != nil {
+		response.Diagnostics.AddError("can not get ecs client", err.Error())
+		return nil, "", err
+	}
+
+	targetGroups, err = ecsClient.GetElbTargetGroups(ctx)
+	if err != nil {
+		response.Diagnostics.AddError("can not get target groups", err.Error())
+		return nil, "", err
+	}
+
+	ecsTaskDefinitionName, err = ecsClient.GetTaskDefinitionName(ctx)
+	if err != nil {
+		response.Diagnostics.AddError("can not get ecs task definition name", err.Error())
+		return nil, "", err
+	}
+
+	return targetGroups, *ecsTaskDefinitionName, err
 }

@@ -1,9 +1,9 @@
 package builder
 
 func NewPanelSqsMessagesVisible(queue MetadataCloudAwsSqsQueue) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(queue.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(queue.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -15,7 +15,7 @@ func NewPanelSqsMessagesVisible(queue MetadataCloudAwsSqsQueue) PanelFactory {
 				},
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "",
@@ -43,9 +43,9 @@ func NewPanelSqsMessagesVisible(queue MetadataCloudAwsSqsQueue) PanelFactory {
 }
 
 func NewPanelSqsTraffic(queue MetadataCloudAwsSqsQueue) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(queue.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(queue.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -57,7 +57,7 @@ func NewPanelSqsTraffic(queue MetadataCloudAwsSqsQueue) PanelFactory {
 				},
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "",
@@ -119,9 +119,9 @@ func NewPanelSqsTraffic(queue MetadataCloudAwsSqsQueue) PanelFactory {
 }
 
 func NewPanelSqsMessageSize(queue MetadataCloudAwsSqsQueue) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(queue.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(queue.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -134,7 +134,7 @@ func NewPanelSqsMessageSize(queue MetadataCloudAwsSqsQueue) PanelFactory {
 				},
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Average",

@@ -1,0 +1,122 @@
+run:
+  concurrency: 4
+  timeout: 5m
+  issues-exit-code: 1
+  tests: true
+  build-tags:
+  skip-dirs:
+  skip-files:
+  modules-download-mode: readonly
+
+output:
+  format: tab
+  print-issued-lines: true
+  print-linter-name: true
+
+linters-settings:
+  dupl:
+    # tokens count to trigger issue
+    threshold: 100
+
+  funlen:
+    lines: 60
+    statements: 40
+  goconst:
+    # minimal length of string constant, 3 by default
+    min-len: 3
+    # minimal occurrences count to trigger, 3 by default
+    min-occurrences: 2
+
+  gocritic:
+    enabled-checks:
+    disabled-checks:
+    enabled-tags:
+      - diagnostic
+      - style
+      - experimental
+      - opinionated
+    disabled-tags:
+    settings:
+
+  nestif:
+    # minimal complexity of if statements to report, 5 by default
+    min-complexity: 4
+
+  godox:
+    # Report any comments starting with keywords, this is useful for TODO or FIXME comments that
+    # might be left in the code accidentally and should be resolved before merging.
+    keywords:
+      - TODO
+      - BUG
+      - FIXME
+
+  lll:
+    # max line length, lines longer will be reported. Default is 120.
+    # '\t' is counted as 1 character by default, and can be changed with the tab-width option
+    line-length: 150
+    # tab width in spaces. Default to 1.
+    tab-width: 1
+
+  unparam:
+    # Inspect exported functions, default is false. Set to true if no external program/library imports your code.
+    # XXX: if you enable this setting, unparam will report a lot of false-positives in text editors:
+    # if it's called for subdir of a project it can't find external interfaces. All text editor integrations
+    # with golangci-lint call it on a directory with the changed file.
+    check-exported: true
+
+linters:
+  enable:
+    - govet
+    - godox # prevent leaving todos, fixmes, etc in the code
+    - funlen # functions longer than n lines will be reported
+    #    - dupl
+    - misspell
+    - nestif
+    #    - cyclop # cyclomatic complexity
+    - staticcheck
+    #    - lll # max line length, lines longer will be reported
+    - dupword # prevent from having "there are no no values"
+    #    - nilnil # prevent return nil, nil
+    #    - nosprintfhostport # prevent host port via fmt.Println
+    #    - ireturn # but maybe difficult to integrate because we return interface in multiple places
+    #    - forcetypeassert # checking type of type assertion, not sure because of a lot of error messages
+    #    - errname # checks that errors comes with golang convenient way
+    #    - unused # unused variables
+    #    - unparam
+    #    - unconvert # unnecessary conversion
+    - gocritic # Almost 100 diagnostics that check for bugs, performance and style issues
+  #    - goconst # checks occurrence of something and proposes to make it constant
+  #    - nakedret # find naked returns in functions
+  #    - depth # Count the maxdepth of go functions. It's helpful to see if a function needs to be splitted into several smaller functions
+  #    - gochecknoinits # Check that no inits functions are present in Go code
+  #    - errcheck # errcheck is a program for checking for unchecked errors in Go code. These unchecked errors can be critical bugs in some cases
+  #    - ineffassign # Detects when assignments to existing variables are not used
+  #    - dogsled # Checks if all structure fields are initialized
+  #    - exhaustruct # Checks if all structure fields are initialized
+  #    - exportloopref # checks for pointers to enclosing loop variables
+  #    - gocognit # Computes and checks the cognitive complexity of functions
+  #    - gosec # Inspects source code for security problems
+  #    - importas # Enforces consistent import aliases
+  #    - nlreturn # nlreturn checks for a new line before return and branch statements to increase code clarity
+  #    - noctx # finds sending http request without context.Context
+
+  enable-all: false
+  disable:
+  disable-all: true
+  presets:
+  fast: false
+
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - ireturn
+        - errcheck
+        - gosec
+        - funlen
+        - dupl
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  new: false
