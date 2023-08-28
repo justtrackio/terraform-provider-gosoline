@@ -3,9 +3,9 @@ package builder
 import "fmt"
 
 func NewPanelKinesisKinsumerMillisecondsBehind(stream MetadataCloudAwsKinesisKinsumer) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -17,7 +17,7 @@ func NewPanelKinesisKinsumerMillisecondsBehind(stream MetadataCloudAwsKinesisKin
 				},
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "",
@@ -28,7 +28,7 @@ func NewPanelKinesisKinsumerMillisecondsBehind(stream MetadataCloudAwsKinesisKin
 					Id:         "",
 					MatchExact: false,
 					MetricName: "MillisecondsBehind",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -45,9 +45,9 @@ func NewPanelKinesisKinsumerMillisecondsBehind(stream MetadataCloudAwsKinesisKin
 }
 
 func NewPanelKinesisKinsumerMessageCounts(stream MetadataCloudAwsKinesisKinsumer) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -61,7 +61,7 @@ func NewPanelKinesisKinsumerMessageCounts(stream MetadataCloudAwsKinesisKinsumer
 					NewColorPropertyOverwrite("FailedRecords", "dark-red"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "ReadRecords",
@@ -70,7 +70,7 @@ func NewPanelKinesisKinsumerMessageCounts(stream MetadataCloudAwsKinesisKinsumer
 					},
 					MatchExact: false,
 					MetricName: "ReadRecords",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -85,7 +85,7 @@ func NewPanelKinesisKinsumerMessageCounts(stream MetadataCloudAwsKinesisKinsumer
 					},
 					MatchExact: false,
 					MetricName: "FailedRecords",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "B",
 					Region:     "default",
@@ -102,9 +102,9 @@ func NewPanelKinesisKinsumerMessageCounts(stream MetadataCloudAwsKinesisKinsumer
 }
 
 func NewPanelKinesisKinsumerReadOperations(stream MetadataCloudAwsKinesisKinsumer) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -117,7 +117,7 @@ func NewPanelKinesisKinsumerReadOperations(stream MetadataCloudAwsKinesisKinsume
 					NewColorPropertyOverwrite("ReadCount Limit", "dark-red"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Dimensions: map[string]string{
@@ -127,7 +127,7 @@ func NewPanelKinesisKinsumerReadOperations(stream MetadataCloudAwsKinesisKinsume
 					Hide:       true,
 					MatchExact: true,
 					MetricName: "ReadRecords",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
 					Statistics: []string{
@@ -142,7 +142,7 @@ func NewPanelKinesisKinsumerReadOperations(stream MetadataCloudAwsKinesisKinsume
 					Id:         "m1",
 					MatchExact: true,
 					MetricName: "ReadCount",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "B",
 					Region:     "default",
 					Statistics: []string{
@@ -179,9 +179,9 @@ func NewPanelKinesisKinsumerReadOperations(stream MetadataCloudAwsKinesisKinsume
 }
 
 func NewPanelKinesisKinsumerProcessDuration(stream MetadataCloudAwsKinesisKinsumer) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -191,7 +191,7 @@ func NewPanelKinesisKinsumerProcessDuration(stream MetadataCloudAwsKinesisKinsum
 					Unit: "ms",
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Maximum",
@@ -201,7 +201,7 @@ func NewPanelKinesisKinsumerProcessDuration(stream MetadataCloudAwsKinesisKinsum
 					Id:         "m0",
 					MatchExact: true,
 					MetricName: "ProcessDuration",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
 					Statistics: []string{
@@ -216,7 +216,7 @@ func NewPanelKinesisKinsumerProcessDuration(stream MetadataCloudAwsKinesisKinsum
 					Id:         "m1",
 					MatchExact: true,
 					MetricName: "ProcessDuration",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "B",
 					Region:     "default",
 					Statistics: []string{
@@ -232,9 +232,9 @@ func NewPanelKinesisKinsumerProcessDuration(stream MetadataCloudAwsKinesisKinsum
 }
 
 func NewPanelKinesisStreamSuccessRate(stream KinesisStreamAware) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -245,7 +245,7 @@ func NewPanelKinesisStreamSuccessRate(stream KinesisStreamAware) PanelFactory {
 					Unit: "percent",
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Dimensions: map[string]string{
@@ -324,9 +324,9 @@ func NewPanelKinesisStreamSuccessRate(stream KinesisStreamAware) PanelFactory {
 }
 
 func NewPanelKinesisStreamGetRecordsBytes(stream KinesisStreamAware) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -340,7 +340,7 @@ func NewPanelKinesisStreamGetRecordsBytes(stream KinesisStreamAware) PanelFactor
 					NewColorPropertyOverwrite("GetRecordsBytes", "super-light-blue"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "GetRecordsBytes",
@@ -379,9 +379,9 @@ func NewPanelKinesisStreamGetRecordsBytes(stream KinesisStreamAware) PanelFactor
 }
 
 func NewPanelKinesisStreamIncomingDataBytes(stream KinesisStreamAware) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -395,7 +395,7 @@ func NewPanelKinesisStreamIncomingDataBytes(stream KinesisStreamAware) PanelFact
 					NewColorPropertyOverwrite("IncomingBytes", "super-light-blue"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "IncomingBytes",
@@ -432,9 +432,9 @@ func NewPanelKinesisStreamIncomingDataBytes(stream KinesisStreamAware) PanelFact
 }
 
 func NewPanelKinesisStreamIncomingDataCount(stream KinesisStreamAware) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -447,7 +447,7 @@ func NewPanelKinesisStreamIncomingDataCount(stream KinesisStreamAware) PanelFact
 					NewColorPropertyOverwrite("IncomingRecords", "super-light-blue"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "IncomingRecords",
@@ -484,9 +484,9 @@ func NewPanelKinesisStreamIncomingDataCount(stream KinesisStreamAware) PanelFact
 }
 
 func NewPanelKinesisRecordWriterPutRecordsCount(stream MetadataCloudAwsKinesisRecordWriter) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -500,7 +500,7 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream MetadataCloudAwsKinesisRe
 					NewColorPropertyOverwrite("PutRecordsFailure", "dark-red"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "PutRecords",
@@ -509,7 +509,7 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream MetadataCloudAwsKinesisRe
 					},
 					MatchExact: false,
 					MetricName: "PutRecords",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -524,7 +524,7 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream MetadataCloudAwsKinesisRe
 					},
 					MatchExact: false,
 					MetricName: "PutRecordsFailure",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "B",
 					Region:     "default",
@@ -541,9 +541,9 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream MetadataCloudAwsKinesisRe
 }
 
 func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream MetadataCloudAwsKinesisRecordWriter) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -554,7 +554,7 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream MetadataCloudAwsKines
 				},
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Batch Size",
@@ -563,7 +563,7 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream MetadataCloudAwsKines
 					},
 					MatchExact: false,
 					MetricName: "PutRecordsBatchSize",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -580,7 +580,7 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream MetadataCloudAwsKines
 					Id:         "m0",
 					MatchExact: true,
 					MetricName: "PutRecords",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "B",
 					Region:     "default",
@@ -608,9 +608,9 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream MetadataCloudAwsKines
 }
 
 func NewPanelKinesisStreamRecordSize(stream KinesisStreamAware) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
+			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -621,7 +621,7 @@ func NewPanelKinesisStreamRecordSize(stream KinesisStreamAware) PanelFactory {
 				},
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "IncomingBytes",

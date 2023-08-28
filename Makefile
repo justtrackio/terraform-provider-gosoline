@@ -2,7 +2,7 @@ TEST?=$$(go list ./... | grep -v 'vendor')
 HOSTNAME=terraform.local
 NAMESPACE=justtrackio
 NAME=gosoline
-VERSION=1.0.0
+VERSION=1.1.0
 BINARY=terraform-provider-${NAME}_v${VERSION}
 OS_ARCH=linux_amd64
 

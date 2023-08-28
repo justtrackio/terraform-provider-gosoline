@@ -3,9 +3,9 @@ package builder
 import "fmt"
 
 func NewPanelStreamConsumerProcessedCount(consumer MetadataStreamConsumer) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -18,7 +18,7 @@ func NewPanelStreamConsumerProcessedCount(consumer MetadataStreamConsumer) Panel
 					NewColorPropertyOverwrite("Error", "dark-red"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Processed",
@@ -29,7 +29,7 @@ func NewPanelStreamConsumerProcessedCount(consumer MetadataStreamConsumer) Panel
 					Id:         "m0",
 					MatchExact: true,
 					MetricName: "ProcessedCount",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -46,7 +46,7 @@ func NewPanelStreamConsumerProcessedCount(consumer MetadataStreamConsumer) Panel
 					Id:         "m1",
 					MatchExact: true,
 					MetricName: "Error",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "B",
 					Region:     "default",
@@ -63,9 +63,9 @@ func NewPanelStreamConsumerProcessedCount(consumer MetadataStreamConsumer) Panel
 }
 
 func NewPanelStreamConsumerProcessDuration(consumer MetadataStreamConsumer) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -75,7 +75,7 @@ func NewPanelStreamConsumerProcessDuration(consumer MetadataStreamConsumer) Pane
 					Unit: "ms",
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Average",
@@ -86,7 +86,7 @@ func NewPanelStreamConsumerProcessDuration(consumer MetadataStreamConsumer) Pane
 					Id:         "m0",
 					MatchExact: true,
 					MetricName: "Duration",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -103,9 +103,9 @@ func NewPanelStreamConsumerProcessDuration(consumer MetadataStreamConsumer) Pane
 }
 
 func NewPanelStreamConsumerRetryActions(consumer MetadataStreamConsumer) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -114,7 +114,7 @@ func NewPanelStreamConsumerRetryActions(consumer MetadataStreamConsumer) PanelFa
 					Min: "0",
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Processed",
@@ -125,7 +125,7 @@ func NewPanelStreamConsumerRetryActions(consumer MetadataStreamConsumer) PanelFa
 					Id:         "m0",
 					MatchExact: true,
 					MetricName: "RetryGetCount",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "A",
 					Region:     "default",
@@ -142,7 +142,7 @@ func NewPanelStreamConsumerRetryActions(consumer MetadataStreamConsumer) PanelFa
 					Id:         "m1",
 					MatchExact: true,
 					MetricName: "RetryPutCount",
-					Namespace:  resourceNames.CloudwatchNamespace,
+					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					Period:     "",
 					RefId:      "B",
 					Region:     "default",

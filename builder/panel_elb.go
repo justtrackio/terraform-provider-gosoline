@@ -1,9 +1,9 @@
 package builder
 
 func NewPanelElbRequestCount(targetGroupIndex int) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
@@ -12,13 +12,13 @@ func NewPanelElbRequestCount(targetGroupIndex int) PanelFactory {
 					NewColorPropertyOverwrite("Requests", "semi-dark-blue"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Requests",
 					Dimensions: map[string]string{
-						"TargetGroup":  resourceNames.TargetGroups[targetGroupIndex].TargetGroup,
-						"LoadBalancer": resourceNames.TargetGroups[targetGroupIndex].LoadBalancer,
+						"TargetGroup":  settings.resourceNames.TargetGroups[targetGroupIndex].TargetGroup,
+						"LoadBalancer": settings.resourceNames.TargetGroups[targetGroupIndex].LoadBalancer,
 					},
 					MatchExact: true,
 					MetricName: "RequestCount",
@@ -38,9 +38,9 @@ func NewPanelElbRequestCount(targetGroupIndex int) PanelFactory {
 }
 
 func NewPanelElbResponseTime(targetGroupIndex int) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min:  "0",
@@ -50,13 +50,13 @@ func NewPanelElbResponseTime(targetGroupIndex int) PanelFactory {
 					NewColorPropertyOverwrite("Requests", "semi-dark-blue"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Response Time",
 					Dimensions: map[string]string{
-						"TargetGroup":  resourceNames.TargetGroups[targetGroupIndex].TargetGroup,
-						"LoadBalancer": resourceNames.TargetGroups[targetGroupIndex].LoadBalancer,
+						"TargetGroup":  settings.resourceNames.TargetGroups[targetGroupIndex].TargetGroup,
+						"LoadBalancer": settings.resourceNames.TargetGroups[targetGroupIndex].LoadBalancer,
 					},
 					MatchExact: true,
 					MetricName: "TargetResponseTime",
@@ -76,12 +76,12 @@ func NewPanelElbResponseTime(targetGroupIndex int) PanelFactory {
 }
 
 func NewPanelElbHttpStatus(targetGroupIndex int) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
-		targetGroup := resourceNames.TargetGroups[targetGroupIndex].TargetGroup
-		loadBalancer := resourceNames.TargetGroups[targetGroupIndex].LoadBalancer
+	return func(settings PanelSettings) Panel {
+		targetGroup := settings.resourceNames.TargetGroups[targetGroupIndex].TargetGroup
+		loadBalancer := settings.resourceNames.TargetGroups[targetGroupIndex].LoadBalancer
 
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
@@ -93,7 +93,7 @@ func NewPanelElbHttpStatus(targetGroupIndex int) PanelFactory {
 					NewColorPropertyOverwrite("HTTP 5XX", "dark-red"),
 				},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "HTTP 2XX",
@@ -164,22 +164,22 @@ func NewPanelElbHttpStatus(targetGroupIndex int) PanelFactory {
 }
 
 func NewPanelElbHealthyHosts(targetGroupIndex int) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
 				},
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Hosts",
 					Dimensions: map[string]string{
-						"TargetGroup":  resourceNames.TargetGroups[targetGroupIndex].TargetGroup,
-						"LoadBalancer": resourceNames.TargetGroups[targetGroupIndex].LoadBalancer,
+						"TargetGroup":  settings.resourceNames.TargetGroups[targetGroupIndex].TargetGroup,
+						"LoadBalancer": settings.resourceNames.TargetGroups[targetGroupIndex].LoadBalancer,
 					},
 					MatchExact: true,
 					MetricName: "HealthyHostCount",
@@ -199,22 +199,22 @@ func NewPanelElbHealthyHosts(targetGroupIndex int) PanelFactory {
 }
 
 func NewPanelElbRequestCountPerTarget(targetGroupIndex int) PanelFactory {
-	return func(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
 				},
 				Overrides: []PanelFieldConfigOverwrite{},
 			},
-			GridPos: gridPos,
+			GridPos: settings.gridPos,
 			Targets: []interface{}{
 				PanelTargetCloudWatch{
 					Alias: "Requests",
 					Dimensions: map[string]string{
-						"TargetGroup":  resourceNames.TargetGroups[targetGroupIndex].TargetGroup,
-						"LoadBalancer": resourceNames.TargetGroups[targetGroupIndex].LoadBalancer,
+						"TargetGroup":  settings.resourceNames.TargetGroups[targetGroupIndex].TargetGroup,
+						"LoadBalancer": settings.resourceNames.TargetGroups[targetGroupIndex].LoadBalancer,
 					},
 					MatchExact: true,
 					MetricName: "RequestCountPerTarget",

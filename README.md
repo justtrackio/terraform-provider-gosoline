@@ -29,6 +29,9 @@ provider "gosoline" {
     ecs_service                      = "{group}-{app}"
     grafana_cloudwatch_datasource    = "cloudwatch-{family}"
     grafana_elasticsearch_datasource = "elasticsearch-{env}-logs-{project}-{family}-{group}-{app}"
+    kubernetes_namespace             = ""
+    kubernetes_pod                   = ""
+    traefik_service_name             = ""
   }
 }
 
@@ -49,7 +52,7 @@ terraform {
   required_providers {
     gosoline = {
       source  = "justtrackio/gosoline"
-      version = "1.0.0"
+      version = "1.1.0"
     }
   }
 }

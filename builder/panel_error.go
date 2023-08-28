@@ -1,8 +1,8 @@
 package builder
 
-func NewPanelError(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+func NewPanelError(settings PanelSettings) Panel {
 	return Panel{
-		Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+		Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 		FieldConfig: PanelFieldConfig{
 			Defaults: PanelFieldConfigDefaults{
 				Custom: PanelFieldConfigDefaultsCustom{
@@ -14,14 +14,14 @@ func NewPanelError(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 				NewColorPropertyOverwrite("Errors", "dark-red"),
 			},
 		},
-		GridPos: gridPos,
+		GridPos: settings.gridPos,
 		Targets: []interface{}{
 			PanelTargetCloudWatch{
 				Alias:      "Errors",
 				Dimensions: map[string]string{},
 				MatchExact: false,
 				MetricName: "error",
-				Namespace:  resourceNames.CloudwatchNamespace,
+				Namespace:  settings.resourceNames.CloudwatchNamespace,
 				Region:     "default",
 				Statistics: []string{
 					"Sum",
@@ -34,9 +34,9 @@ func NewPanelError(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 	}
 }
 
-func NewPanelWarn(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
+func NewPanelWarn(settings PanelSettings) Panel {
 	return Panel{
-		Datasource: resourceNames.GrafanaCloudWatchDatasourceName,
+		Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 		FieldConfig: PanelFieldConfig{
 			Defaults: PanelFieldConfigDefaults{
 				Custom: PanelFieldConfigDefaultsCustom{
@@ -48,13 +48,13 @@ func NewPanelWarn(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 				NewColorPropertyOverwrite("Warnings", "dark-yellow"),
 			},
 		},
-		GridPos: gridPos,
+		GridPos: settings.gridPos,
 		Targets: []interface{}{
 			PanelTargetCloudWatch{
 				Alias:      "Warnings",
 				Dimensions: map[string]string{},
 				MetricName: "warn",
-				Namespace:  resourceNames.CloudwatchNamespace,
+				Namespace:  settings.resourceNames.CloudwatchNamespace,
 				Region:     "default",
 				Statistics: []string{
 					"Sum",

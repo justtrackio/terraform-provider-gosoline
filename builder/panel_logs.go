@@ -1,11 +1,11 @@
 package builder
 
-func NewPanelLogs(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
-	gridPos.W = 24
-	gridPos.H = 16
+func NewPanelLogs(settings PanelSettings) Panel {
+	settings.gridPos.W = 24
+	settings.gridPos.H = 16
 
 	return Panel{
-		Datasource: resourceNames.GrafanaElasticsearchDatasourceName,
+		Datasource: settings.resourceNames.GrafanaElasticsearchDatasourceName,
 		FieldConfig: PanelFieldConfig{
 			Defaults: PanelFieldConfigDefaults{
 				Custom: PanelFieldConfigDefaultsCustom{
@@ -16,7 +16,7 @@ func NewPanelLogs(resourceNames ResourceNames, gridPos PanelGridPos) Panel {
 			},
 			Overrides: []PanelFieldConfigOverwrite{},
 		},
-		GridPos: gridPos,
+		GridPos: settings.gridPos,
 		Targets: []interface{}{
 			PanelTargetElasticsearch{
 				RefId: "A",
