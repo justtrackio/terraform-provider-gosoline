@@ -9,7 +9,7 @@ on:
 jobs:
   go-fmt:
     name: go fmt
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Set up Go 1.20
         uses: actions/setup-go@v3
@@ -27,7 +27,7 @@ jobs:
 
   build:
     name: go build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Set up Go 1.20
         uses: actions/setup-go@v3
@@ -45,7 +45,7 @@ jobs:
 
   go-vet:
     name: static code analysis (go vet)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Set up Go 1.20
         uses: actions/setup-go@v3
@@ -63,7 +63,7 @@ jobs:
 
   golangci-lint:
     name: static code analysis (golangci-lint)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Set up Go 1.20
         uses: actions/setup-go@v3
