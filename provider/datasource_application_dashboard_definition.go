@@ -149,11 +149,13 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 	db.AddPanel(builder.NewPanelWarn)
 	db.AddPanel(builder.NewPanelLogs)
 
-	for i := range targetGroups {
-		db.AddElbTargetGroup(i)
-	}
+	if len(metadata.ApiServer.Routes) > 0 {
+		for i := range targetGroups {
+			db.AddElbTargetGroup(i)
+		}
 
-	db.AddTraefikService()
+		db.AddTraefikService()
+	}
 
 	for _, route := range metadata.ApiServer.Routes {
 		if route.Path == "/health" {
