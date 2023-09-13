@@ -19,7 +19,7 @@ func NewPanelTraefikRequestCount(settings PanelSettings) Panel {
 		Targets: []interface{}{
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{%s}[$__rate_interval]))`, labelFilter),
+				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{%s}[1m])) * 60`, labelFilter),
 				LegendFormat: "Requests",
 				RefId:        "Requests",
 			},
@@ -78,25 +78,25 @@ func NewPanelTraefikHttpStatus(settings PanelSettings) Panel {
 		Targets: []interface{}{
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{code=~"2.*",%s}[$__rate_interval])) or vector(0)`, labelFilter),
+				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{code=~"2.*",%s}[1m])) * 60 or vector(0)`, labelFilter),
 				LegendFormat: "HTTP 2XX",
 				RefId:        "A",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{code=~"3.*",%s}[$__rate_interval])) or vector(0)`, labelFilter),
+				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{code=~"3.*",%s}[1m])) * 60 or vector(0)`, labelFilter),
 				LegendFormat: "HTTP 3XX",
 				RefId:        "B",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{code=~"4.*",%s}[$__rate_interval])) or vector(0)`, labelFilter),
+				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{code=~"4.*",%s}[1m])) * 60 or vector(0)`, labelFilter),
 				LegendFormat: "HTTP 4XX",
 				RefId:        "C",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{code=~"5.*",%s}[$__rate_interval])) or vector(0)`, labelFilter),
+				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{code=~"5.*",%s}[1m])) * 60 or vector(0)`, labelFilter),
 				LegendFormat: "HTTP 5XX",
 				RefId:        "D",
 			},
@@ -147,7 +147,7 @@ func NewPanelTraefikRequestCountPerTarget(settings PanelSettings) Panel {
 		Targets: []interface{}{
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{%s}[$__rate_interval])) by ()/count(kube_pod_status_ready{condition="true",%s})`, labelFilterTraefik, labelFilterPod),
+				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{%s}[1m])) * 60 by ()/count(kube_pod_status_ready{condition="true",%s})`, labelFilterTraefik, labelFilterPod),
 				LegendFormat: "Requests",
 				RefId:        "A",
 			},
