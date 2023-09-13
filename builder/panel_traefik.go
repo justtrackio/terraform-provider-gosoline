@@ -147,7 +147,7 @@ func NewPanelTraefikRequestCountPerTarget(settings PanelSettings) Panel {
 		Targets: []interface{}{
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{%s}[1m])) * 60 by ()/count(kube_pod_status_ready{condition="true",%s})`, labelFilterTraefik, labelFilterPod),
+				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{%s}[1m])) by () * 60/count(kube_pod_status_ready{condition="true",%s})`, labelFilterTraefik, labelFilterPod),
 				LegendFormat: "Requests",
 				RefId:        "A",
 			},
