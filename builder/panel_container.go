@@ -15,7 +15,7 @@ func getKubernetesPodLabelFilter(namespace, podName string) string {
 }
 
 func getEcsContainerLabelFilter(ecsClusterName, ecsTaskDefinitionName, containerName string) string {
-	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster=%q, container_label_com_amazonaws_ecs_task_definition_family=%q, container_label_com_amazonaws_ecs_container_name="%q"`, ecsClusterName, ecsTaskDefinitionName, containerName)
+	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster=%q, container_label_com_amazonaws_ecs_task_definition_family=%q, container_label_com_amazonaws_ecs_container_name=%q`, ecsClusterName, ecsTaskDefinitionName, containerName)
 }
 
 func getEcsTaskDefinitionLabelFilter(ecsClusterName, ecsTaskDefinitionName string) string {
