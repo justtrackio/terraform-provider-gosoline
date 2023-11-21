@@ -202,8 +202,8 @@ func NewPanelServiceUtilization(settings PanelSettings) Panel {
 		memoryAverageQuery = fmt.Sprintf(`avg(sum(container_memory_working_set_bytes{%s, container!="", image!=""} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod)/ on(pod) cluster:namespace:pod_memory:active:kube_pod_container_resource_requests{resource="memory",%s})*100`, podLabelFilter, podLabelFilter, podLabelFilter)
 	}
 
-	cpuAverageLegendFormat := fmt.Sprintf("CPU Average {{%s}}", containerLabel)
-	memoryAverageLegendFormat := fmt.Sprintf("Memory Average {{%s}}", containerLabel)
+	cpuAverageLegendFormat := fmt.Sprintf("CPU Average")
+	memoryAverageLegendFormat := fmt.Sprintf("Memory Average")
 
 	return Panel{
 		Datasource: datasourcePrometheus,
@@ -231,7 +231,7 @@ func NewPanelServiceUtilization(settings PanelSettings) Panel {
 				Unit: "percent",
 			},
 			Overrides: []PanelFieldConfigOverwrite{
-				NewColorPropertyOverwrite("CPU Average ", "light-green"), // the trailing slash seems to be important for grafana to match the override due to omitting the {{foo}} part
+				NewColorPropertyOverwrite("CPU Average", "light-green"),
 			},
 		},
 		GridPos: settings.gridPos,
