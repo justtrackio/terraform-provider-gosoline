@@ -1,6 +1,6 @@
 package builder
 
-func newPaneSettings(resourceNames ResourceNames, gridPos PanelGridPos, orchestrator string) PanelSettings {
+func newPanelSettings(resourceNames *ResourceNames, gridPos PanelGridPos, orchestrator string) PanelSettings {
 	return PanelSettings{
 		resourceNames: resourceNames,
 		gridPos:       gridPos,
@@ -9,7 +9,7 @@ func newPaneSettings(resourceNames ResourceNames, gridPos PanelGridPos, orchestr
 }
 
 type PanelSettings struct {
-	resourceNames ResourceNames
+	resourceNames *ResourceNames
 	gridPos       PanelGridPos
 	orchestrator  string
 }

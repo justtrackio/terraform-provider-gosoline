@@ -22,11 +22,7 @@ func getEcsTaskDefinitionLabelFilter(ecsClusterName, ecsTaskDefinitionName strin
 	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster=%q, container_label_com_amazonaws_ecs_task_definition_family=%q`, ecsClusterName, ecsTaskDefinitionName)
 }
 
-func getLabelAndFilters(settings PanelSettings, containerIndex int) (string, string, string) {
-	var containerLabelFilter string
-	var containerLabel string
-	var podLabelFilter string
-
+func getLabelAndFilters(settings PanelSettings, containerIndex int) (containerLabel string, containerLabelFilter string, podLabelFilter string) {
 	switch settings.orchestrator {
 	case orchestratorEcs:
 		containerLabel = "container_label_com_amazonaws_ecs_container_name"

@@ -29,6 +29,7 @@ func MetadataCloudAttrTypes() map[string]attr.Type {
 type MetadataCloudAws struct {
 	Dynamodb MetadataCloudAwsDynamodb `json:"dynamodb"`
 	Kinesis  MetadataCloudAwsKinesis  `json:"kinesis"`
+	Sns      MetadataCloudAwsSns      `json:"sns"`
 	Sqs      MetadataCloudAwsSqs      `json:"sqs"`
 }
 
@@ -220,6 +221,16 @@ func MetadataCloudAwsKinesisRecordWriterAttrTypes() map[string]attr.Type {
 		"stream_name":      types.StringType,
 		"open_shard_count": types.Int64Type,
 	}
+}
+
+type MetadataCloudAwsSnsTopic struct {
+	AwsClientName string `json:"aws_client_name"`
+	TopicArn      string `json:"topic_arn"`
+	TopicName     string `json:"topic_name"`
+}
+
+type MetadataCloudAwsSns struct {
+	Queues []MetadataCloudAwsSnsTopic `json:"topics"`
 }
 
 type MetadataCloudAwsSqsQueue struct {

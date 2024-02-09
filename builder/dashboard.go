@@ -16,12 +16,12 @@ type Dashboard struct {
 }
 
 type DashboardBuilder struct {
-	resourceNames  ResourceNames
+	resourceNames  *ResourceNames
 	panelFactories []PanelFactory
 	orchestrator   string
 }
 
-func NewDashboardBuilder(resourceNames ResourceNames, orchestrator string) *DashboardBuilder {
+func NewDashboardBuilder(resourceNames *ResourceNames, orchestrator string) *DashboardBuilder {
 	return &DashboardBuilder{
 		resourceNames:  resourceNames,
 		panelFactories: make([]PanelFactory, 0),
@@ -61,13 +61,13 @@ func (d *DashboardBuilder) AddTraefikService() {
 	d.AddPanel(NewPanelTraefikRequestCountPerTarget)
 }
 
-func (d *DashboardBuilder) AddApiServerHandler(method string, path string) {
-	rowTitle := fmt.Sprintf("ApiServer: %s %s", method, path)
+func (d *DashboardBuilder) AddHttpServerHandler(serverName string, handler MetadataHttpServerHandler) {
+	rowTitle := fmt.Sprintf("HttpServer %s: %s %s", serverName, handler.Method, handler.Path)
 
 	d.AddPanel(NewPanelRow(rowTitle))
-	d.AddPanel(NewPanelApiServerRequestCount(path))
-	d.AddPanel(NewPanelApiServerResponseTime(path))
-	d.AddPanel(NewPanelApiServerHttpStatus(path))
+	d.AddPanel(NewPanelHttpServerRequestCount(serverName, handler))
+	d.AddPanel(NewPanelHttpServerResponseTime(serverName, handler))
+	d.AddPanel(NewPanelHttpServerHttpStatus(serverName, handler))
 }
 
 func (d *DashboardBuilder) AddDynamoDbTable(table MetadataCloudAwsDynamodbTable) {
@@ -175,7 +175,7 @@ func (d *DashboardBuilder) Build() Dashboard {
 
 func (d *DashboardBuilder) buildPanel(factory PanelFactory, x int, y int) Panel {
 	panelGridPos := NewPanelGridPos(PanelHeight, PanelWidth, x, y)
-	settings := newPaneSettings(d.resourceNames, panelGridPos, d.orchestrator)
+	settings := newPanelSettings(d.resourceNames, panelGridPos, d.orchestrator)
 	panel := factory(settings)
 
 	if panel.FieldConfig.Defaults.Custom.AxisPlacement == "" {

@@ -6,29 +6,31 @@ import (
 )
 
 type MetadataApplication struct {
-	ApiServer MetadataApiServer `json:"apiserver"`
-	Cloud     MetadataCloud     `json:"cloud"`
-	Stream    MetadataStream    `json:"stream"`
+	Cloud       MetadataCloud       `json:"cloud"`
+	HttpServers MetadataHttpServers `json:"httpservers"`
+	Stream      MetadataStream      `json:"stream"`
 }
 
 func (a MetadataApplication) ToValue() types.Object {
 	return types.Object{
 		AttrTypes: MetadataApplicationAttrTypes(),
 		Attrs: map[string]attr.Value{
-			"apiserver": a.ApiServer.ToValue(),
-			"cloud":     a.Cloud.ToValue(),
-			"stream":    a.Stream.ToValue(),
+			"cloud":       a.Cloud.ToValue(),
+			"httpservers": a.HttpServers.ToValue(),
+			"stream":      a.Stream.ToValue(),
 		},
 	}
 }
 
 func MetadataApplicationAttrTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"apiserver": types.ObjectType{
-			AttrTypes: MetadataApiserverAttrTypes(),
-		},
 		"cloud": types.ObjectType{
 			AttrTypes: MetadataCloudAttrTypes(),
+		},
+		"httpservers": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: MetadataHttpServerAttrTypes(),
+			},
 		},
 		"stream": types.ObjectType{
 			AttrTypes: MetadataStreamAttrTypes(),

@@ -56,6 +56,7 @@ func TestReadApplicationMetadataRetry(t *testing.T) {
 
 		if attempts < 3 {
 			writer.WriteHeader(http.StatusBadGateway)
+
 			return
 		}
 

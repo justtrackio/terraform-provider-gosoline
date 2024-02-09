@@ -33,7 +33,7 @@ func TestEcsDashboardWithError(t *testing.T) {
 		},
 	}
 
-	resourceNames := builder.ResourceNames{
+	resourceNames := &builder.ResourceNames{
 		CloudwatchNamespace:                cloudwatchNamespace,
 		EcsCluster:                         ecsClusterName,
 		EcsService:                         ecsServiceName,
@@ -82,7 +82,7 @@ func TestKubernetesDashboardWithError(t *testing.T) {
 	kubernetesPod := "pod"
 	var targetGroups []builder.ElbTargetGroup
 
-	resourceNames := builder.ResourceNames{
+	resourceNames := &builder.ResourceNames{
 		CloudwatchNamespace:                cloudwatchNamespace,
 		EcsCluster:                         ecsClusterName,
 		EcsService:                         ecsServiceName,
