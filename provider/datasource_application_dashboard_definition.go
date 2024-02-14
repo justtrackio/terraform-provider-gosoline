@@ -89,57 +89,16 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 
 	var err error
 	var metadata *builder.MetadataApplication
+	var resourceNames *builder.ResourceNames
+
 	if metadata, err = a.metadataReader.ReadMetadata(state.AppId()); err != nil {
 		response.Diagnostics.AddError("can not get metadata", err.Error())
+
 		return
 	}
 
-	// Always available
-	cloudwatchNamespace := builder.Augment(a.resourceNamePatterns.CloudwatchNamespace, state.AppId())
-	grafanaCloudWatchDatasourceName := builder.Augment(a.resourceNamePatterns.GrafanaCloudWatchDatasource, state.AppId())
-	grafanaElasticsearchDatasourceName := builder.Augment(a.resourceNamePatterns.GrafanaElasticsearchDatasource, state.AppId())
-
-	// only available when orchestrator is ecs => ECS/EC2-LB+TG related
-	var targetGroups []builder.ElbTargetGroup
-	var ecsTaskDefinitionName string
-	var ecsClusterName string
-	var ecsServiceName string
-
-	// only available when orchestrator is kubernetes => Kubernetes/Traefik related
-	var kubernetesNamespace string
-	var kubernetesPod string
-	var traefikServiceName string
-
-	containers := make([]string, 0)
-	diags = state.Containers.ElementsAs(ctx, &containers, false)
-	response.Diagnostics.Append(diags...)
-
-	switch orchestrator := a.orchestrator; orchestrator {
-	case orchestratorEcs:
-		ecsClusterName = builder.Augment(a.resourceNamePatterns.EcsCluster, state.AppId())
-		ecsServiceName = builder.Augment(a.resourceNamePatterns.EcsService, state.AppId())
-		targetGroups, ecsTaskDefinitionName, err = getEc2AndEcsData(ctx, response, ecsClusterName, ecsServiceName)
-		if err != nil {
-			return
-		}
-	case orchestratorKubernetes:
-		kubernetesNamespace = builder.Augment(a.resourceNamePatterns.KubernetesNamespace, state.AppId())
-		kubernetesPod = builder.Augment(a.resourceNamePatterns.KubernetesPod, state.AppId())
-		traefikServiceName = builder.Augment(a.resourceNamePatterns.TraefikServiceName, state.AppId())
-	}
-
-	resourceNames := builder.ResourceNames{
-		CloudwatchNamespace:                cloudwatchNamespace,
-		EcsCluster:                         ecsClusterName,
-		EcsService:                         ecsServiceName,
-		EcsTaskDefinition:                  ecsTaskDefinitionName,
-		GrafanaCloudWatchDatasourceName:    grafanaCloudWatchDatasourceName,
-		GrafanaElasticsearchDatasourceName: grafanaElasticsearchDatasourceName,
-		KubernetesNamespace:                kubernetesNamespace,
-		KubernetesPod:                      kubernetesPod,
-		TraefikServiceName:                 traefikServiceName,
-		TargetGroups:                       targetGroups,
-		Containers:                         containers,
+	if resourceNames, err = a.getResourceNames(ctx, state, response); err != nil {
+		return
 	}
 
 	db := builder.NewDashboardBuilder(resourceNames, a.orchestrator)
@@ -149,21 +108,7 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 	db.AddPanel(builder.NewPanelWarn)
 	db.AddPanel(builder.NewPanelLogs)
 
-	if len(metadata.ApiServer.Routes) > 0 {
-		for i := range targetGroups {
-			db.AddElbTargetGroup(i)
-		}
-
-		db.AddTraefikService()
-	}
-
-	for _, route := range metadata.ApiServer.Routes {
-		if route.Path == "/health" {
-			continue
-		}
-
-		db.AddApiServerHandler(route.Method, route.Path)
-	}
+	a.addHttpServers(metadata, resourceNames, db)
 
 	for _, consumer := range metadata.Stream.Consumers {
 		db.AddStreamConsumer(consumer)
@@ -215,27 +160,107 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 	response.Diagnostics.Append(diags...)
 }
 
-func getEc2AndEcsData(ctx context.Context, response *tfsdk.ReadDataSourceResponse, ecsClusterName string, ecsServiceName string) ([]builder.ElbTargetGroup, string, error) {
+func (a *ApplicationDashboardDefinitionDataSource) getResourceNames(ctx context.Context, state *ApplicationDashboardDefinitionData, response *tfsdk.ReadDataSourceResponse) (*builder.ResourceNames, error) {
+	var err error
+
+	// Always available
+	cloudwatchNamespace := builder.Augment(a.resourceNamePatterns.CloudwatchNamespace, state.AppId())
+	grafanaCloudWatchDatasourceName := builder.Augment(a.resourceNamePatterns.GrafanaCloudWatchDatasource, state.AppId())
+	grafanaElasticsearchDatasourceName := builder.Augment(a.resourceNamePatterns.GrafanaElasticsearchDatasource, state.AppId())
+
+	// only available when orchestrator is ecs => ECS/EC2-LB+TG related
+	var targetGroups []builder.ElbTargetGroup
+	var ecsTaskDefinitionName string
+	var ecsClusterName string
+	var ecsServiceName string
+
+	// only available when orchestrator is kubernetes => Kubernetes/Traefik related
+	var kubernetesNamespace string
+	var kubernetesPod string
+	var traefikServiceName string
+
+	containers := make([]string, 0)
+	diags := state.Containers.ElementsAs(ctx, &containers, false)
+	response.Diagnostics.Append(diags...)
+
+	switch orchestrator := a.orchestrator; orchestrator {
+	case orchestratorEcs:
+		ecsClusterName = builder.Augment(a.resourceNamePatterns.EcsCluster, state.AppId())
+		ecsServiceName = builder.Augment(a.resourceNamePatterns.EcsService, state.AppId())
+		targetGroups, ecsTaskDefinitionName, err = a.getEc2AndEcsData(ctx, response, ecsClusterName, ecsServiceName)
+
+		if err != nil {
+			return nil, err
+		}
+	case orchestratorKubernetes:
+		kubernetesNamespace = builder.Augment(a.resourceNamePatterns.KubernetesNamespace, state.AppId())
+		kubernetesPod = builder.Augment(a.resourceNamePatterns.KubernetesPod, state.AppId())
+		traefikServiceName = builder.Augment(a.resourceNamePatterns.TraefikServiceName, state.AppId())
+	}
+
+	resourceNames := &builder.ResourceNames{
+		CloudwatchNamespace:                cloudwatchNamespace,
+		EcsCluster:                         ecsClusterName,
+		EcsService:                         ecsServiceName,
+		EcsTaskDefinition:                  ecsTaskDefinitionName,
+		GrafanaCloudWatchDatasourceName:    grafanaCloudWatchDatasourceName,
+		GrafanaElasticsearchDatasourceName: grafanaElasticsearchDatasourceName,
+		KubernetesNamespace:                kubernetesNamespace,
+		KubernetesPod:                      kubernetesPod,
+		TraefikServiceName:                 traefikServiceName,
+		TargetGroups:                       targetGroups,
+		Containers:                         containers,
+	}
+
+	return resourceNames, nil
+}
+
+func (a *ApplicationDashboardDefinitionDataSource) getEc2AndEcsData(ctx context.Context, response *tfsdk.ReadDataSourceResponse, ecsClusterName string, ecsServiceName string) ([]builder.ElbTargetGroup, string, error) {
 	var targetGroups []builder.ElbTargetGroup
 	var ecsTaskDefinitionName *string
 
 	ecsClient, err := builder.NewEcsClient(ctx, ecsClusterName, ecsServiceName)
 	if err != nil {
 		response.Diagnostics.AddError("can not get ecs client", err.Error())
+
 		return nil, "", err
 	}
 
 	targetGroups, err = ecsClient.GetElbTargetGroups(ctx)
 	if err != nil {
 		response.Diagnostics.AddError("can not get target groups", err.Error())
+
 		return nil, "", err
 	}
 
 	ecsTaskDefinitionName, err = ecsClient.GetTaskDefinitionName(ctx)
 	if err != nil {
 		response.Diagnostics.AddError("can not get ecs task definition name", err.Error())
+
 		return nil, "", err
 	}
 
 	return targetGroups, *ecsTaskDefinitionName, err
+}
+
+func (a *ApplicationDashboardDefinitionDataSource) addHttpServers(metadata *builder.MetadataApplication, resourceNames *builder.ResourceNames, db *builder.DashboardBuilder) {
+	if len(metadata.HttpServers) == 0 {
+		return
+	}
+
+	for i := range resourceNames.TargetGroups {
+		db.AddElbTargetGroup(i)
+	}
+
+	db.AddTraefikService()
+
+	for _, server := range metadata.HttpServers {
+		for _, route := range server.Handlers {
+			if route.Path == "/health" {
+				continue
+			}
+
+			db.AddHttpServerHandler(server.Name, route)
+		}
+	}
 }

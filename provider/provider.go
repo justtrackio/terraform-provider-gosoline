@@ -171,7 +171,7 @@ func (p *GosolineProvider) GetSchema(_ context.Context) (tfsdk.Schema, diag.Diag
 										  * {family}
 										  * {group}
 										  * {app}
-									  traefik_service_name: Allows to change the default traefik service name name pattern (default: ` + defaultTraefikServiceNameNamePattern + `)
+									  traefik_service_name: Allows to change the default traefik service name pattern (default: ` + defaultTraefikServiceNameNamePattern + `)
 										  Available placeholders are:
 										  * {project}
 										  * {env}
@@ -195,12 +195,14 @@ func (p *GosolineProvider) Configure(ctx context.Context, request tfsdk.Configur
 	metadataProperties, err := p.getMetadataProperties(ctx, config)
 	if err != nil {
 		diags.AddError("failed to get metadata properties from attributes", err.Error())
+
 		return
 	}
 
 	namepatternProperties, err := p.getNamepatternProperties(ctx, config)
 	if err != nil {
 		diags.AddError("failed to get metadata properties from attributes", err.Error())
+
 		return
 	}
 
@@ -223,6 +225,7 @@ func (p *GosolineProvider) Configure(ctx context.Context, request tfsdk.Configur
 	}
 	if !funk.ContainsString(availableOrchestrators, p.orchestrator) {
 		response.Diagnostics.AddError("invalid operator", fmt.Sprintf("'%s' is not a valid orchestrator, choose between %v", p.orchestrator, availableOrchestrators))
+
 		return
 	}
 
@@ -277,6 +280,7 @@ func (p *GosolineProvider) convertBigFloatToNativeType(ctx context.Context, inpu
 
 	bigIntValue, _ := bigFloatValue.Int64()
 	*dest.(*int) = int(bigIntValue)
+
 	return nil
 }
 

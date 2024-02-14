@@ -84,6 +84,7 @@ func (a *ApplicationMetadataDefinitionDatasource) Read(ctx context.Context, requ
 
 	if metadata, err = a.metadataReader.ReadMetadata(state.AppId()); err != nil {
 		response.Diagnostics.AddError("can not get metadata", err.Error())
+
 		return
 	}
 

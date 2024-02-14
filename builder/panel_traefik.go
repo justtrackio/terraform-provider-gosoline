@@ -6,7 +6,7 @@ func NewPanelTraefikRequestCount(settings PanelSettings) Panel {
 	labelFilter := getTraefikServiceLabelFilter(settings.resourceNames.TraefikServiceName)
 
 	return Panel{
-		Datasource: datasourcePrometheus, // TODO: Do we want to make this overwritable as well?
+		Datasource: datasourcePrometheus,
 		FieldConfig: PanelFieldConfig{
 			Defaults: PanelFieldConfigDefaults{
 				Min: "0",
@@ -32,6 +32,7 @@ func NewPanelTraefikRequestCount(settings PanelSettings) Panel {
 
 func NewPanelTraefikResponseTime(settings PanelSettings) Panel {
 	labelFilter := getTraefikServiceLabelFilter(settings.resourceNames.TraefikServiceName)
+
 	return Panel{
 		Datasource: datasourcePrometheus,
 		FieldConfig: PanelFieldConfig{
@@ -109,6 +110,7 @@ func NewPanelTraefikHttpStatus(settings PanelSettings) Panel {
 
 func NewPanelKubernetesHealthyPods(settings PanelSettings) Panel {
 	labelFilter := getKubernetesPodLabelFilter(settings.resourceNames.KubernetesNamespace, settings.resourceNames.KubernetesPod)
+
 	return Panel{
 		Datasource: datasourcePrometheus,
 		FieldConfig: PanelFieldConfig{
@@ -135,6 +137,7 @@ func NewPanelKubernetesHealthyPods(settings PanelSettings) Panel {
 func NewPanelTraefikRequestCountPerTarget(settings PanelSettings) Panel {
 	labelFilterTraefik := getTraefikServiceLabelFilter(settings.resourceNames.TraefikServiceName)
 	labelFilterPod := getKubernetesPodLabelFilter(settings.resourceNames.KubernetesNamespace, settings.resourceNames.KubernetesPod)
+
 	return Panel{
 		Datasource: datasourcePrometheus,
 		FieldConfig: PanelFieldConfig{

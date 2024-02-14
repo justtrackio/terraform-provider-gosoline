@@ -1,6 +1,6 @@
 package builder
 
-func NewPanelApiServerRequestCount(path string) PanelFactory {
+func NewPanelHttpServerRequestCount(serverName string, handler MetadataHttpServerHandler) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
 			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
@@ -17,10 +17,12 @@ func NewPanelApiServerRequestCount(path string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Requests",
 					Dimensions: map[string]string{
-						"path": path,
+						"Method":     handler.Method,
+						"Path":       handler.Path,
+						"ServerName": serverName,
 					},
 					MatchExact: true,
-					MetricName: "ApiRequestCount",
+					MetricName: "HttpRequestCount",
 					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
@@ -36,7 +38,7 @@ func NewPanelApiServerRequestCount(path string) PanelFactory {
 	}
 }
 
-func NewPanelApiServerResponseTime(path string) PanelFactory {
+func NewPanelHttpServerResponseTime(serverName string, handler MetadataHttpServerHandler) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
 			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
@@ -54,10 +56,12 @@ func NewPanelApiServerResponseTime(path string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "Response Time",
 					Dimensions: map[string]string{
-						"path": path,
+						"Method":     handler.Method,
+						"Path":       handler.Path,
+						"ServerName": serverName,
 					},
 					MatchExact: true,
-					MetricName: "ApiRequestResponseTime",
+					MetricName: "HttpRequestResponseTime",
 					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
@@ -73,7 +77,7 @@ func NewPanelApiServerResponseTime(path string) PanelFactory {
 	}
 }
 
-func NewPanelApiServerHttpStatus(path string) PanelFactory {
+func NewPanelHttpServerHttpStatus(serverName string, handler MetadataHttpServerHandler) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
 			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
@@ -93,10 +97,12 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "HTTP 2XX",
 					Dimensions: map[string]string{
-						"path": path,
+						"Method":     handler.Method,
+						"Path":       handler.Path,
+						"ServerName": serverName,
 					},
 					MatchExact: true,
-					MetricName: "ApiStatus2XX",
+					MetricName: "HttpStatus2XX",
 					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "A",
 					Region:     "default",
@@ -107,10 +113,12 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "HTTP 3XX",
 					Dimensions: map[string]string{
-						"path": path,
+						"Method":     handler.Method,
+						"Path":       handler.Path,
+						"ServerName": serverName,
 					},
 					MatchExact: true,
-					MetricName: "ApiStatus3XX",
+					MetricName: "HttpStatus3XX",
 					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "B",
 					Region:     "default",
@@ -121,10 +129,12 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "HTTP 4XX",
 					Dimensions: map[string]string{
-						"path": path,
+						"Method":     handler.Method,
+						"Path":       handler.Path,
+						"ServerName": serverName,
 					},
 					MatchExact: true,
-					MetricName: "ApiStatus4XX",
+					MetricName: "HttpStatus4XX",
 					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "C",
 					Region:     "default",
@@ -135,10 +145,12 @@ func NewPanelApiServerHttpStatus(path string) PanelFactory {
 				PanelTargetCloudWatch{
 					Alias: "HTTP 5XX",
 					Dimensions: map[string]string{
-						"path": path,
+						"Method":     handler.Method,
+						"Path":       handler.Path,
+						"ServerName": serverName,
 					},
 					MatchExact: true,
-					MetricName: "ApiStatus5XX",
+					MetricName: "HttpStatus5XX",
 					Namespace:  settings.resourceNames.CloudwatchNamespace,
 					RefId:      "D",
 					Region:     "default",
