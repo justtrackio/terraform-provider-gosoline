@@ -7,7 +7,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.26.6
 	github.com/aws/aws-sdk-go-v2/service/ecs v1.38.3
 	github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2 v1.27.0
-	github.com/cenkalti/backoff/v4 v4.2.1
+	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/go-resty/resty/v2 v2.11.0
 	github.com/hashicorp/terraform-plugin-framework v0.10.0
 	github.com/stretchr/testify v1.8.4
