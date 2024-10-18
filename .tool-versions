@@ -1,4 +1,4 @@
-terraform 1.5.6
+terraform 1.9.8
 golangci-lint 1.54.2
 pre-commit 3.6.0
 golang 1.20.14
