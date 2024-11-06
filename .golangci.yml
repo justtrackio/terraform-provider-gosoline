@@ -9,7 +9,9 @@ run:
   modules-download-mode: readonly
 
 output:
-  format: tab
+  formats:
+    - format: tab
+      path: stderr
   print-issued-lines: true
   print-linter-name: true
 

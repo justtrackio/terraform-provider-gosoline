@@ -9,15 +9,15 @@ on:
 jobs:
   go-fmt:
     name: go fmt
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
-      - name: Set up Go 1.20
-        uses: actions/setup-go@v4
+      - name: Set up Go 1.23
+        uses: actions/setup-go@v5
         with:
-          go-version: '1.20'
+          go-version: '1.23'
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Execute gofmt -l .
         run: gofmt -l .
@@ -27,12 +27,12 @@ jobs:
 
   build:
     name: go build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
-      - name: Set up Go 1.20
-        uses: actions/setup-go@v4
+      - name: Set up Go 1.23
+        uses: actions/setup-go@v5
         with:
-          go-version: '1.20'
+          go-version: '1.23'
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v4
@@ -45,15 +45,15 @@ jobs:
 
   go-vet:
     name: static code analysis (go vet)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
-      - name: Set up Go 1.20
-        uses: actions/setup-go@v4
+      - name: Set up Go 1.23
+        uses: actions/setup-go@v5
         with:
-          go-version: '1.20'
+          go-version: '1.23'
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get dependencies
         run: go get -v -t -d ./...
@@ -63,18 +63,18 @@ jobs:
 
   golangci-lint:
     name: static code analysis (golangci-lint)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
-      - name: Set up Go 1.20
-        uses: actions/setup-go@v4
+      - name: Set up Go 1.23
+        uses: actions/setup-go@v5
         with:
-          go-version: '1.20'
+          go-version: '1.23'
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Static code analysis (golangci-lint)
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.54.2
-          args: --timeout 5m --print-issued-lines --print-linter-name
+          version: v1.61.0
+          args: --timeout 5m --print-issued-lines --print-linter-name --out-format=colored-line-number
