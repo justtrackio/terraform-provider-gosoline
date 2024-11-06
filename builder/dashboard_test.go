@@ -38,6 +38,7 @@ func TestEcsDashboardWithError(t *testing.T) {
 		EcsCluster:                         ecsClusterName,
 		EcsService:                         ecsServiceName,
 		EcsTaskDefinition:                  ecsTaskDefinitionName,
+		Environment:                        "test",
 		GrafanaElasticsearchDatasourceName: grafanaElasticsearchDatasourceName,
 		GrafanaCloudWatchDatasourceName:    grafanaCloudWatchDatasourceName,
 		TargetGroups:                       targetGroups,
@@ -53,7 +54,7 @@ func TestEcsDashboardWithError(t *testing.T) {
 	db.AddPanel(builder.NewPanelWarn)
 	db.AddPanel(builder.NewPanelError)
 
-	dashboard := db.Build()
+	dashboard := db.Build("test dashboard")
 
 	body, _ := json.Marshal(dashboard)
 	fmt.Println(string(body))
@@ -87,6 +88,7 @@ func TestKubernetesDashboardWithError(t *testing.T) {
 		EcsCluster:                         ecsClusterName,
 		EcsService:                         ecsServiceName,
 		EcsTaskDefinition:                  ecsTaskDefinitionName,
+		Environment:                        "test",
 		GrafanaCloudWatchDatasourceName:    grafanaCloudWatchDatasourceName,
 		GrafanaElasticsearchDatasourceName: grafanaElasticsearchDatasourceName,
 		KubernetesNamespace:                kubernetesNamespace,
@@ -106,7 +108,7 @@ func TestKubernetesDashboardWithError(t *testing.T) {
 	db.AddPanel(builder.NewPanelError)
 	db.AddTraefikService()
 
-	dashboard := db.Build()
+	dashboard := db.Build("test dashboard")
 
 	body, _ := json.Marshal(dashboard)
 	fmt.Println(string(body))

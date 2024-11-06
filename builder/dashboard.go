@@ -143,7 +143,7 @@ func (d *DashboardBuilder) AddPanel(panel PanelFactory) {
 	d.panelFactories = append(d.panelFactories, panel)
 }
 
-func (d *DashboardBuilder) Build() Dashboard {
+func (d *DashboardBuilder) Build(title string) Dashboard {
 	var x, y int
 	panels := make([]Panel, len(d.panelFactories))
 
@@ -159,16 +159,17 @@ func (d *DashboardBuilder) Build() Dashboard {
 		}
 	}
 
-	var dashboardTitle string
-	switch d.orchestrator {
-	case orchestratorEcs:
-		dashboardTitle = d.resourceNames.EcsTaskDefinition
-	case orchestratorKubernetes:
-		dashboardTitle = d.resourceNames.KubernetesPod
+	if title == "" {
+		switch d.orchestrator {
+		case orchestratorEcs:
+			title = d.resourceNames.EcsTaskDefinition
+		case orchestratorKubernetes:
+			title = fmt.Sprintf("%s-%s-%s", d.resourceNames.Environment, d.resourceNames.KubernetesNamespace, d.resourceNames.KubernetesPod)
+		}
 	}
 
 	return Dashboard{
-		Title:  dashboardTitle,
+		Title:  title,
 		Panels: panels,
 	}
 }

@@ -17,6 +17,7 @@ type ApplicationDashboardDefinitionData struct {
 	Group       types.String `tfsdk:"group"`
 	Application types.String `tfsdk:"application"`
 	Containers  types.List   `tfsdk:"containers"`
+	Title       types.String `tfsdk:"title"`
 	Body        types.String `tfsdk:"body"`
 }
 
@@ -58,6 +59,10 @@ func (a *ApplicationDashboardDefinitionDatasourceType) GetSchema(_ context.Conte
 			"containers": {
 				Type:     types.ListType{ElemType: types.StringType},
 				Required: true,
+			},
+			"title": {
+				Type:     types.StringType,
+				Optional: true,
 			},
 			"body": {
 				Type:     types.StringType,
@@ -145,7 +150,7 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 		db.AddDynamoDbTable(table)
 	}
 
-	dashboard := db.Build()
+	dashboard := db.Build(state.Title.Value)
 
 	body, err := json.Marshal(dashboard)
 	if err != nil {
@@ -188,7 +193,6 @@ func (a *ApplicationDashboardDefinitionDataSource) getResourceNames(ctx context.
 		ecsClusterName = builder.Augment(a.resourceNamePatterns.EcsCluster, state.AppId())
 		ecsServiceName = builder.Augment(a.resourceNamePatterns.EcsService, state.AppId())
 		targetGroups, ecsTaskDefinitionName, err = a.getEc2AndEcsData(ctx, response, ecsClusterName, ecsServiceName)
-
 		if err != nil {
 			return nil, err
 		}
@@ -203,6 +207,7 @@ func (a *ApplicationDashboardDefinitionDataSource) getResourceNames(ctx context.
 		EcsCluster:                         ecsClusterName,
 		EcsService:                         ecsServiceName,
 		EcsTaskDefinition:                  ecsTaskDefinitionName,
+		Environment:                        state.Environment.Value,
 		GrafanaCloudWatchDatasourceName:    grafanaCloudWatchDatasourceName,
 		GrafanaElasticsearchDatasourceName: grafanaElasticsearchDatasourceName,
 		KubernetesNamespace:                kubernetesNamespace,
