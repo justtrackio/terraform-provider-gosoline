@@ -1,5 +1,5 @@
-terraform 1.9.8
-golangci-lint 1.61.0
-pre-commit 3.8.0
-golang 1.23.2
-goreleaser 2.4.4
+terraform 1.10.1
+golangci-lint 1.62.2
+pre-commit 4.0.1
+golang 1.23.4
+goreleaser 2.4.8
