@@ -1,8 +1,8 @@
 module github.com/justtrackio/terraform-provider-gosoline
 
-go 1.21
+go 1.23
 
-toolchain go1.23.4
+toolchain go1.23.5
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.32.3
@@ -10,6 +10,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ecs v1.49.0
 	github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2 v1.41.0
 	github.com/cenkalti/backoff/v4 v4.3.0
+	github.com/cenkalti/backoff/v5 v5.0.1
 	github.com/go-resty/resty/v2 v2.11.0
 	github.com/hashicorp/terraform-plugin-framework v0.10.0
 	github.com/stretchr/testify v1.8.4
