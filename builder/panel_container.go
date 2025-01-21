@@ -46,20 +46,23 @@ func NewPanelContainerCpuFactory(containerIndex int) PanelFactory {
 func newPanelContainerCpu(settings PanelSettings, containerIndex int) Panel {
 	var labelFilter string
 	var averageQuery string
-	var reservedQuery string
+	var requestsQuery string
+	var limitsQuery string
 	var minimumQuery string
 	var maximumQuery string
 
 	switch settings.orchestrator {
 	case orchestratorEcs:
 		labelFilter = getEcsContainerLabelFilter(settings.resourceNames.EcsCluster, settings.resourceNames.EcsTaskDefinition, settings.resourceNames.Containers[containerIndex])
-		reservedQuery = fmt.Sprintf(`max(container_spec_cpu_shares{%s})`, labelFilter)
+		requestsQuery = fmt.Sprintf(`max(container_spec_cpu_shares{%s})`, labelFilter)
+		limitsQuery = fmt.Sprintf(`max(container_spec_cpu_shares{%s})`, labelFilter)
 		averageQuery = fmt.Sprintf(`avg(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (id))*1024`, labelFilter)
 		maximumQuery = fmt.Sprintf(`max(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (id))*1024`, labelFilter)
 		minimumQuery = fmt.Sprintf(`min(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (id))*1024`, labelFilter)
 	case orchestratorKubernetes:
 		labelFilter = getKubernetesPodLabelFilter(settings.resourceNames.KubernetesNamespace, settings.resourceNames.KubernetesPod)
-		reservedQuery = fmt.Sprintf(`max(sum(kube_pod_container_resource_requests{resource="cpu",%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
+		requestsQuery = fmt.Sprintf(`max(sum(kube_pod_container_resource_requests{resource="cpu",%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
+		limitsQuery = fmt.Sprintf(`max(sum(kube_pod_container_resource_limits{resource="cpu",%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
 		averageQuery = fmt.Sprintf(`avg(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
 		maximumQuery = fmt.Sprintf(`max(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
 		minimumQuery = fmt.Sprintf(`min(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
@@ -72,7 +75,8 @@ func newPanelContainerCpu(settings PanelSettings, containerIndex int) Panel {
 				Min: "0",
 			},
 			Overrides: []PanelFieldConfigOverwrite{
-				NewColorPropertyOverwrite("Reserved", "semi-dark-red"),
+				NewColorPropertyOverwrite("Requests", "semi-dark-red"),
+				NewColorPropertyOverwrite("Limits", "orange"),
 				NewColorPropertyOverwrite("Minimum", "light-green"),
 				NewColorPropertyOverwrite("Average", "light-orange"),
 				NewColorPropertyOverwrite("Maximum", "light-red"),
@@ -82,9 +86,15 @@ func newPanelContainerCpu(settings PanelSettings, containerIndex int) Panel {
 		Targets: []interface{}{
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   reservedQuery,
-				LegendFormat: "Reserved",
-				RefId:        "reservation",
+				Expression:   requestsQuery,
+				LegendFormat: "Requests",
+				RefId:        "requests",
+			},
+			PanelTargetPrometheus{
+				Exemplar:     true,
+				Expression:   limitsQuery,
+				LegendFormat: "Limits",
+				RefId:        "limits",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
@@ -120,18 +130,21 @@ func NewPanelContainerMemoryFactory(containerIndex int) PanelFactory {
 func newPanelContainerMemory(settings PanelSettings, containerIndex int) Panel {
 	containerLabel, containerLabelFilter, podLabelFilter := getLabelAndFilters(settings, containerIndex)
 	var averageQuery string
-	var reservedQuery string
+	var requestsQuery string
+	var limitsQuery string
 	var minimumQuery string
 	var maximumQuery string
 
 	switch settings.orchestrator {
 	case orchestratorEcs:
-		reservedQuery = fmt.Sprintf(`max(container_spec_memory_reservation_limit_bytes{%s})`, containerLabelFilter)
+		requestsQuery = fmt.Sprintf(`max(container_spec_memory_reservation_limit_bytes{%s})`, containerLabelFilter)
+		limitsQuery = fmt.Sprintf(`max(container_spec_memory_limit_bytes{%s})`, containerLabelFilter)
 		averageQuery = fmt.Sprintf(`avg by (%s) (container_memory_rss{%s})`, containerLabel, containerLabelFilter)
 		maximumQuery = fmt.Sprintf(`max by (%s) (container_memory_rss{%s})`, containerLabel, containerLabelFilter)
 		minimumQuery = fmt.Sprintf(`min by (%s) (container_memory_rss{%s})`, containerLabel, containerLabelFilter)
 	case orchestratorKubernetes:
-		reservedQuery = fmt.Sprintf(`max(sum(kube_pod_container_resource_limits{resource="memory",%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
+		requestsQuery = fmt.Sprintf(`max(sum(kube_pod_container_resource_requests{resource="memory",%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
+		limitsQuery = fmt.Sprintf(`max(sum(kube_pod_container_resource_limits{resource="memory",%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
 		averageQuery = fmt.Sprintf(`avg(sum(container_memory_working_set_bytes{container!="", image!="", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
 		maximumQuery = fmt.Sprintf(`max(sum(container_memory_working_set_bytes{container!="", image!="", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
 		minimumQuery = fmt.Sprintf(`min(sum(container_memory_working_set_bytes{container!="", image!="", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
@@ -145,7 +158,8 @@ func newPanelContainerMemory(settings PanelSettings, containerIndex int) Panel {
 				Unit: "bytes",
 			},
 			Overrides: []PanelFieldConfigOverwrite{
-				NewColorPropertyOverwrite("Reserved", "semi-dark-red"),
+				NewColorPropertyOverwrite("Requests", "semi-dark-red"),
+				NewColorPropertyOverwrite("Limits", "orange"),
 				NewColorPropertyOverwrite("Minimum", "light-green"),
 				NewColorPropertyOverwrite("Average", "light-orange"),
 				NewColorPropertyOverwrite("Maximum", "light-red"),
@@ -155,27 +169,33 @@ func newPanelContainerMemory(settings PanelSettings, containerIndex int) Panel {
 		Targets: []interface{}{
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   reservedQuery,
-				LegendFormat: "Reserved",
-				RefId:        "A",
+				Expression:   requestsQuery,
+				LegendFormat: "Requests",
+				RefId:        "requests",
+			},
+			PanelTargetPrometheus{
+				Exemplar:     true,
+				Expression:   limitsQuery,
+				LegendFormat: "Limits",
+				RefId:        "limits",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
 				Expression:   minimumQuery,
 				LegendFormat: "Minimum",
-				RefId:        "B",
+				RefId:        "minimum",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
 				Expression:   averageQuery,
 				LegendFormat: "Average",
-				RefId:        "C",
+				RefId:        "average",
 			},
 			PanelTargetPrometheus{
 				Exemplar:     true,
 				Expression:   maximumQuery,
 				LegendFormat: "Maximum",
-				RefId:        "D",
+				RefId:        "maximum",
 			},
 		},
 		Options: &PanelOptionsCloudWatch{},
