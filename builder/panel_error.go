@@ -10,8 +10,8 @@ func NewPanelError(settings PanelSettings) Panel {
 					LineWidth:     2,
 				},
 			},
-			Overrides: []PanelFieldConfigOverwrite{
-				NewColorPropertyOverwrite("Errors", "dark-red"),
+			Overrides: []PanelFieldConfigOverride{
+				NewColorPropertyOverride("Errors", "dark-red", ""),
 			},
 		},
 		GridPos: settings.gridPos,
@@ -44,8 +44,8 @@ func NewPanelWarn(settings PanelSettings) Panel {
 					LineWidth:     2,
 				},
 			},
-			Overrides: []PanelFieldConfigOverwrite{
-				NewColorPropertyOverwrite("Warnings", "dark-yellow"),
+			Overrides: []PanelFieldConfigOverride{
+				NewColorPropertyOverride("Warnings", "dark-yellow", ""),
 			},
 		},
 		GridPos: settings.gridPos,

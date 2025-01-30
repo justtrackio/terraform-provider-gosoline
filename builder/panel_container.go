@@ -61,8 +61,8 @@ func newPanelContainerCpu(settings PanelSettings, containerIndex int) Panel {
 		minimumQuery = fmt.Sprintf(`min(sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (id))*1024`, labelFilter)
 	case orchestratorKubernetes:
 		labelFilter = getKubernetesPodLabelFilter(settings.resourceNames.KubernetesNamespace, settings.resourceNames.KubernetesPod)
-		requestsQuery = fmt.Sprintf(`max(sum(kube_pod_container_resource_requests{resource="cpu",%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
-		limitsQuery = fmt.Sprintf(`max(sum(kube_pod_container_resource_limits{resource="cpu",%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
+		requestsQuery = fmt.Sprintf(`max(kube_pod_container_resource_requests{resource="cpu",%s})`, labelFilter)
+		limitsQuery = fmt.Sprintf(`max(kube_pod_container_resource_limits{resource="cpu",%s})`, labelFilter)
 		averageQuery = fmt.Sprintf(`avg(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
 		maximumQuery = fmt.Sprintf(`max(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
 		minimumQuery = fmt.Sprintf(`min(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
@@ -74,12 +74,12 @@ func newPanelContainerCpu(settings PanelSettings, containerIndex int) Panel {
 			Defaults: PanelFieldConfigDefaults{
 				Min: "0",
 			},
-			Overrides: []PanelFieldConfigOverwrite{
-				NewColorPropertyOverwrite("Requests", "semi-dark-red"),
-				NewColorPropertyOverwrite("Limits", "orange"),
-				NewColorPropertyOverwrite("Minimum", "light-green"),
-				NewColorPropertyOverwrite("Average", "light-orange"),
-				NewColorPropertyOverwrite("Maximum", "light-red"),
+			Overrides: []PanelFieldConfigOverride{
+				NewColorPropertyOverride("Requests", "red", "dash"),
+				NewColorPropertyOverride("Limits", "orange", "dash"),
+				NewColorPropertyOverride("Minimum", "light-green", ""),
+				NewColorPropertyOverride("Average", "light-orange", ""),
+				NewColorPropertyOverride("Maximum", "light-red", ""),
 			},
 		},
 		GridPos: settings.gridPos,
@@ -143,8 +143,8 @@ func newPanelContainerMemory(settings PanelSettings, containerIndex int) Panel {
 		maximumQuery = fmt.Sprintf(`max by (%s) (container_memory_rss{%s})`, containerLabel, containerLabelFilter)
 		minimumQuery = fmt.Sprintf(`min by (%s) (container_memory_rss{%s})`, containerLabel, containerLabelFilter)
 	case orchestratorKubernetes:
-		requestsQuery = fmt.Sprintf(`max(sum(kube_pod_container_resource_requests{resource="memory",%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
-		limitsQuery = fmt.Sprintf(`max(sum(kube_pod_container_resource_limits{resource="memory",%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
+		requestsQuery = fmt.Sprintf(`max(kube_pod_container_resource_requests{resource="memory",%s})`, podLabelFilter)
+		limitsQuery = fmt.Sprintf(`max(kube_pod_container_resource_limits{resource="memory",%s})`, podLabelFilter)
 		averageQuery = fmt.Sprintf(`avg(sum(container_memory_working_set_bytes{container!="", image!="", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
 		maximumQuery = fmt.Sprintf(`max(sum(container_memory_working_set_bytes{container!="", image!="", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
 		minimumQuery = fmt.Sprintf(`min(sum(container_memory_working_set_bytes{container!="", image!="", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
@@ -157,12 +157,12 @@ func newPanelContainerMemory(settings PanelSettings, containerIndex int) Panel {
 				Min:  "0",
 				Unit: "bytes",
 			},
-			Overrides: []PanelFieldConfigOverwrite{
-				NewColorPropertyOverwrite("Requests", "semi-dark-red"),
-				NewColorPropertyOverwrite("Limits", "orange"),
-				NewColorPropertyOverwrite("Minimum", "light-green"),
-				NewColorPropertyOverwrite("Average", "light-orange"),
-				NewColorPropertyOverwrite("Maximum", "light-red"),
+			Overrides: []PanelFieldConfigOverride{
+				NewColorPropertyOverride("Requests", "semi-dark-red", "dash"),
+				NewColorPropertyOverride("Limits", "orange", "dash"),
+				NewColorPropertyOverride("Minimum", "light-green", ""),
+				NewColorPropertyOverride("Average", "light-orange", ""),
+				NewColorPropertyOverride("Maximum", "light-red", ""),
 			},
 		},
 		GridPos: settings.gridPos,
@@ -246,8 +246,8 @@ func NewPanelServiceUtilization(settings PanelSettings) Panel {
 				},
 				Unit: "percent",
 			},
-			Overrides: []PanelFieldConfigOverwrite{
-				NewColorPropertyOverwrite("CPU Average ", "light-green"), // the trailing slash seems to be important for grafana to match the override due to omitting the {{foo}} part
+			Overrides: []PanelFieldConfigOverride{
+				NewColorPropertyOverride("CPU Average ", "light-green", ""), // the trailing slash seems to be important for grafana to match the override due to omitting the {{foo}} part
 			},
 		},
 		GridPos: settings.gridPos,

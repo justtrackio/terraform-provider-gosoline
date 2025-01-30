@@ -14,7 +14,7 @@ func NewPanelLogs(settings PanelSettings) Panel {
 				},
 				Min: "0",
 			},
-			Overrides: []PanelFieldConfigOverwrite{},
+			Overrides: []PanelFieldConfigOverride{},
 		},
 		GridPos: settings.gridPos,
 		Targets: []interface{}{

@@ -19,12 +19,10 @@ func TestReadApplicationMetadataSuccess(t *testing.T) {
 				Dynamodb: builder.MetadataCloudAwsDynamodb{
 					Tables: []builder.MetadataCloudAwsDynamodbTable{
 						{
-							AwsClientName: "default",
-							TableName:     "foo",
+							TableName: "foo",
 						},
 						{
-							AwsClientName: "default",
-							TableName:     "bar",
+							TableName: "bar",
 						},
 					},
 				},

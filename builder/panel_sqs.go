@@ -3,7 +3,7 @@ package builder
 func NewPanelSqsMessagesVisible(queue MetadataCloudAwsSqsQueue) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(queue.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -13,7 +13,7 @@ func NewPanelSqsMessagesVisible(queue MetadataCloudAwsSqsQueue) PanelFactory {
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{},
+				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
 			Targets: []interface{}{
@@ -45,7 +45,7 @@ func NewPanelSqsMessagesVisible(queue MetadataCloudAwsSqsQueue) PanelFactory {
 func NewPanelSqsTraffic(queue MetadataCloudAwsSqsQueue) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(queue.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -55,7 +55,7 @@ func NewPanelSqsTraffic(queue MetadataCloudAwsSqsQueue) PanelFactory {
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{},
+				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
 			Targets: []interface{}{
@@ -121,7 +121,7 @@ func NewPanelSqsTraffic(queue MetadataCloudAwsSqsQueue) PanelFactory {
 func NewPanelSqsMessageSize(queue MetadataCloudAwsSqsQueue) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(queue.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -132,7 +132,7 @@ func NewPanelSqsMessageSize(queue MetadataCloudAwsSqsQueue) PanelFactory {
 					Min:  "0",
 					Unit: "bytes",
 				},
-				Overrides: []PanelFieldConfigOverwrite{},
+				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
 			Targets: []interface{}{

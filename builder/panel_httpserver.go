@@ -8,8 +8,8 @@ func NewPanelHttpServerRequestCount(serverName string, handler MetadataHttpServe
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{
-					NewColorPropertyOverwrite("Requests", "semi-dark-blue"),
+				Overrides: []PanelFieldConfigOverride{
+					NewColorPropertyOverride("Requests", "semi-dark-blue", ""),
 				},
 			},
 			GridPos: settings.gridPos,
@@ -47,8 +47,8 @@ func NewPanelHttpServerResponseTime(serverName string, handler MetadataHttpServe
 					Min:  "0",
 					Unit: "ms",
 				},
-				Overrides: []PanelFieldConfigOverwrite{
-					NewColorPropertyOverwrite("Requests", "semi-dark-blue"),
+				Overrides: []PanelFieldConfigOverride{
+					NewColorPropertyOverride("Requests", "semi-dark-blue", ""),
 				},
 			},
 			GridPos: settings.gridPos,
@@ -85,11 +85,11 @@ func NewPanelHttpServerHttpStatus(serverName string, handler MetadataHttpServerH
 				Defaults: PanelFieldConfigDefaults{
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{
-					NewColorPropertyOverwrite("HTTP 2XX", "semi-dark-green"),
-					NewColorPropertyOverwrite("HTTP 3XX", "semi-dark-yellow"),
-					NewColorPropertyOverwrite("HTTP 4XX", "semi-dark-orange"),
-					NewColorPropertyOverwrite("HTTP 5XX", "dark-red"),
+				Overrides: []PanelFieldConfigOverride{
+					NewColorPropertyOverride("HTTP 2XX", "semi-dark-green", ""),
+					NewColorPropertyOverride("HTTP 3XX", "semi-dark-yellow", ""),
+					NewColorPropertyOverride("HTTP 4XX", "semi-dark-orange", ""),
+					NewColorPropertyOverride("HTTP 5XX", "dark-red", ""),
 				},
 			},
 			GridPos: settings.gridPos,

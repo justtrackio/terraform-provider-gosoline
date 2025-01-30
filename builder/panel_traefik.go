@@ -11,8 +11,8 @@ func NewPanelTraefikRequestCount(settings PanelSettings) Panel {
 			Defaults: PanelFieldConfigDefaults{
 				Min: "0",
 			},
-			Overrides: []PanelFieldConfigOverwrite{
-				NewColorPropertyOverwrite("Requests", "semi-dark-blue"),
+			Overrides: []PanelFieldConfigOverride{
+				NewColorPropertyOverride("Requests", "semi-dark-blue", ""),
 			},
 		},
 		GridPos: settings.gridPos,
@@ -40,8 +40,8 @@ func NewPanelTraefikResponseTime(settings PanelSettings) Panel {
 				Min:  "0",
 				Unit: "s",
 			},
-			Overrides: []PanelFieldConfigOverwrite{
-				NewColorPropertyOverwrite("Response Time", "semi-dark-blue"),
+			Overrides: []PanelFieldConfigOverride{
+				NewColorPropertyOverride("Response Time", "semi-dark-blue", ""),
 			},
 		},
 		GridPos: settings.gridPos,
@@ -68,11 +68,11 @@ func NewPanelTraefikHttpStatus(settings PanelSettings) Panel {
 			Defaults: PanelFieldConfigDefaults{
 				Min: "0",
 			},
-			Overrides: []PanelFieldConfigOverwrite{
-				NewColorPropertyOverwrite("HTTP 2XX", "semi-dark-green"),
-				NewColorPropertyOverwrite("HTTP 3XX", "semi-dark-yellow"),
-				NewColorPropertyOverwrite("HTTP 4XX", "semi-dark-orange"),
-				NewColorPropertyOverwrite("HTTP 5XX", "dark-red"),
+			Overrides: []PanelFieldConfigOverride{
+				NewColorPropertyOverride("HTTP 2XX", "semi-dark-green", ""),
+				NewColorPropertyOverride("HTTP 3XX", "semi-dark-yellow", ""),
+				NewColorPropertyOverride("HTTP 4XX", "semi-dark-orange", ""),
+				NewColorPropertyOverride("HTTP 5XX", "dark-red", ""),
 			},
 		},
 		GridPos: settings.gridPos,
@@ -117,7 +117,7 @@ func NewPanelKubernetesHealthyPods(settings PanelSettings) Panel {
 			Defaults: PanelFieldConfigDefaults{
 				Min: "0",
 			},
-			Overrides: []PanelFieldConfigOverwrite{},
+			Overrides: []PanelFieldConfigOverride{},
 		},
 		GridPos: settings.gridPos,
 		Targets: []interface{}{
@@ -144,7 +144,7 @@ func NewPanelTraefikRequestCountPerTarget(settings PanelSettings) Panel {
 			Defaults: PanelFieldConfigDefaults{
 				Min: "0",
 			},
-			Overrides: []PanelFieldConfigOverwrite{},
+			Overrides: []PanelFieldConfigOverride{},
 		},
 		GridPos: settings.gridPos,
 		Targets: []interface{}{

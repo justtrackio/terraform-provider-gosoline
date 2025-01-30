@@ -29,8 +29,8 @@ type Panel struct {
 }
 
 type PanelFieldConfig struct {
-	Defaults  PanelFieldConfigDefaults    `json:"defaults"`
-	Overrides []PanelFieldConfigOverwrite `json:"overrides"`
+	Defaults  PanelFieldConfigDefaults   `json:"defaults"`
+	Overrides []PanelFieldConfigOverride `json:"overrides"`
 }
 
 type PanelFieldConfigDefaults struct {
@@ -62,41 +62,53 @@ type ThresholdsStyle struct {
 	Mode string `json:"mode"`
 }
 
-type PanelFieldConfigOverwrite struct {
-	Matcher    OverwriteMatcher    `json:"matcher"`
-	Properties []OverwriteProperty `json:"properties"`
+type PanelFieldConfigOverride struct {
+	Matcher    OverrideMatcher    `json:"matcher"`
+	Properties []OverrideProperty `json:"properties"`
 }
 
-type OverwriteMatcher struct {
+type OverrideMatcher struct {
 	Id      string `json:"id"`
 	Options string `json:"options"`
 }
 
-type OverwriteProperty struct {
-	Id    string                 `json:"id"`
-	Value OverwritePropertyValue `json:"value"`
+type OverrideProperty struct {
+	Id    string                `json:"id"`
+	Value OverridePropertyValue `json:"value"`
 }
 
-type OverwritePropertyValue struct {
-	FixedColor string `json:"fixedColor"`
-	Mode       string `json:"mode"`
+type OverridePropertyValue struct {
+	Fill       string `json:"fill,omitempty"`
+	FixedColor string `json:"fixedColor,omitempty"`
+	Mode       string `json:"mode,omitempty"`
 }
 
-func NewColorPropertyOverwrite(metric string, color string) PanelFieldConfigOverwrite {
-	return PanelFieldConfigOverwrite{
-		Matcher: OverwriteMatcher{
+func NewColorPropertyOverride(metric string, color string, style string) PanelFieldConfigOverride {
+	overrideProperties := []OverrideProperty{
+		{
+			Id: "color",
+			Value: OverridePropertyValue{
+				FixedColor: color,
+				Mode:       "fixed",
+			},
+		},
+	}
+
+	if style != "" {
+		overrideProperties = append(overrideProperties, OverrideProperty{
+			Id: "custom.lineStyle",
+			Value: OverridePropertyValue{
+				Fill: style,
+			},
+		})
+	}
+
+	return PanelFieldConfigOverride{
+		Matcher: OverrideMatcher{
 			Id:      "byName",
 			Options: metric,
 		},
-		Properties: []OverwriteProperty{
-			{
-				Id: "color",
-				Value: OverwritePropertyValue{
-					FixedColor: color,
-					Mode:       "fixed",
-				},
-			},
-		},
+		Properties: overrideProperties,
 	}
 }
 
