@@ -13,9 +13,9 @@ func NewPanelStreamConsumerProcessedCount(consumer MetadataStreamConsumer) Panel
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{
-					NewColorPropertyOverwrite("Processed", "super-light-blue"),
-					NewColorPropertyOverwrite("Error", "dark-red"),
+				Overrides: []PanelFieldConfigOverride{
+					NewColorPropertyOverride("Processed", "super-light-blue", ""),
+					NewColorPropertyOverride("Error", "dark-red", ""),
 				},
 			},
 			GridPos: settings.gridPos,

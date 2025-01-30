@@ -5,7 +5,7 @@ import "fmt"
 func NewPanelKinesisKinsumerMillisecondsBehind(stream MetadataCloudAwsKinesisKinsumer) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -15,7 +15,7 @@ func NewPanelKinesisKinsumerMillisecondsBehind(stream MetadataCloudAwsKinesisKin
 					Min:  "0",
 					Unit: "ms",
 				},
-				Overrides: []PanelFieldConfigOverwrite{},
+				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
 			Targets: []interface{}{
@@ -47,7 +47,7 @@ func NewPanelKinesisKinsumerMillisecondsBehind(stream MetadataCloudAwsKinesisKin
 func NewPanelKinesisKinsumerMessageCounts(stream MetadataCloudAwsKinesisKinsumer) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -56,9 +56,9 @@ func NewPanelKinesisKinsumerMessageCounts(stream MetadataCloudAwsKinesisKinsumer
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{
-					NewColorPropertyOverwrite("ReadRecords", "semi-dark-blue"),
-					NewColorPropertyOverwrite("FailedRecords", "dark-red"),
+				Overrides: []PanelFieldConfigOverride{
+					NewColorPropertyOverride("ReadRecords", "semi-dark-blue", ""),
+					NewColorPropertyOverride("FailedRecords", "dark-red", ""),
 				},
 			},
 			GridPos: settings.gridPos,
@@ -104,7 +104,7 @@ func NewPanelKinesisKinsumerMessageCounts(stream MetadataCloudAwsKinesisKinsumer
 func NewPanelKinesisKinsumerReadOperations(stream MetadataCloudAwsKinesisKinsumer) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -113,8 +113,8 @@ func NewPanelKinesisKinsumerReadOperations(stream MetadataCloudAwsKinesisKinsume
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{
-					NewColorPropertyOverwrite("ReadCount Limit", "dark-red"),
+				Overrides: []PanelFieldConfigOverride{
+					NewColorPropertyOverride("ReadCount Limit", "dark-red", ""),
 				},
 			},
 			GridPos: settings.gridPos,
@@ -181,7 +181,7 @@ func NewPanelKinesisKinsumerReadOperations(stream MetadataCloudAwsKinesisKinsume
 func NewPanelKinesisKinsumerProcessDuration(stream MetadataCloudAwsKinesisKinsumer) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -234,7 +234,7 @@ func NewPanelKinesisKinsumerProcessDuration(stream MetadataCloudAwsKinesisKinsum
 func NewPanelKinesisStreamSuccessRate(stream KinesisStreamAware) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -326,7 +326,7 @@ func NewPanelKinesisStreamSuccessRate(stream KinesisStreamAware) PanelFactory {
 func NewPanelKinesisStreamGetRecordsBytes(stream KinesisStreamAware) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -335,9 +335,9 @@ func NewPanelKinesisStreamGetRecordsBytes(stream KinesisStreamAware) PanelFactor
 					Min:  "0",
 					Unit: "decbytes",
 				},
-				Overrides: []PanelFieldConfigOverwrite{
-					NewColorPropertyOverwrite("Limit", "dark-red"),
-					NewColorPropertyOverwrite("GetRecordsBytes", "super-light-blue"),
+				Overrides: []PanelFieldConfigOverride{
+					NewColorPropertyOverride("Limit", "dark-red", ""),
+					NewColorPropertyOverride("GetRecordsBytes", "super-light-blue", ""),
 				},
 			},
 			GridPos: settings.gridPos,
@@ -381,7 +381,7 @@ func NewPanelKinesisStreamGetRecordsBytes(stream KinesisStreamAware) PanelFactor
 func NewPanelKinesisStreamIncomingDataBytes(stream KinesisStreamAware) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -390,9 +390,9 @@ func NewPanelKinesisStreamIncomingDataBytes(stream KinesisStreamAware) PanelFact
 					Min:  "0",
 					Unit: "decbytes",
 				},
-				Overrides: []PanelFieldConfigOverwrite{
-					NewColorPropertyOverwrite("Limit", "dark-red"),
-					NewColorPropertyOverwrite("IncomingBytes", "super-light-blue"),
+				Overrides: []PanelFieldConfigOverride{
+					NewColorPropertyOverride("Limit", "dark-red", ""),
+					NewColorPropertyOverride("IncomingBytes", "super-light-blue", ""),
 				},
 			},
 			GridPos: settings.gridPos,
@@ -434,7 +434,7 @@ func NewPanelKinesisStreamIncomingDataBytes(stream KinesisStreamAware) PanelFact
 func NewPanelKinesisStreamIncomingDataCount(stream KinesisStreamAware) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -442,9 +442,9 @@ func NewPanelKinesisStreamIncomingDataCount(stream KinesisStreamAware) PanelFact
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{
-					NewColorPropertyOverwrite("Limit", "dark-red"),
-					NewColorPropertyOverwrite("IncomingRecords", "super-light-blue"),
+				Overrides: []PanelFieldConfigOverride{
+					NewColorPropertyOverride("Limit", "dark-red", ""),
+					NewColorPropertyOverride("IncomingRecords", "super-light-blue", ""),
 				},
 			},
 			GridPos: settings.gridPos,
@@ -486,7 +486,7 @@ func NewPanelKinesisStreamIncomingDataCount(stream KinesisStreamAware) PanelFact
 func NewPanelKinesisRecordWriterPutRecordsCount(stream MetadataCloudAwsKinesisRecordWriter) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -495,9 +495,9 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream MetadataCloudAwsKinesisRe
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{
-					NewColorPropertyOverwrite("PutRecords", "semi-dark-blue"),
-					NewColorPropertyOverwrite("PutRecordsFailure", "dark-red"),
+				Overrides: []PanelFieldConfigOverride{
+					NewColorPropertyOverride("PutRecords", "semi-dark-blue", ""),
+					NewColorPropertyOverride("PutRecordsFailure", "dark-red", ""),
 				},
 			},
 			GridPos: settings.gridPos,
@@ -543,7 +543,7 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream MetadataCloudAwsKinesisRe
 func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream MetadataCloudAwsKinesisRecordWriter) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -552,7 +552,7 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream MetadataCloudAwsKines
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{},
+				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
 			Targets: []interface{}{
@@ -610,7 +610,7 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream MetadataCloudAwsKines
 func NewPanelKinesisStreamRecordSize(stream KinesisStreamAware) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(stream.GetClientName()),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -619,7 +619,7 @@ func NewPanelKinesisStreamRecordSize(stream KinesisStreamAware) PanelFactory {
 					Min:  "0",
 					Unit: "decbytes",
 				},
-				Overrides: []PanelFieldConfigOverwrite{},
+				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
 			Targets: []interface{}{

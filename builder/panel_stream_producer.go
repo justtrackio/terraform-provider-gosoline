@@ -12,7 +12,7 @@ func NewPanelStreamProducerDaemonSizes(producer MetadataStreamProducer) PanelFac
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{},
+				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
 			Targets: []interface{}{
@@ -65,7 +65,7 @@ func NewPanelStreamProducerMessageCount(producer MetadataStreamProducer) PanelFa
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{},
+				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
 			Targets: []interface{}{

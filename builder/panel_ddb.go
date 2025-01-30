@@ -3,7 +3,7 @@ package builder
 func NewPanelDdbReadUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -11,9 +11,9 @@ func NewPanelDdbReadUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{
-					NewColorPropertyOverwrite("Provisioned", "dark-red"),
-					NewColorPropertyOverwrite("Consumed", "super-light-blue"),
+				Overrides: []PanelFieldConfigOverride{
+					NewColorPropertyOverride("Provisioned", "dark-red", ""),
+					NewColorPropertyOverride("Consumed", "super-light-blue", ""),
 				},
 			},
 			GridPos: settings.gridPos,
@@ -79,7 +79,7 @@ func NewPanelDdbReadUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 func NewPanelDdbReadThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -89,7 +89,7 @@ func NewPanelDdbReadThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory 
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{},
+				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
 			Targets: []interface{}{
@@ -164,7 +164,7 @@ func NewPanelDdbReadThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory 
 func NewPanelDdbWriteUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -174,9 +174,9 @@ func NewPanelDdbWriteUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{
-					NewColorPropertyOverwrite("Provisioned", "dark-red"),
-					NewColorPropertyOverwrite("Consumed", "super-light-blue"),
+				Overrides: []PanelFieldConfigOverride{
+					NewColorPropertyOverride("Provisioned", "dark-red", ""),
+					NewColorPropertyOverride("Consumed", "super-light-blue", ""),
 				},
 			},
 			GridPos: settings.gridPos,
@@ -242,7 +242,7 @@ func NewPanelDdbWriteUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 func NewPanelDdbWriteThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory {
 	return func(settings PanelSettings) Panel {
 		return Panel{
-			Datasource: settings.resourceNames.GetCwDatasourceNameByClientName(table.AwsClientName),
+			Datasource: settings.resourceNames.GrafanaCloudWatchDatasourceName,
 			FieldConfig: PanelFieldConfig{
 				Defaults: PanelFieldConfigDefaults{
 					Custom: PanelFieldConfigDefaultsCustom{
@@ -252,7 +252,7 @@ func NewPanelDdbWriteThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory
 					},
 					Min: "0",
 				},
-				Overrides: []PanelFieldConfigOverwrite{},
+				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
 			Targets: []interface{}{
