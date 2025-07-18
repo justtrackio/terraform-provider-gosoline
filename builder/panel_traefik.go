@@ -48,7 +48,7 @@ func NewPanelTraefikResponseTime(settings PanelSettings) Panel {
 		Targets: []interface{}{
 			PanelTargetPrometheus{
 				Exemplar:     true,
-				Expression:   fmt.Sprintf(`sum(irate(traefik_service_request_duration_seconds_sum{%s}[$__rate_interval]))`, labelFilter),
+				Expression:   fmt.Sprintf(`sum(irate(traefik_service_request_duration_seconds_sum{%s}[$__rate_interval])) / sum(irate(traefik_service_requests_total{%s}[$__rate_interval]))`, labelFilter, labelFilter),
 				LegendFormat: "Response Time",
 				RefId:        "Requests",
 			},
