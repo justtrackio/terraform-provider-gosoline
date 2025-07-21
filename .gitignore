@@ -5,4 +5,3 @@ dist/
 
 # Terraform provider binary
 terraform-provider-gosoline
-terraform-provider-gosoline_*
