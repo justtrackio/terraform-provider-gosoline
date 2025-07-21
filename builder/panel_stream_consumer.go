@@ -19,7 +19,7 @@ func NewPanelStreamConsumerProcessedCount(consumer MetadataStreamConsumer) Panel
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Processed",
 					Dimensions: map[string]string{
@@ -76,7 +76,7 @@ func NewPanelStreamConsumerProcessDuration(consumer MetadataStreamConsumer) Pane
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Average",
 					Dimensions: map[string]string{
@@ -115,7 +115,7 @@ func NewPanelStreamConsumerRetryActions(consumer MetadataStreamConsumer) PanelFa
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Processed",
 					Dimensions: map[string]string{

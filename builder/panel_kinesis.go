@@ -18,7 +18,7 @@ func NewPanelKinesisKinsumerMillisecondsBehind(stream MetadataCloudAwsKinesisKin
 				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
@@ -62,7 +62,7 @@ func NewPanelKinesisKinsumerMessageCounts(stream MetadataCloudAwsKinesisKinsumer
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "ReadRecords",
 					Dimensions: map[string]string{
@@ -118,7 +118,7 @@ func NewPanelKinesisKinsumerReadOperations(stream MetadataCloudAwsKinesisKinsume
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Dimensions: map[string]string{
 						"StreamName": stream.StreamNameFull,
@@ -192,7 +192,7 @@ func NewPanelKinesisKinsumerProcessDuration(stream MetadataCloudAwsKinesisKinsum
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Maximum",
 					Dimensions: map[string]string{
@@ -246,7 +246,7 @@ func NewPanelKinesisStreamSuccessRate(stream KinesisStreamAware) PanelFactory {
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Dimensions: map[string]string{
 						"StreamName": stream.GetStreamNameFull(),
@@ -341,7 +341,7 @@ func NewPanelKinesisStreamGetRecordsBytes(stream KinesisStreamAware) PanelFactor
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "GetRecordsBytes",
 					Dimensions: map[string]string{
@@ -396,7 +396,7 @@ func NewPanelKinesisStreamIncomingDataBytes(stream KinesisStreamAware) PanelFact
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "IncomingBytes",
 					Dimensions: map[string]string{
@@ -448,7 +448,7 @@ func NewPanelKinesisStreamIncomingDataCount(stream KinesisStreamAware) PanelFact
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "IncomingRecords",
 					Dimensions: map[string]string{
@@ -501,7 +501,7 @@ func NewPanelKinesisRecordWriterPutRecordsCount(stream MetadataCloudAwsKinesisRe
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "PutRecords",
 					Dimensions: map[string]string{
@@ -555,7 +555,7 @@ func NewPanelKinesisRecordWriterPutRecordsBatchSize(stream MetadataCloudAwsKines
 				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Batch Size",
 					Dimensions: map[string]string{
@@ -622,7 +622,7 @@ func NewPanelKinesisStreamRecordSize(stream KinesisStreamAware) PanelFactory {
 				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "IncomingBytes",
 					Dimensions: map[string]string{

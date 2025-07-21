@@ -17,7 +17,7 @@ func NewPanelLogs(settings PanelSettings) Panel {
 			Overrides: []PanelFieldConfigOverride{},
 		},
 		GridPos: settings.gridPos,
-		Targets: []interface{}{
+		Targets: []any{
 			PanelTargetElasticsearch{
 				RefId: "A",
 				Query: "level:[3 TO *]",

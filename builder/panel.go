@@ -21,8 +21,8 @@ type Panel struct {
 	Datasource  string           `json:"datasource"`
 	FieldConfig PanelFieldConfig `json:"fieldConfig"`
 	GridPos     PanelGridPos     `json:"gridPos"`
-	Options     interface{}      `json:"options"`
-	Targets     []interface{}    `json:"targets"`
+	Options     any              `json:"options"`
+	Targets     []any            `json:"targets"`
 	Title       string           `json:"title"`
 	Type        string           `json:"type"`
 	Panels      []Panel          `json:"panels"`

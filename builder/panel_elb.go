@@ -13,7 +13,7 @@ func NewPanelElbRequestCount(targetGroupIndex int) PanelFactory {
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Requests",
 					Dimensions: map[string]string{
@@ -51,7 +51,7 @@ func NewPanelElbResponseTime(targetGroupIndex int) PanelFactory {
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Response Time",
 					Dimensions: map[string]string{
@@ -94,7 +94,7 @@ func NewPanelElbHttpStatus(targetGroupIndex int) PanelFactory {
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "HTTP 2XX",
 					Dimensions: map[string]string{
@@ -174,7 +174,7 @@ func NewPanelElbHealthyHosts(targetGroupIndex int) PanelFactory {
 				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Hosts",
 					Dimensions: map[string]string{
@@ -209,7 +209,7 @@ func NewPanelElbRequestCountPerTarget(targetGroupIndex int) PanelFactory {
 				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Requests",
 					Dimensions: map[string]string{

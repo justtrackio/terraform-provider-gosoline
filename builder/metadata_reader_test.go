@@ -34,7 +34,8 @@ func TestReadApplicationMetadataSuccess(t *testing.T) {
 		bytes, err := json.Marshal(actual)
 		assert.NoError(t, err)
 
-		writer.Write(bytes)
+		_, err = writer.Write(bytes)
+		assert.Nil(t, err)
 	}))
 
 	reader := builder.NewMetadataReaderWithHostBuilder(func(_ builder.AppId) string {
@@ -59,7 +60,8 @@ func TestReadApplicationMetadataRetry(t *testing.T) {
 		}
 
 		writer.WriteHeader(http.StatusOK)
-		writer.Write([]byte(`{}`))
+		_, err := writer.Write([]byte(`{}`))
+		assert.Nil(t, err)
 	}))
 
 	reader := builder.NewMetadataReaderWithHostBuilder(func(_ builder.AppId) string {

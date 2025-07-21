@@ -63,9 +63,15 @@ func newPanelContainerCpu(settings PanelSettings, containerIndex int) Panel {
 		labelFilter = getKubernetesPodLabelFilter(settings.resourceNames.KubernetesNamespace, settings.resourceNames.KubernetesPod)
 		requestsQuery = fmt.Sprintf(`max(kube_pod_container_resource_requests{resource="cpu",%s})`, labelFilter)
 		limitsQuery = fmt.Sprintf(`max(kube_pod_container_resource_limits{resource="cpu",%s})`, labelFilter)
-		averageQuery = fmt.Sprintf(`avg(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
-		maximumQuery = fmt.Sprintf(`max(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
-		minimumQuery = fmt.Sprintf(`min(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter)
+		averageQuery = fmt.Sprintf(
+			`avg(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter,
+		)
+		maximumQuery = fmt.Sprintf(
+			`max(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter,
+		)
+		minimumQuery = fmt.Sprintf(
+			`min(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, labelFilter, labelFilter,
+		)
 	}
 
 	return Panel{
@@ -83,7 +89,7 @@ func newPanelContainerCpu(settings PanelSettings, containerIndex int) Panel {
 			},
 		},
 		GridPos: settings.gridPos,
-		Targets: []interface{}{
+		Targets: []any{
 			PanelTargetPrometheus{
 				Exemplar:     true,
 				Expression:   requestsQuery,
@@ -145,9 +151,15 @@ func newPanelContainerMemory(settings PanelSettings, containerIndex int) Panel {
 	case orchestratorKubernetes:
 		requestsQuery = fmt.Sprintf(`max(kube_pod_container_resource_requests{resource="memory",%s})`, podLabelFilter)
 		limitsQuery = fmt.Sprintf(`max(kube_pod_container_resource_limits{resource="memory",%s})`, podLabelFilter)
-		averageQuery = fmt.Sprintf(`avg(sum(container_memory_working_set_bytes{container!="", image!="", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
-		maximumQuery = fmt.Sprintf(`max(sum(container_memory_working_set_bytes{container!="", image!="", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
-		minimumQuery = fmt.Sprintf(`min(sum(container_memory_working_set_bytes{container!="", image!="", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter)
+		averageQuery = fmt.Sprintf(
+			`avg(sum(container_memory_working_set_bytes{container!="", image!="", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter,
+		)
+		maximumQuery = fmt.Sprintf(
+			`max(sum(container_memory_working_set_bytes{container!="", image!="", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter,
+		)
+		minimumQuery = fmt.Sprintf(
+			`min(sum(container_memory_working_set_bytes{container!="", image!="", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod))`, podLabelFilter, podLabelFilter,
+		)
 	}
 
 	return Panel{
@@ -166,7 +178,7 @@ func newPanelContainerMemory(settings PanelSettings, containerIndex int) Panel {
 			},
 		},
 		GridPos: settings.gridPos,
-		Targets: []interface{}{
+		Targets: []any{
 			PanelTargetPrometheus{
 				Exemplar:     true,
 				Expression:   requestsQuery,
@@ -214,8 +226,17 @@ func NewPanelServiceUtilization(settings PanelSettings) Panel {
 		cpuAverageQuery = fmt.Sprintf(`sum(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) by (%s)/(sum(container_spec_cpu_shares{%s}) by (%s)/1024)*100`, podLabelFilter, containerLabel, podLabelFilter, containerLabel)
 		memoryAverageQuery = fmt.Sprintf(`sum(container_memory_rss{%s}) by (%s)/sum(container_spec_memory_reservation_limit_bytes{%s}) by (%s)*100`, podLabelFilter, containerLabel, podLabelFilter, containerLabel)
 	case orchestratorKubernetes:
-		cpuAverageQuery = fmt.Sprintf(`avg(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod)/sum(kube_pod_container_resource_requests{resource="cpu", %s} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod)*100)`, podLabelFilter, podLabelFilter, podLabelFilter, podLabelFilter)
-		memoryAverageQuery = fmt.Sprintf(`avg(sum(container_memory_working_set_bytes{%s, container!="", image!=""} * on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod)/ on(pod) cluster:namespace:pod_memory:active:kube_pod_container_resource_requests{resource="memory",%s})*100`, podLabelFilter, podLabelFilter, podLabelFilter)
+		cpuAverageQuery = fmt.Sprintf(
+			`avg(sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{%s}
+			* on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod)
+			/ sum(kube_pod_container_resource_requests{resource="cpu", %s}
+			* on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod)
+			* 100)`, podLabelFilter, podLabelFilter, podLabelFilter, podLabelFilter)
+		memoryAverageQuery = fmt.Sprintf(`
+			avg(sum(container_memory_working_set_bytes{%s, container!="", image!=""}
+			* on(namespace,pod) group_left(workload, workload_type) namespace_workload_pod:kube_pod_owner:relabel{%s}) by (pod)
+			/ on(pod) cluster:namespace:pod_memory:active:kube_pod_container_resource_requests{resource="memory",%s})
+			* 100`, podLabelFilter, podLabelFilter, podLabelFilter)
 	}
 
 	cpuAverageLegendFormat := fmt.Sprintf("CPU Average {{%s}}", containerLabel)
@@ -251,7 +272,7 @@ func NewPanelServiceUtilization(settings PanelSettings) Panel {
 			},
 		},
 		GridPos: settings.gridPos,
-		Targets: []interface{}{
+		Targets: []any{
 			PanelTargetPrometheus{
 				Exemplar:     true,
 				Expression:   cpuAverageQuery,
@@ -292,7 +313,7 @@ func NewPanelTaskDeployment(settings PanelSettings) Panel {
 			},
 		},
 		GridPos: settings.gridPos,
-		Targets: []interface{}{
+		Targets: []any{
 			PanelTargetPrometheus{
 				Exemplar:     true,
 				Expression:   query,
