@@ -51,7 +51,7 @@ func TestKubernetesPodLabelFilterRegex(t *testing.T) {
 			// Find the panel and check its expression
 			found := false
 			expectedPattern := `pod=~"^` + tt.podName + `-[0-9a-f]+-[0-9a-z]+$"`
-			
+
 			for _, panel := range dashboard.Panels {
 				if panel.Title == "Healthy Endpoints" {
 					targets := panel.Targets
@@ -74,4 +74,3 @@ func TestKubernetesPodLabelFilterRegex(t *testing.T) {
 		})
 	}
 }
-
