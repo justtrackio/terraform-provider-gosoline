@@ -83,6 +83,7 @@ func TestKubernetesDashboardWithError(t *testing.T) {
 	traefikServiceName := "ns-service-8070@kubernetes"
 	kubernetesNamespace := "foo"
 	kubernetesPod := "pod"
+	kubernetesDeployment := "grp-dashboard" // matches the deployment pattern from appId
 	var targetGroups []builder.ElbTargetGroup
 
 	resourceNames := &builder.ResourceNames{
@@ -93,6 +94,7 @@ func TestKubernetesDashboardWithError(t *testing.T) {
 		Environment:                        "test",
 		GrafanaCloudWatchDatasourceName:    grafanaCloudWatchDatasourceName,
 		GrafanaElasticsearchDatasourceName: grafanaElasticsearchDatasourceName,
+		KubernetesDeployment:               kubernetesDeployment,
 		KubernetesNamespace:                kubernetesNamespace,
 		KubernetesPod:                      kubernetesPod,
 		TargetGroups:                       targetGroups,
