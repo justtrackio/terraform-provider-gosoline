@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/justtrackio/terraform-provider-gosoline/builder"
-	funk "github.com/thoas/go-funk"
+	"github.com/thoas/go-funk"
 )
 
 var availableOrchestrators = []string{orchestratorEcs, orchestratorKubernetes}
