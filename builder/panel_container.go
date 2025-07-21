@@ -11,7 +11,7 @@ func getTraefikServiceLabelFilter(serviceName string) string {
 }
 
 func getKubernetesPodLabelFilter(namespace, podName string) string {
-	return fmt.Sprintf(`namespace=%q, pod=~"%s-.*"`, namespace, podName)
+	return fmt.Sprintf(`namespace=%q, pod=~"^%s-[0-9a-f]+-[0-9a-z]+$"`, namespace, podName)
 }
 
 func getEcsContainerLabelFilter(ecsClusterName, ecsTaskDefinitionName, containerName string) string {
