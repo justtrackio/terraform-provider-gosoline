@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	backoff "github.com/cenkalti/backoff/v4"
-	resty "github.com/go-resty/resty/v2"
+	"github.com/cenkalti/backoff/v4"
+	"github.com/go-resty/resty/v2"
 )
 
 type (
