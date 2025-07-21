@@ -31,6 +31,7 @@ func TestTaskDeploymentPanelUsesCorrectMetric(t *testing.T) {
 		if panel.Title == "Running Task Count" {
 			taskPanel = panel
 			found = true
+
 			break
 		}
 	}
@@ -103,6 +104,7 @@ func TestTaskDeploymentPanelAvoidsCrossTalk(t *testing.T) {
 		if panel.Title == "Running Task Count" {
 			target := panel.Targets[0].(builder.PanelTargetPrometheus)
 			gatewayQuery = target.Expression
+
 			break
 		}
 	}
@@ -111,6 +113,7 @@ func TestTaskDeploymentPanelAvoidsCrossTalk(t *testing.T) {
 		if panel.Title == "Running Task Count" {
 			target := panel.Targets[0].(builder.PanelTargetPrometheus)
 			gatewayAbcQuery = target.Expression
+
 			break
 		}
 	}
