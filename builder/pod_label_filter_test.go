@@ -49,28 +49,33 @@ func TestKubernetesPodLabelFilterRegex(t *testing.T) {
 			dashboard := db.Build("test")
 
 			// Find the panel and check its expression
-			found := false
 			expectedPattern := `pod=~"^` + tt.podName + `-[0-9a-f]+-[0-9a-z]+$"`
-
-			for _, panel := range dashboard.Panels {
-				if panel.Title == "Healthy Endpoints" {
-					targets := panel.Targets
-					if len(targets) > 0 {
-						if target, ok := targets[0].(builder.PanelTargetPrometheus); ok {
-							if strings.Contains(target.Expression, expectedPattern) {
-								found = true
-								break
-							} else {
-								t.Errorf("Expression %q does not contain expected pattern %q", target.Expression, expectedPattern)
-							}
-						}
-					}
-				}
-			}
+			found := findExpectedPattern(t, dashboard.Panels, expectedPattern)
 
 			if !found {
 				t.Error("Could not find the expected pod label filter pattern in any panel")
 			}
 		})
 	}
+}
+
+func findExpectedPattern(t *testing.T, panels []builder.Panel, expectedPattern string) bool {
+	for _, panel := range panels {
+		if panel.Title != "Healthy Endpoints" {
+			continue
+		}
+		if len(panel.Targets) == 0 {
+			continue
+		}
+		target, ok := panel.Targets[0].(builder.PanelTargetPrometheus)
+		if !ok {
+			continue
+		}
+		if strings.Contains(target.Expression, expectedPattern) {
+			return true
+		}
+		t.Errorf("Expression %q does not contain expected pattern %q", target.Expression, expectedPattern)
+		return false
+	}
+	return false
 }
