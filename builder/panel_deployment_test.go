@@ -39,29 +39,29 @@ func TestTaskDeploymentPanelUsesCorrectMetric(t *testing.T) {
 
 	// Verify the panel has the correct Prometheus target
 	assert.Len(t, taskPanel.Targets, 1, "Panel should have exactly one target")
-	
+
 	target, ok := taskPanel.Targets[0].(builder.PanelTargetPrometheus)
 	assert.True(t, ok, "Target should be a Prometheus target")
 
 	// Verify the query uses the new deployment metric instead of pod_info
 	query := target.Expression
-	
+
 	// Should use kube_deployment_status_ready_replicas
-	assert.Contains(t, query, "kube_deployment_status_ready_replicas", 
+	assert.Contains(t, query, "kube_deployment_status_ready_replicas",
 		"Query should use kube_deployment_status_ready_replicas metric")
-	
+
 	// Should NOT use the old problematic kube_pod_info
-	assert.NotContains(t, query, "kube_pod_info", 
+	assert.NotContains(t, query, "kube_pod_info",
 		"Query should not use the problematic kube_pod_info metric")
-	
+
 	// Should use exact deployment name matching
-	assert.Contains(t, query, `deployment="gateway"`, 
+	assert.Contains(t, query, `deployment="gateway"`,
 		"Query should use exact deployment name matching")
-	
+
 	// Should NOT use wildcard pattern
-	assert.NotContains(t, query, "gateway-.*", 
+	assert.NotContains(t, query, "gateway-.*",
 		"Query should not use wildcard pattern that could match other deployments")
-	
+
 	// Should still include namespace filtering
 	assert.Contains(t, query, `namespace="test-namespace"`,
 		"Query should include namespace filtering")
@@ -71,7 +71,7 @@ func TestTaskDeploymentPanelUsesCorrectMetric(t *testing.T) {
 
 func TestTaskDeploymentPanelAvoidsCrossTalk(t *testing.T) {
 	// Test that "gateway" deployment doesn't match "gateway-abc" deployment
-	
+
 	// Create queries for both deployments
 	gatewayResourceNames := &builder.ResourceNames{
 		KubernetesNamespace:  "test-ns",
@@ -79,9 +79,9 @@ func TestTaskDeploymentPanelAvoidsCrossTalk(t *testing.T) {
 		KubernetesPod:        "gateway",
 		Containers:           []string{"app"},
 	}
-	
+
 	gatewayAbcResourceNames := &builder.ResourceNames{
-		KubernetesNamespace:  "test-ns", 
+		KubernetesNamespace:  "test-ns",
 		KubernetesDeployment: "gateway-abc",
 		KubernetesPod:        "gateway-abc",
 		Containers:           []string{"app"},
@@ -91,14 +91,14 @@ func TestTaskDeploymentPanelAvoidsCrossTalk(t *testing.T) {
 	gatewayDb := builder.NewDashboardBuilder(gatewayResourceNames, "kubernetes")
 	gatewayDb.AddPanel(builder.NewPanelTaskDeployment)
 	gatewayDashboard := gatewayDb.Build("gateway dashboard")
-	
+
 	gatewayAbcDb := builder.NewDashboardBuilder(gatewayAbcResourceNames, "kubernetes")
 	gatewayAbcDb.AddPanel(builder.NewPanelTaskDeployment)
 	gatewayAbcDashboard := gatewayAbcDb.Build("gateway-abc dashboard")
 
 	// Extract queries
 	var gatewayQuery, gatewayAbcQuery string
-	
+
 	for _, panel := range gatewayDashboard.Panels {
 		if panel.Title == "Running Task Count" {
 			target := panel.Targets[0].(builder.PanelTargetPrometheus)
@@ -106,7 +106,7 @@ func TestTaskDeploymentPanelAvoidsCrossTalk(t *testing.T) {
 			break
 		}
 	}
-	
+
 	for _, panel := range gatewayAbcDashboard.Panels {
 		if panel.Title == "Running Task Count" {
 			target := panel.Targets[0].(builder.PanelTargetPrometheus)
@@ -116,12 +116,12 @@ func TestTaskDeploymentPanelAvoidsCrossTalk(t *testing.T) {
 	}
 
 	// Verify the queries are different and specific
-	assert.NotEqual(t, gatewayQuery, gatewayAbcQuery, 
+	assert.NotEqual(t, gatewayQuery, gatewayAbcQuery,
 		"Queries for different deployments should be different")
-	
+
 	assert.Contains(t, gatewayQuery, `deployment="gateway"`,
 		"Gateway query should target exactly 'gateway' deployment")
-		
+
 	assert.Contains(t, gatewayAbcQuery, `deployment="gateway-abc"`,
 		"Gateway-abc query should target exactly 'gateway-abc' deployment")
 
