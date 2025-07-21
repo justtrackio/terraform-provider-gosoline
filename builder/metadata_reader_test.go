@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cenkalti/backoff/v4"
+	backoff "github.com/cenkalti/backoff/v4"
 	"github.com/justtrackio/terraform-provider-gosoline/builder"
 	"github.com/stretchr/testify/assert"
 )
