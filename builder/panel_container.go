@@ -14,6 +14,10 @@ func getKubernetesPodLabelFilter(namespace, podName string) string {
 	return fmt.Sprintf(`namespace=%q, pod=~"%s-.*"`, namespace, podName)
 }
 
+func getKubernetesDeploymentLabelFilter(namespace, deploymentName string) string {
+	return fmt.Sprintf(`namespace=%q, deployment=%q`, namespace, deploymentName)
+}
+
 func getEcsContainerLabelFilter(ecsClusterName, ecsTaskDefinitionName, containerName string) string {
 	return fmt.Sprintf(`container_label_com_amazonaws_ecs_cluster=%q, container_label_com_amazonaws_ecs_task_definition_family=%q, container_label_com_amazonaws_ecs_container_name=%q`, ecsClusterName, ecsTaskDefinitionName, containerName)
 }
@@ -301,8 +305,8 @@ func NewPanelTaskDeployment(settings PanelSettings) Panel {
 		labelFilter = getEcsContainerLabelFilter(settings.resourceNames.EcsCluster, settings.resourceNames.EcsTaskDefinition, settings.resourceNames.Containers[0])
 		query = fmt.Sprintf(`count(container_cpu_load_average_10s{%s})`, labelFilter)
 	case orchestratorKubernetes:
-		labelFilter = getKubernetesPodLabelFilter(settings.resourceNames.KubernetesNamespace, settings.resourceNames.KubernetesPod)
-		query = fmt.Sprintf("count(kube_pod_info{%s})", labelFilter)
+		labelFilter = getKubernetesDeploymentLabelFilter(settings.resourceNames.KubernetesNamespace, settings.resourceNames.KubernetesDeployment)
+		query = fmt.Sprintf("sum(kube_deployment_status_replicas_ready{%s})", labelFilter)
 	}
 
 	return Panel{
