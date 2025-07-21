@@ -110,7 +110,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Static code analysis (golangci-lint)
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v8
         with:
           version: v2.1.6
           only-new-issues: true
