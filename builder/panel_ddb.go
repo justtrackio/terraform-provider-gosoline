@@ -17,7 +17,7 @@ func NewPanelDdbReadUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Provisioned",
 					Dimensions: map[string]string{
@@ -92,7 +92,7 @@ func NewPanelDdbReadThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory 
 				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "GetItem",
 					Dimensions: map[string]string{
@@ -180,7 +180,7 @@ func NewPanelDdbWriteUsage(table MetadataCloudAwsDynamodbTable) PanelFactory {
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Provisioned",
 					Dimensions: map[string]string{
@@ -255,7 +255,7 @@ func NewPanelDdbWriteThrottles(table MetadataCloudAwsDynamodbTable) PanelFactory
 				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "PutItem",
 					Dimensions: map[string]string{

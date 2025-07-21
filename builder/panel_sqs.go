@@ -16,7 +16,7 @@ func NewPanelSqsMessagesVisible(queue MetadataCloudAwsSqsQueue) PanelFactory {
 				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
@@ -58,7 +58,7 @@ func NewPanelSqsTraffic(queue MetadataCloudAwsSqsQueue) PanelFactory {
 				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "",
 					Dimensions: map[string]string{
@@ -135,7 +135,7 @@ func NewPanelSqsMessageSize(queue MetadataCloudAwsSqsQueue) PanelFactory {
 				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Average",
 					Dimensions: map[string]string{

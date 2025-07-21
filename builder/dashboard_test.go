@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/justtrackio/terraform-provider-gosoline/builder"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestEcsDashboardWithError(t *testing.T) {
@@ -56,7 +57,8 @@ func TestEcsDashboardWithError(t *testing.T) {
 
 	dashboard := db.Build("test dashboard")
 
-	body, _ := json.Marshal(dashboard)
+	body, err := json.Marshal(dashboard)
+	assert.Nil(t, err)
 	fmt.Println(string(body))
 }
 
@@ -110,6 +112,7 @@ func TestKubernetesDashboardWithError(t *testing.T) {
 
 	dashboard := db.Build("test dashboard")
 
-	body, _ := json.Marshal(dashboard)
+	body, err := json.Marshal(dashboard)
+	assert.Nil(t, err)
 	fmt.Println(string(body))
 }

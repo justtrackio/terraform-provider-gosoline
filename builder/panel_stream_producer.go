@@ -15,7 +15,7 @@ func NewPanelStreamProducerDaemonSizes(producer MetadataStreamProducer) PanelFac
 				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Batch Size",
 					Dimensions: map[string]string{
@@ -68,7 +68,7 @@ func NewPanelStreamProducerMessageCount(producer MetadataStreamProducer) PanelFa
 				Overrides: []PanelFieldConfigOverride{},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Message Count",
 					Dimensions: map[string]string{

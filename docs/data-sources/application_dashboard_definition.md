@@ -3,7 +3,7 @@
 page_title: "gosoline_application_dashboard_definition Data Source - terraform-provider-gosoline"
 subcategory: ""
 description: |-
-  
+
 ---
 
 # gosoline_application_dashboard_definition (Data Source)
@@ -25,5 +25,3 @@ description: |-
 ### Read-Only
 
 - **body** (String)
-
-

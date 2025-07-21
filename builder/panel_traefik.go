@@ -16,7 +16,7 @@ func NewPanelTraefikRequestCount(settings PanelSettings) Panel {
 			},
 		},
 		GridPos: settings.gridPos,
-		Targets: []interface{}{
+		Targets: []any{
 			PanelTargetPrometheus{
 				Exemplar:     true,
 				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{%s}[1m])) * 60`, labelFilter),
@@ -45,7 +45,7 @@ func NewPanelTraefikResponseTime(settings PanelSettings) Panel {
 			},
 		},
 		GridPos: settings.gridPos,
-		Targets: []interface{}{
+		Targets: []any{
 			PanelTargetPrometheus{
 				Exemplar:     true,
 				Expression:   fmt.Sprintf(`sum(irate(traefik_service_request_duration_seconds_sum{%s}[$__rate_interval])) / sum(irate(traefik_service_requests_total{%s}[$__rate_interval]))`, labelFilter, labelFilter),
@@ -76,7 +76,7 @@ func NewPanelTraefikHttpStatus(settings PanelSettings) Panel {
 			},
 		},
 		GridPos: settings.gridPos,
-		Targets: []interface{}{
+		Targets: []any{
 			PanelTargetPrometheus{
 				Exemplar:     true,
 				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{code=~"2.*",%s}[1m])) * 60 or vector(0)`, labelFilter),
@@ -120,7 +120,7 @@ func NewPanelKubernetesHealthyPods(settings PanelSettings) Panel {
 			Overrides: []PanelFieldConfigOverride{},
 		},
 		GridPos: settings.gridPos,
-		Targets: []interface{}{
+		Targets: []any{
 			PanelTargetPrometheus{
 				Exemplar:     true,
 				Expression:   fmt.Sprintf(`count(kube_pod_status_ready{condition="true",%s})`, labelFilter),
@@ -147,7 +147,7 @@ func NewPanelTraefikRequestCountPerTarget(settings PanelSettings) Panel {
 			Overrides: []PanelFieldConfigOverride{},
 		},
 		GridPos: settings.gridPos,
-		Targets: []interface{}{
+		Targets: []any{
 			PanelTargetPrometheus{
 				Exemplar:     true,
 				Expression:   fmt.Sprintf(`sum(irate(traefik_service_requests_total{%s}[1m])) by () * 60/count(kube_pod_status_ready{condition="true",%s})`, labelFilterTraefik, labelFilterPod),

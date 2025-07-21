@@ -15,7 +15,7 @@ func NewPanelError(settings PanelSettings) Panel {
 			},
 		},
 		GridPos: settings.gridPos,
-		Targets: []interface{}{
+		Targets: []any{
 			PanelTargetCloudWatch{
 				Alias:      "Errors",
 				Dimensions: map[string]string{},
@@ -49,7 +49,7 @@ func NewPanelWarn(settings PanelSettings) Panel {
 			},
 		},
 		GridPos: settings.gridPos,
-		Targets: []interface{}{
+		Targets: []any{
 			PanelTargetCloudWatch{
 				Alias:      "Warnings",
 				Dimensions: map[string]string{},

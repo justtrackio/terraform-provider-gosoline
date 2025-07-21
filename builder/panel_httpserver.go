@@ -13,7 +13,7 @@ func NewPanelHttpServerRequestCount(serverName string, handler MetadataHttpServe
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Requests",
 					Dimensions: map[string]string{
@@ -52,7 +52,7 @@ func NewPanelHttpServerResponseTime(serverName string, handler MetadataHttpServe
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "Response Time",
 					Dimensions: map[string]string{
@@ -93,7 +93,7 @@ func NewPanelHttpServerHttpStatus(serverName string, handler MetadataHttpServerH
 				},
 			},
 			GridPos: settings.gridPos,
-			Targets: []interface{}{
+			Targets: []any{
 				PanelTargetCloudWatch{
 					Alias: "HTTP 2XX",
 					Dimensions: map[string]string{
