@@ -47,9 +47,9 @@ func TestTaskDeploymentPanelUsesCorrectMetric(t *testing.T) {
 	// Verify the query uses the new deployment metric instead of pod_info
 	query := target.Expression
 
-	// Should use kube_deployment_status_ready_replicas
-	assert.Contains(t, query, "kube_deployment_status_ready_replicas",
-		"Query should use kube_deployment_status_ready_replicas metric")
+	// Should use kube_deployment_status_replicas_ready
+	assert.Contains(t, query, "kube_deployment_status_replicas_ready",
+		"Query should use kube_deployment_status_replicas_ready metric")
 
 	// Should NOT use the old problematic kube_pod_info
 	assert.NotContains(t, query, "kube_pod_info",

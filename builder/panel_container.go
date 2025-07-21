@@ -306,7 +306,7 @@ func NewPanelTaskDeployment(settings PanelSettings) Panel {
 		query = fmt.Sprintf(`count(container_cpu_load_average_10s{%s})`, labelFilter)
 	case orchestratorKubernetes:
 		labelFilter = getKubernetesDeploymentLabelFilter(settings.resourceNames.KubernetesNamespace, settings.resourceNames.KubernetesDeployment)
-		query = fmt.Sprintf("kube_deployment_status_ready_replicas{%s}", labelFilter)
+		query = fmt.Sprintf("kube_deployment_status_replicas_ready{%s}", labelFilter)
 	}
 
 	return Panel{
