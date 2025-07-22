@@ -75,7 +75,9 @@ func findExpectedPattern(t *testing.T, panels []builder.Panel, expectedPattern s
 			return true
 		}
 		t.Errorf("Expression %q does not contain expected pattern %q", target.Expression, expectedPattern)
+
 		return false
 	}
+
 	return false
 }
