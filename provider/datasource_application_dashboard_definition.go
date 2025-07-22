@@ -182,6 +182,7 @@ func (a *ApplicationDashboardDefinitionDataSource) getResourceNames(ctx context.
 	// only available when orchestrator is kubernetes => Kubernetes/Traefik related
 	var kubernetesNamespace string
 	var kubernetesPod string
+	var kubernetesDeployment string
 	var traefikServiceName string
 
 	containers := make([]string, 0)
@@ -199,6 +200,7 @@ func (a *ApplicationDashboardDefinitionDataSource) getResourceNames(ctx context.
 	case orchestratorKubernetes:
 		kubernetesNamespace = builder.Augment(a.resourceNamePatterns.KubernetesNamespace, state.AppId())
 		kubernetesPod = builder.Augment(a.resourceNamePatterns.KubernetesPod, state.AppId())
+		kubernetesDeployment = kubernetesPod // KubernetesPod pattern is actually the deployment name
 		traefikServiceName = builder.Augment(a.resourceNamePatterns.TraefikServiceName, state.AppId())
 	}
 
@@ -210,6 +212,7 @@ func (a *ApplicationDashboardDefinitionDataSource) getResourceNames(ctx context.
 		Environment:                        state.Environment.Value,
 		GrafanaCloudWatchDatasourceName:    grafanaCloudWatchDatasourceName,
 		GrafanaElasticsearchDatasourceName: grafanaElasticsearchDatasourceName,
+		KubernetesDeployment:               kubernetesDeployment,
 		KubernetesNamespace:                kubernetesNamespace,
 		KubernetesPod:                      kubernetesPod,
 		TraefikServiceName:                 traefikServiceName,

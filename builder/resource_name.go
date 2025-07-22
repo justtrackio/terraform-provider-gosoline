@@ -9,6 +9,7 @@ type ResourceNames struct {
 	Environment                        string
 	GrafanaCloudWatchDatasourceName    string
 	GrafanaElasticsearchDatasourceName string
+	KubernetesDeployment               string
 	KubernetesNamespace                string
 	KubernetesPod                      string
 	TargetGroups                       []ElbTargetGroup
