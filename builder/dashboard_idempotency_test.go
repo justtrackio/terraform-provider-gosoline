@@ -18,12 +18,12 @@ func TestCollectionSorting(t *testing.T) {
 			{Name: "consumer-a"},
 			{Name: "consumer-m"},
 		}
-		
+
 		// Sort by name
 		sort.Slice(consumers, func(i, j int) bool {
 			return consumers[i].Name < consumers[j].Name
 		})
-		
+
 		assert.Equal(t, "consumer-a", consumers[0].Name)
 		assert.Equal(t, "consumer-m", consumers[1].Name)
 		assert.Equal(t, "consumer-z", consumers[2].Name)
@@ -36,12 +36,12 @@ func TestCollectionSorting(t *testing.T) {
 			{Name: "producer-b"},
 			{Name: "producer-k"},
 		}
-		
+
 		// Sort by name
 		sort.Slice(producers, func(i, j int) bool {
 			return producers[i].Name < producers[j].Name
 		})
-		
+
 		assert.Equal(t, "producer-b", producers[0].Name)
 		assert.Equal(t, "producer-k", producers[1].Name)
 		assert.Equal(t, "producer-y", producers[2].Name)
@@ -54,12 +54,12 @@ func TestCollectionSorting(t *testing.T) {
 			{Name: "kinsumer-c"},
 			{Name: "kinsumer-p"},
 		}
-		
+
 		// Sort by name
 		sort.Slice(kinsumers, func(i, j int) bool {
 			return kinsumers[i].Name < kinsumers[j].Name
 		})
-		
+
 		assert.Equal(t, "kinsumer-c", kinsumers[0].Name)
 		assert.Equal(t, "kinsumer-p", kinsumers[1].Name)
 		assert.Equal(t, "kinsumer-x", kinsumers[2].Name)
@@ -72,12 +72,12 @@ func TestCollectionSorting(t *testing.T) {
 			{StreamName: "writer-stream-a"},
 			{StreamName: "writer-stream-m"},
 		}
-		
+
 		// Sort by stream name
 		sort.Slice(writers, func(i, j int) bool {
 			return writers[i].StreamName < writers[j].StreamName
 		})
-		
+
 		assert.Equal(t, "writer-stream-a", writers[0].StreamName)
 		assert.Equal(t, "writer-stream-m", writers[1].StreamName)
 		assert.Equal(t, "writer-stream-z", writers[2].StreamName)
@@ -90,12 +90,12 @@ func TestCollectionSorting(t *testing.T) {
 			{QueueNameFull: "full-queue-a"},
 			{QueueNameFull: "full-queue-m"},
 		}
-		
+
 		// Sort by queue name full
 		sort.Slice(queues, func(i, j int) bool {
 			return queues[i].QueueNameFull < queues[j].QueueNameFull
 		})
-		
+
 		assert.Equal(t, "full-queue-a", queues[0].QueueNameFull)
 		assert.Equal(t, "full-queue-m", queues[1].QueueNameFull)
 		assert.Equal(t, "full-queue-z", queues[2].QueueNameFull)
@@ -108,12 +108,12 @@ func TestCollectionSorting(t *testing.T) {
 			{TableName: "table-a"},
 			{TableName: "table-m"},
 		}
-		
+
 		// Sort by table name
 		sort.Slice(tables, func(i, j int) bool {
 			return tables[i].TableName < tables[j].TableName
 		})
-		
+
 		assert.Equal(t, "table-a", tables[0].TableName)
 		assert.Equal(t, "table-m", tables[1].TableName)
 		assert.Equal(t, "table-z", tables[2].TableName)
@@ -126,12 +126,12 @@ func TestCollectionSorting(t *testing.T) {
 			{Name: "server-a"},
 			{Name: "server-m"},
 		}
-		
+
 		// Sort by name
 		sort.Slice(servers, func(i, j int) bool {
 			return servers[i].Name < servers[j].Name
 		})
-		
+
 		assert.Equal(t, "server-a", servers[0].Name)
 		assert.Equal(t, "server-m", servers[1].Name)
 		assert.Equal(t, "server-z", servers[2].Name)
@@ -145,7 +145,7 @@ func TestCollectionSorting(t *testing.T) {
 			{Method: "GET", Path: "/api/a"},
 			{Method: "PUT", Path: "/api/a"},
 		}
-		
+
 		// Sort by method first, then path
 		sort.Slice(handlers, func(i, j int) bool {
 			if handlers[i].Method != handlers[j].Method {
@@ -153,17 +153,17 @@ func TestCollectionSorting(t *testing.T) {
 			}
 			return handlers[i].Path < handlers[j].Path
 		})
-		
+
 		// Expected order: GET /api/a, GET /api/z, POST /api/z, PUT /api/a
 		assert.Equal(t, "GET", handlers[0].Method)
 		assert.Equal(t, "/api/a", handlers[0].Path)
-		
+
 		assert.Equal(t, "GET", handlers[1].Method)
 		assert.Equal(t, "/api/z", handlers[1].Path)
-		
+
 		assert.Equal(t, "POST", handlers[2].Method)
 		assert.Equal(t, "/api/z", handlers[2].Path)
-		
+
 		assert.Equal(t, "PUT", handlers[3].Method)
 		assert.Equal(t, "/api/a", handlers[3].Path)
 	})
@@ -185,7 +185,7 @@ func TestSortingIdempotency(t *testing.T) {
 	copy1 := make([]builder.MetadataStreamConsumer, len(consumers))
 	copy2 := make([]builder.MetadataStreamConsumer, len(consumers))
 	copy3 := make([]builder.MetadataStreamConsumer, len(consumers))
-	
+
 	copy(copy1, consumers)
 	copy(copy2, consumers)
 	copy(copy3, consumers)
@@ -194,11 +194,11 @@ func TestSortingIdempotency(t *testing.T) {
 	sort.Slice(copy1, func(i, j int) bool {
 		return copy1[i].Name < copy1[j].Name
 	})
-	
+
 	sort.Slice(copy2, func(i, j int) bool {
 		return copy2[i].Name < copy2[j].Name
 	})
-	
+
 	sort.Slice(copy3, func(i, j int) bool {
 		return copy3[i].Name < copy3[j].Name
 	})
