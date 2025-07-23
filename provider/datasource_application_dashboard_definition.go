@@ -307,8 +307,8 @@ func (a *ApplicationDashboardDefinitionDataSource) addHttpServers(metadata *buil
 			if handlers[i].Path != handlers[j].Path {
 				return handlers[i].Path < handlers[j].Path
 			}
-			return handlers[i].Method < handlers[j].Method
 
+			return handlers[i].Method < handlers[j].Method
 		})
 
 		for _, route := range handlers {
