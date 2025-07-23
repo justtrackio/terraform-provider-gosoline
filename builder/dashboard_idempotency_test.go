@@ -152,6 +152,7 @@ func TestCollectionSorting(t *testing.T) {
 				return handlers[i].Path < handlers[j].Path
 			}
 			return handlers[i].Method < handlers[j].Method
+
 		})
 
 		// Expected order: GET /api/a, PUT /api/a, GET /api/z, POST /api/z
