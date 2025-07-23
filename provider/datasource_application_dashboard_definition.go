@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"encoding/json"
+	"sort"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -115,15 +116,30 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 
 	a.addHttpServers(metadata, resourceNames, db)
 
-	for _, consumer := range metadata.Stream.Consumers {
+	// Sort stream consumers by name for consistent ordering
+	streamConsumers := metadata.Stream.Consumers
+	sort.Slice(streamConsumers, func(i, j int) bool {
+		return streamConsumers[i].Name < streamConsumers[j].Name
+	})
+	for _, consumer := range streamConsumers {
 		db.AddStreamConsumer(consumer)
 	}
 
-	for _, kinsumer := range metadata.Cloud.Aws.Kinesis.Kinsumers {
+	// Sort Kinesis kinsumers by name for consistent ordering
+	kinsumers := metadata.Cloud.Aws.Kinesis.Kinsumers
+	sort.Slice(kinsumers, func(i, j int) bool {
+		return kinsumers[i].Name < kinsumers[j].Name
+	})
+	for _, kinsumer := range kinsumers {
 		db.AddCloudAwsKinesisKinsumer(kinsumer)
 	}
 
-	for _, producer := range metadata.Stream.Producers {
+	// Sort stream producers by name for consistent ordering
+	streamProducers := metadata.Stream.Producers
+	sort.Slice(streamProducers, func(i, j int) bool {
+		return streamProducers[i].Name < streamProducers[j].Name
+	})
+	for _, producer := range streamProducers {
 		if !producer.DaemonEnabled {
 			continue
 		}
@@ -131,22 +147,38 @@ func (a *ApplicationDashboardDefinitionDataSource) Read(ctx context.Context, req
 		db.AddStreamProducerDaemon(producer)
 	}
 
-	for _, writer := range metadata.Cloud.Aws.Kinesis.RecordWriters {
+	// Sort Kinesis record writers by stream name for consistent ordering
+	recordWriters := metadata.Cloud.Aws.Kinesis.RecordWriters
+	sort.Slice(recordWriters, func(i, j int) bool {
+		return recordWriters[i].StreamName < recordWriters[j].StreamName
+	})
+	for _, writer := range recordWriters {
 		db.AddCloudAwsKinesisRecordWriter(writer)
 	}
 
-	for _, stream := range metadata.Cloud.Aws.Kinesis.Kinsumers {
+	// Use already sorted collections for Kinesis streams
+	for _, stream := range kinsumers {
 		db.AddCloudAwsKinesisStream(stream)
 	}
-	for _, stream := range metadata.Cloud.Aws.Kinesis.RecordWriters {
+	for _, stream := range recordWriters {
 		db.AddCloudAwsKinesisStream(stream)
 	}
 
-	for _, queue := range metadata.Cloud.Aws.Sqs.Queues {
+	// Sort SQS queues by queue name for consistent ordering
+	sqsQueues := metadata.Cloud.Aws.Sqs.Queues
+	sort.Slice(sqsQueues, func(i, j int) bool {
+		return sqsQueues[i].QueueNameFull < sqsQueues[j].QueueNameFull
+	})
+	for _, queue := range sqsQueues {
 		db.AddCloudAwsSqsQueue(queue)
 	}
 
-	for _, table := range metadata.Cloud.Aws.Dynamodb.Tables {
+	// Sort DynamoDB tables by table name for consistent ordering
+	dynamoTables := metadata.Cloud.Aws.Dynamodb.Tables
+	sort.Slice(dynamoTables, func(i, j int) bool {
+		return dynamoTables[i].TableName < dynamoTables[j].TableName
+	})
+	for _, table := range dynamoTables {
 		db.AddDynamoDbTable(table)
 	}
 
@@ -262,8 +294,24 @@ func (a *ApplicationDashboardDefinitionDataSource) addHttpServers(metadata *buil
 
 	db.AddTraefikService()
 
-	for _, server := range metadata.HttpServers {
-		for _, route := range server.Handlers {
+	// Sort HTTP servers by name for consistent ordering
+	httpServers := metadata.HttpServers
+	sort.Slice(httpServers, func(i, j int) bool {
+		return httpServers[i].Name < httpServers[j].Name
+	})
+
+	for _, server := range httpServers {
+		// Sort handlers by path and method for consistent ordering
+		handlers := server.Handlers
+		sort.Slice(handlers, func(i, j int) bool {
+			if handlers[i].Path != handlers[j].Path {
+				return handlers[i].Path < handlers[j].Path
+			}
+
+			return handlers[i].Method < handlers[j].Method
+		})
+
+		for _, route := range handlers {
 			if route.Path == "/health" {
 				continue
 			}
