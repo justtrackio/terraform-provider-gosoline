@@ -301,13 +301,13 @@ func (a *ApplicationDashboardDefinitionDataSource) addHttpServers(metadata *buil
 	})
 
 	for _, server := range httpServers {
-		// Sort handlers by method and path for consistent ordering
+		// Sort handlers by path and method for consistent ordering
 		handlers := server.Handlers
 		sort.Slice(handlers, func(i, j int) bool {
-			if handlers[i].Method != handlers[j].Method {
-				return handlers[i].Method < handlers[j].Method
+			if handlers[i].Path != handlers[j].Path {
+				return handlers[i].Path < handlers[j].Path
 			}
-			return handlers[i].Path < handlers[j].Path
+			return handlers[i].Method < handlers[j].Method
 		})
 
 		for _, route := range handlers {

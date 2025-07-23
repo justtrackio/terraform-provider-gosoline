@@ -146,26 +146,26 @@ func TestCollectionSorting(t *testing.T) {
 			{Method: "PUT", Path: "/api/a"},
 		}
 
-		// Sort by method first, then path
+		// Sort by path first, then method
 		sort.Slice(handlers, func(i, j int) bool {
-			if handlers[i].Method != handlers[j].Method {
-				return handlers[i].Method < handlers[j].Method
+			if handlers[i].Path != handlers[j].Path {
+				return handlers[i].Path < handlers[j].Path
 			}
-			return handlers[i].Path < handlers[j].Path
+			return handlers[i].Method < handlers[j].Method
 		})
 
-		// Expected order: GET /api/a, GET /api/z, POST /api/z, PUT /api/a
+		// Expected order: GET /api/a, PUT /api/a, GET /api/z, POST /api/z
 		assert.Equal(t, "GET", handlers[0].Method)
 		assert.Equal(t, "/api/a", handlers[0].Path)
 
-		assert.Equal(t, "GET", handlers[1].Method)
-		assert.Equal(t, "/api/z", handlers[1].Path)
+		assert.Equal(t, "PUT", handlers[1].Method)
+		assert.Equal(t, "/api/a", handlers[1].Path)
 
-		assert.Equal(t, "POST", handlers[2].Method)
+		assert.Equal(t, "GET", handlers[2].Method)
 		assert.Equal(t, "/api/z", handlers[2].Path)
 
-		assert.Equal(t, "PUT", handlers[3].Method)
-		assert.Equal(t, "/api/a", handlers[3].Path)
+		assert.Equal(t, "POST", handlers[3].Method)
+		assert.Equal(t, "/api/z", handlers[3].Path)
 	})
 }
 
