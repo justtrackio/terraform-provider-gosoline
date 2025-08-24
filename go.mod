@@ -12,7 +12,7 @@ require (
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/go-resty/resty/v2 v2.11.0
 	github.com/hashicorp/terraform-plugin-framework v0.10.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.11.0
 	github.com/thoas/go-funk v0.9.3
 )
 
