@@ -12,7 +12,7 @@ require (
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/go-resty/resty/v2 v2.11.0
 	github.com/hashicorp/terraform-plugin-framework v0.10.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.12.1
 	github.com/thoas/go-funk v0.9.3
 )
 
@@ -48,6 +48,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/vmihailenco/msgpack/v4 v4.3.12 // indirect
 	github.com/vmihailenco/tagparser v0.1.1 // indirect
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
